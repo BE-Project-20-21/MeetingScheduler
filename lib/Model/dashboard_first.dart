@@ -28,7 +28,7 @@ class DashboardFirst extends StatelessWidget {
     final FirebaseAuth authLogOut = FirebaseAuth.instance;
     await authLogOut.signOut();
     print(context);
-    Fluttertoast.showToast(msg: "Context: ${context}");
+    Fluttertoast.showToast(msg: "Context: $context");
     Navigator.pop(context);
   }
 }

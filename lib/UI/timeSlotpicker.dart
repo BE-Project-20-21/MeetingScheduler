@@ -3,7 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../Model/time_slots.dart';
 
 class TimeSlotPickerMatrix extends StatefulWidget {
-  TimeSlotPickerMatrix({Key key}) : super(key: key);
+  final String day;
+  TimeSlotPickerMatrix(this.day);
 
   @override
   TimeSlotPickerMatrixState createState() => TimeSlotPickerMatrixState();
@@ -64,8 +65,7 @@ class TimeSlotPickerMatrixState extends State<TimeSlotPickerMatrix> {
           TimeSlots('20:00'),
           TimeSlots('21:00'),
           TimeSlots('22:00'),
-          TimeSlots('23:00'),
-        ],
+          TimeSlots('23:00'),        ],
       ),
     ]);
   }
