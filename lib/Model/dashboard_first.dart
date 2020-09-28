@@ -10,26 +10,6 @@ class DashboardFirst extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      child: Align(
-        alignment: Alignment.bottomRight,
-        child: Container(
-          child: Icon(
-            Icons.add,
-            size: 50.0,
-            color: Colors.white,
-          ),
-          margin: EdgeInsets.all(10.0),
-          padding: EdgeInsets.all(10.0),
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(50),
-          ),
-        ),
-      ),
-      padding: EdgeInsets.symmetric(
-        vertical: 20.0,
-        horizontal: 20.0,
-      ),
       decoration: BoxDecoration(
         gradient: LinearGradient(
             begin: Alignment.topCenter,

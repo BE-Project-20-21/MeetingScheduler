@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 void main() {
   Firebase.initializeApp();
   runApp(MyApp());
-}
+} // comment kiya
 
 class MyApp extends StatelessWidget {
   @override
