@@ -1,15 +1,15 @@
 import 'package:authentication_app/Model/dashboard_first.dart';
 import 'package:authentication_app/Model/dashboard_second.dart';
 import 'package:authentication_app/Model/dashboard_third.dart';
+import 'package:authentication_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import './manage_schedule.dart';
 
-//To save the context of the entire Dashboard page
+//To save the context of the entire Dashboard page (As there are popUp menus present)
 BuildContext globalContext;
 
 class Dashboard extends StatefulWidget {
@@ -41,7 +41,7 @@ class DashboardState extends State<Dashboard>
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primarySwatch: Colors.deepOrange,
+          primarySwatch: Colors.red,
           textTheme: GoogleFonts.aBeeZeeTextTheme(
             Theme.of(context).textTheme,
           )),
@@ -54,7 +54,9 @@ class DashboardState extends State<Dashboard>
               height: 65,
               margin: EdgeInsets.only(bottom: 20),
               child: FloatingActionButton(
-                onPressed: () {},
+                onPressed: () {
+                  //ADD meeting module
+                },
                 child: Icon(
                   Icons.add,
                   size: 40,
@@ -262,12 +264,12 @@ class PopupOptionMenu extends StatelessWidget {
     await authLogOut.signOut();
     print(context);
     Fluttertoast.showToast(msg: "Context: $context");
-    Navigator.pop(context);
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => MyApp()));
   }
 }
 
 void manageSchedule(BuildContext context) {
   Navigator.push(
       context, MaterialPageRoute(builder: (context) => ManageSchedule()));
-  Fluttertoast.showToast(msg: "Context: $context");
 }

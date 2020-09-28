@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Model/time_slots.dart';
 
@@ -27,45 +28,46 @@ class TimeSlotPickerMatrixState extends State<TimeSlotPickerMatrix> {
       Flex(
         direction: Axis.horizontal,
         children: [
-          TimeSlots('00:00'),
-          TimeSlots('01:00'),
-          TimeSlots('02:00'),
-          TimeSlots('03:00'),
-          TimeSlots('04:00'),
-          TimeSlots('05:00'),
+          TimeSlots(0,widget.day,false),
+          TimeSlots(1,widget.day,false),
+          TimeSlots(2,widget.day,false),
+          TimeSlots(3,widget.day,false),
+          TimeSlots(4,widget.day,false),
+          TimeSlots(5,widget.day,false),
         ],
       ),
       Flex(
         direction: Axis.horizontal,
         children: [
-          TimeSlots('06:00'),
-          TimeSlots('07:00'),
-          TimeSlots('08:00'),
-          TimeSlots('09:00'),
-          TimeSlots('10:00'),
-          TimeSlots('11:00'),
+          TimeSlots(6,widget.day,false),
+          TimeSlots(7,widget.day,false),
+          TimeSlots(8,widget.day,false),
+          TimeSlots(9,widget.day,false),
+          TimeSlots(10,widget.day,false),
+          TimeSlots(11,widget.day,false),
         ],
       ),
       Flex(
         direction: Axis.horizontal,
         children: [
-          TimeSlots('12:00'),
-          TimeSlots('13:00'),
-          TimeSlots('14:00'),
-          TimeSlots('15:00'),
-          TimeSlots('16:00'),
-          TimeSlots('17:00'),
+          TimeSlots(12,widget.day,false),
+          TimeSlots(13,widget.day,false),
+          TimeSlots(14,widget.day,false),
+          TimeSlots(15,widget.day,false),
+          TimeSlots(16,widget.day,false),
+          TimeSlots(17,widget.day,false),
         ],
       ),
       Flex(
         direction: Axis.horizontal,
         children: [
-          TimeSlots('18:00'),
-          TimeSlots('19:00'),
-          TimeSlots('20:00'),
-          TimeSlots('21:00'),
-          TimeSlots('22:00'),
-          TimeSlots('23:00'),        ],
+          TimeSlots(18,widget.day,false),
+          TimeSlots(19,widget.day,false),
+          TimeSlots(20,widget.day,false),
+          TimeSlots(21,widget.day,false),
+          TimeSlots(22,widget.day,false),
+          TimeSlots(23,widget.day,false),
+        ],
       ),
     ]);
   }
