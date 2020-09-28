@@ -38,12 +38,26 @@ class DashboardState extends State<Dashboard>
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primarySwatch: Colors.amber,
+          primarySwatch: Colors.deepOrange,
           textTheme: GoogleFonts.aBeeZeeTextTheme(
             Theme.of(context).textTheme,
           )),
       home: Material(
         child: Scaffold(
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: Container(
+              width: 65,
+              height: 65,
+              margin: EdgeInsets.only(bottom: 20),
+              child: FloatingActionButton(
+                onPressed: () {},
+                child: Icon(
+                  Icons.add,
+                  size: 40,
+                ),
+                backgroundColor: Colors.black,
+              )),
           appBar: AppBar(
             title: Container(
               width: MediaQuery.of(context).size.width,
