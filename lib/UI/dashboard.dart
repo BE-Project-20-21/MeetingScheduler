@@ -7,8 +7,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import './manage_schedule.dart';
+
+//To save the context of the entire Dashboard page
+BuildContext globalContext;
 
 class Dashboard extends StatefulWidget {
   @override
@@ -34,6 +36,7 @@ class DashboardState extends State<Dashboard>
   @override
   Widget build(BuildContext context) {
     Firebase.initializeApp();
+    globalContext = context;
     // TODO: implement build
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -234,7 +237,7 @@ class PopupOptionMenu extends StatelessWidget {
           logOut(context);
         }
         if (selection == MenuOption.manage_schedule) {
-          manageSchedule(context);
+          manageSchedule(globalContext);
         }
       },
     );
@@ -252,4 +255,5 @@ class PopupOptionMenu extends StatelessWidget {
 void manageSchedule(BuildContext context) {
   Navigator.push(
       context, MaterialPageRoute(builder: (context) => ManageSchedule()));
+  Fluttertoast.showToast(msg: "Context: $context");
 }

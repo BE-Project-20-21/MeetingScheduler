@@ -1,6 +1,5 @@
 import 'package:authentication_app/UI/dashboard.dart';
 import 'package:authentication_app/UI/forgot_pasword.dart';
-import 'package:authentication_app/UI/logout.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -221,7 +220,7 @@ class Login extends StatelessWidget {
         if (password.length >= 6) {
           signinWithEmailAndPassword(email, password, context);
         } else {
-          //To handle insuffiicient password length
+          //To handle insufficient password length
           Fluttertoast.showToast(
               msg: "Password length should be more than 6 characters!");
         }
