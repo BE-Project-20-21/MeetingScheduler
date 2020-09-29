@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import './manage_schedule.dart';
+import 'Home.dart';
 
 //To save the context of the entire Dashboard page (As there are popUp menus present)
 BuildContext globalContext;
@@ -23,6 +24,7 @@ class DashboardState extends State<Dashboard>
 
   @override
   void initState() {
+    Firebase.initializeApp();
     super.initState();
     tabController = new TabController(vsync: this, length: 3);
   }
@@ -263,9 +265,9 @@ class PopupOptionMenu extends StatelessWidget {
     final FirebaseAuth authLogOut = FirebaseAuth.instance;
     await authLogOut.signOut();
     print(context);
-    Fluttertoast.showToast(msg: "Context: $context");
+    Fluttertoast.showToast(msg: "Logging Out!");
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => MyApp()));
+        context, MaterialPageRoute(builder: (context) => Home()));
   }
 }
 

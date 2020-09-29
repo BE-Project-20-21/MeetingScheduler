@@ -59,13 +59,13 @@ class HomeButtons extends StatelessWidget{
         onTap: (){
           //Check if already logged in
           if (FirebaseAuth.instance.currentUser != null){
-            Navigator.push(
+            Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => Dashboard())
             );
           }
           else{
-            Navigator.push(
+            Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => Login())
             );
