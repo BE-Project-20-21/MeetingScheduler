@@ -1,3 +1,4 @@
+import 'package:authentication_app/Model/time_slots.dart';
 import 'package:date_util/date_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,6 +24,8 @@ class _ManageScheduleState extends State<ManageSchedule> {
     startTime = null;
     endTime = null;
   }
+
+  bool pressed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +56,7 @@ class _ManageScheduleState extends State<ManageSchedule> {
                             )),
                       ),
                       ExpansionTile(
+                        maintainState: true,
                         title: Text(
                           "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}" +
                               "   " +
@@ -67,6 +71,7 @@ class _ManageScheduleState extends State<ManageSchedule> {
                         height: 10,
                       ),
                       ExpansionTile(
+                        maintainState: true,
                         title: Text(
                           "${newDates(1).day}/${newDates(1).month}/${newDates(1).year}" +
                               "   " +
@@ -81,6 +86,7 @@ class _ManageScheduleState extends State<ManageSchedule> {
                         height: 10,
                       ),
                       ExpansionTile(
+                        maintainState: true,
                         title: Text(
                           "${newDates(2).day}/${newDates(2).month}/${newDates(2).year}" +
                               "   " +
@@ -95,6 +101,7 @@ class _ManageScheduleState extends State<ManageSchedule> {
                         height: 10,
                       ),
                       ExpansionTile(
+                        maintainState: true,
                         title: Text(
                           "${newDates(3).day}/${newDates(3).month}/${newDates(3).year}" +
                               "   " +
@@ -109,6 +116,7 @@ class _ManageScheduleState extends State<ManageSchedule> {
                         height: 10,
                       ),
                       ExpansionTile(
+                        maintainState: true,
                         title: Text(
                           "${newDates(4).day}/${newDates(4).month}/${newDates(4).year}" +
                               "   " +
@@ -123,6 +131,7 @@ class _ManageScheduleState extends State<ManageSchedule> {
                         height: 10,
                       ),
                       ExpansionTile(
+                        maintainState: true,
                         title: Text(
                           "${newDates(5).day}/${newDates(5).month}/${newDates(5).year}" +
                               "   " +
@@ -140,6 +149,7 @@ class _ManageScheduleState extends State<ManageSchedule> {
                         height: 10,
                       ),
                       ExpansionTile(
+                        maintainState: true,
                         title: Text(
                           "${newDates(6).day}/${newDates(6).month}/${newDates(6).year}" +
                               "   " +
@@ -152,6 +162,28 @@ class _ManageScheduleState extends State<ManageSchedule> {
                       ),
                       SizedBox(
                         height: 10,
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(20),
+                        child: FlatButton(
+                            child: Text(
+                              "Submit Schedule",
+                              style: TextStyle(
+                                color: Colors.deepOrangeAccent,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                          color: Colors.white,
+                          padding: EdgeInsets.all(20),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.deepOrangeAccent)
+                          ),
+                          onPressed: (){
+                            submit();
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -166,5 +198,10 @@ class _ManageScheduleState extends State<ManageSchedule> {
   DateTime newDates(int i) {
     var newDate = Jiffy(pickedDate).add(days: i);
     return newDate;
+  }
+
+  //Method to trigger methods on time_slots.dart file to validate and submit the entire schedule
+  void submit() {
+    TimeSlots(null,null,true);
   }
 }

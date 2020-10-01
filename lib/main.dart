@@ -1,18 +1,71 @@
-import 'package:authentication_app/UI/homeButtons.dart';
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'UI/Home.dart';
+import 'UI/dashboard.dart';
 
-void main() {
-  Firebase.initializeApp();
+//To make sure that app has initialized connection with the database.
+bool isConnected = false;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  //Ensured that app has initialized connection with the database.
+  isConnected = true;
   runApp(MyApp());
-} // comment kiya
+}
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
+    // TODO: implement build
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: FirstPage(),
+    );
+  }
+}
+
+class FirstPage extends StatefulWidget {
+
+  @override
+  _FirstPageState createState() => _FirstPageState();
+}
+
+class _FirstPageState extends State<FirstPage> {
+  @override
+  void initState()  {
+    super.initState();
+    startTimer();
+  }
+
+  startTimer() async{
+    var duration = Duration(seconds: 2);
+    if (FirebaseAuth.instance.currentUser == null){
+      return Timer(duration, route1);
+    }
+    else{
+      return Timer(duration, route2);
+    }
+  }
+
+  route1(){
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => Home(),
+    ));
+  }
+
+  route2(){
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => Dashboard(),
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Firebase.initializeApp();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Authentication App",
@@ -22,58 +75,47 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
           textTheme: GoogleFonts.aBeeZeeTextTheme(
             Theme.of(context).textTheme,
-          )),
-      home: Home(),
-    );
-  }
-}
-
-class Home extends StatefulWidget {
-  @override
-  _HomeState createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    Fluttertoast.showToast(msg: "Aready Logged in? Tap on LOG IN!");
-    return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: SafeArea(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              child: Image(
-                image: AssetImage("assets/images/logo1.png"),
-              ),
-              margin: EdgeInsets.all(20.0),
-              padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 30.0),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.1),
-                  width: 2.0,
+          )
+      ),
+      home: Material(
+        child: Container(
+          child: SafeArea(
+            child: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                Container(
+                  child: Image(
+                    image: AssetImage("assets/images/logo1.png"),
+                  ),
+                  margin: EdgeInsets.all(10.0),
                 ),
-                //color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(10),
+                  Container(
+                    child: CircularProgressIndicator(
+                      valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                    ),
+                    margin: EdgeInsets.all(10.0),
+                  ),
+                  Container(
+                    child: Text(
+                      "Meeting Scheduler",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20.0,
+                      ),
+                    ),
+                  ),
+              ],),
+              margin: EdgeInsets.all(10.0),
+              padding: EdgeInsets.symmetric(
+                  vertical: 30.0,
+                  horizontal: 30.0
               ),
             ),
-            HomeButtons(),
-          ],
-        )),
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-              Colors.lightBlue,
-              Colors.blue,
-              Colors.deepPurpleAccent,
-            ])),
+          ),
+        ),
       ),
     );
   }
 }
+
