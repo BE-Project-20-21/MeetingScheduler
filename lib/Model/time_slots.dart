@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 //The map for each day containing the time slots, and boolean value for each slot; true: free, false: occupied.
 var sundayMap = new Map<int, bool>();
@@ -20,16 +22,16 @@ class TimeSlots extends StatefulWidget {
   bool trigger;
   var schedule = new Map();
 
-  TimeSlots(int time, String day, bool trigger){
+  TimeSlots(int time, String day, bool trigger) {
     this.time = time;
     this.day = day;
     this.trigger = trigger;
     //Triggered on clicking the Submit button on the manage_schedule page
-    if (trigger){
+    if (trigger) {
       createMap();
     }
     //To clear the map every-time the user leaves the manage_schedule page and gets back to dashboard
-    else{
+    else {
       sundayMap.clear();
       mondayMap.clear();
       tuesdayMap.clear();
@@ -62,8 +64,30 @@ class TimeSlots extends StatefulWidget {
     submitSchedule(schedule);
   }
 
+  //Method to Enter the schedule to the database
   void submitSchedule(Map schedule) {
+    //To get the UID of the current User
+    final String currentUserId = FirebaseAuth.instance.currentUser.uid;
+
+    //Declaring Database references and setting th ereference to the target node
+    FirebaseDatabase databaseManageSchedule = new FirebaseDatabase();
+    DatabaseReference referenceManageSchedule =
+        databaseManageSchedule.reference().child("schedule");
+
     //Code to enter the shedule to the database
+    for (String days in schedule.keys) {
+      for (int i = 0; i < 24; i++) {
+        if (schedule[days].containsKey(i)) {
+          referenceManageSchedule.child(currentUserId).child(days).update({
+            i.toString(): schedule[days][i].toString(),
+          });
+        } else {
+          referenceManageSchedule.child(currentUserId).child(days).update({
+            i.toString(): "false",
+          });
+        }
+      }
+    }
   }
 }
 
@@ -85,7 +109,7 @@ class _TimeSlotsState extends State<TimeSlots> {
           padding: const EdgeInsets.only(left: 2.0),
           child: FlatButton(
             child: Text(
-              "${widget.time.toString()}"+":00",
+              "${widget.time.toString()}" + ":00",
               style: GoogleFonts.sourceSansPro(
                   textStyle: TextStyle(
                       color: pressed ? Colors.white : Colors.deepOrangeAccent)),
@@ -104,8 +128,7 @@ class _TimeSlotsState extends State<TimeSlots> {
                   pressed = false;
                   removeFromSchedule(widget.day, widget.time);
                 });
-              }
-              else{
+              } else {
                 addToSchedule(widget.day, widget.time);
               }
             },
@@ -118,50 +141,38 @@ class _TimeSlotsState extends State<TimeSlots> {
 
   //Method to make a particular slot value true for a particular day (select slot)
   void addToSchedule(String day, int time) {
-    if (day == "Sunday"){
+    if (day == "Sunday") {
       sundayMap[widget.time] = true;
-    }
-    else if (day == "Monday"){
+    } else if (day == "Monday") {
       mondayMap[widget.time] = true;
-    }
-    else if (day == "Tuesday"){
+    } else if (day == "Tuesday") {
       tuesdayMap[widget.time] = true;
-    }
-    else if (day == "Wednesday"){
+    } else if (day == "Wednesday") {
       wednesdayMap[widget.time] = true;
-    }
-    else if (day == "Thursday"){
+    } else if (day == "Thursday") {
       thursdayMap[widget.time] = true;
-    }
-    else if (day == "Friday"){
+    } else if (day == "Friday") {
       fridayMap[widget.time] = true;
-    }
-    else if (day == "Saturday"){
+    } else if (day == "Saturday") {
       saturdayMap[widget.time] = true;
     }
   }
 
   //Method to make a particular slot value false for a particular day (un-select slot)
   void removeFromSchedule(String day, int time) {
-    if (day == "Sunday"){
+    if (day == "Sunday") {
       sundayMap[widget.time] = false;
-    }
-    else if (day == "Monday"){
+    } else if (day == "Monday") {
       mondayMap[widget.time] = false;
-    }
-    else if (day == "Tuesday"){
+    } else if (day == "Tuesday") {
       tuesdayMap[widget.time] = false;
-    }
-    else if (day == "Wednesday"){
+    } else if (day == "Wednesday") {
       wednesdayMap[widget.time] = false;
-    }
-    else if (day == "Thursday"){
+    } else if (day == "Thursday") {
       thursdayMap[widget.time] = false;
-    }
-    else if (day == "Friday"){
+    } else if (day == "Friday") {
       fridayMap[widget.time] = false;
-    }
-    else if (day == "Saturday"){
+    } else if (day == "Saturday") {
       saturdayMap[widget.time] = false;
     }
   }
