@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 //The map for each day containing the time slots, and boolean value for each slot; true: free, false: occupied.
 var sundayMap = new Map<int, bool>();
@@ -15,6 +16,9 @@ var saturdayMap = new Map<int, bool>();
 
 //Map to put the schedule of each day in one packet, ready to be pushed into the database
 var schedule = new Map<String, Map>();
+
+//Global context for the Timeslots widget
+BuildContext globalContextTimeSlots;
 
 class TimeSlots extends StatefulWidget {
   int time;
@@ -30,7 +34,7 @@ class TimeSlots extends StatefulWidget {
     if (trigger) {
       createMap();
     }
-    //To clear the map every-time the user leaves the manage_schedule page and gets back to dashboard
+    //To clear the map everytime the user leaves the manage_schedule page and gets back to dashboard
     else {
       sundayMap.clear();
       mondayMap.clear();
@@ -45,6 +49,9 @@ class TimeSlots extends StatefulWidget {
   @override
   _TimeSlotsState createState() => _TimeSlotsState();
 
+  //Creating an object of ProgressDialog
+  ProgressDialog progressDialog;
+
   //Here comes the code when the user submits the schedule (Entering the schedule in the database)
   void createMap() {
     schedule["Sunday"] = sundayMap;
@@ -54,11 +61,38 @@ class TimeSlots extends StatefulWidget {
     schedule["Thursday"] = thursdayMap;
     schedule["Friday"] = fridayMap;
     schedule["Saturday"] = saturdayMap;
-    Fluttertoast.showToast(msg: "Schedule: $schedule");
+
+    //Code to show the progres bar (UI BASED)
+    progressDialog = new ProgressDialog(globalContextTimeSlots,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialog.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor:
+              new AlwaysStoppedAnimation<Color>(Colors.deepOrangeAccent),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Submitting your Schedule....",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
+    );
+    progressDialog.show();
+
+    //Calling the function to validate the schedule
     vaidateMap(schedule);
   }
 
   void vaidateMap(Map schedule) {
+    //Calling the method to call dialog box
     //Code to validate the schedule
     //Call method to add the validated schedule to the database
     submitSchedule(schedule);
@@ -88,6 +122,17 @@ class TimeSlots extends StatefulWidget {
         }
       }
     }
+
+    //To hide the progress bar and Navigate to the dashboard
+    closeActivity();
+  }
+
+  closeActivity() {
+    //Code to hide the progress bar
+    Future.delayed(const Duration(seconds: 4), () {
+      progressDialog.hide();
+    });
+    //Code to navigate back to the dashboard
   }
 }
 
@@ -103,6 +148,7 @@ class _TimeSlotsState extends State<TimeSlots> {
 
   @override
   Widget build(BuildContext context) {
+    globalContextTimeSlots = context;
     return Container(
       child: Flexible(
         child: Padding(
