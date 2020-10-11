@@ -2,7 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class DashboardFirst extends StatelessWidget {
+class DashboardFirst extends StatefulWidget {
+  @override
+  _DashboardFirstState createState() => _DashboardFirstState();
+}
+
+class _DashboardFirstState extends State<DashboardFirst> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -20,14 +25,5 @@ class DashboardFirst extends StatelessWidget {
             ]),
       ),
     );
-  }
-
-  //To logout from the application
-  void logOut(BuildContext context) async {
-    final FirebaseAuth authLogOut = FirebaseAuth.instance;
-    await authLogOut.signOut();
-    print(context);
-    Fluttertoast.showToast(msg: "Context: $context");
-    Navigator.pop(context);
   }
 }

@@ -17,7 +17,7 @@ void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget{
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -29,38 +29,40 @@ class MyApp extends StatelessWidget{
 }
 
 class FirstPage extends StatefulWidget {
-
   @override
   _FirstPageState createState() => _FirstPageState();
 }
 
 class _FirstPageState extends State<FirstPage> {
   @override
-  void initState()  {
+  void initState() {
     super.initState();
     startTimer();
   }
 
-  startTimer() async{
+  startTimer() async {
     var duration = Duration(seconds: 2);
-    if (FirebaseAuth.instance.currentUser == null){
+    if (FirebaseAuth.instance.currentUser == null) {
       return Timer(duration, route1);
-    }
-    else{
+    } else {
       return Timer(duration, route2);
     }
   }
 
-  route1(){
+  route1() {
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Home(),
-    ));
+        context,
+        MaterialPageRoute(
+          builder: (context) => Home(),
+        ));
   }
 
-  route2(){
+  route2() {
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Dashboard(),
-    ));
+        context,
+        MaterialPageRoute(
+          builder: (context) => Dashboard(),
+        ));
   }
 
   @override
@@ -75,8 +77,7 @@ class _FirstPageState extends State<FirstPage> {
           visualDensity: VisualDensity.adaptivePlatformDensity,
           textTheme: GoogleFonts.aBeeZeeTextTheme(
             Theme.of(context).textTheme,
-          )
-      ),
+          )),
       home: Material(
         child: Container(
           child: SafeArea(
@@ -84,15 +85,16 @@ class _FirstPageState extends State<FirstPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                Container(
-                  child: Image(
-                    image: AssetImage("assets/images/logo1.png"),
+                  Container(
+                    child: Image(
+                      image: AssetImage("assets/images/logo1.png"),
+                    ),
+                    margin: EdgeInsets.all(10.0),
                   ),
-                  margin: EdgeInsets.all(10.0),
-                ),
                   Container(
                     child: CircularProgressIndicator(
-                      valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                      valueColor:
+                          new AlwaysStoppedAnimation<Color>(Colors.blue),
                     ),
                     margin: EdgeInsets.all(10.0),
                   ),
@@ -105,12 +107,10 @@ class _FirstPageState extends State<FirstPage> {
                       ),
                     ),
                   ),
-              ],),
-              margin: EdgeInsets.all(10.0),
-              padding: EdgeInsets.symmetric(
-                  vertical: 30.0,
-                  horizontal: 30.0
+                ],
               ),
+              margin: EdgeInsets.all(10.0),
+              padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 30.0),
             ),
           ),
         ),
@@ -118,4 +118,3 @@ class _FirstPageState extends State<FirstPage> {
     );
   }
 }
-
