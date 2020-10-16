@@ -6,14 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'UI/Home.dart';
 import 'UI/dashboard.dart';
 
-//To make sure that app has initialized connection with the database.
-bool isConnected = false;
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  //Ensured that app has initialized connection with the database.
-  isConnected = true;
   runApp(MyApp());
 }
 

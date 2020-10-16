@@ -263,8 +263,9 @@ class PopupOptionMenu extends StatelessWidget {
   void logOut(BuildContext context) async {
     final FirebaseAuth authLogOut = FirebaseAuth.instance;
     await authLogOut.signOut();
-    print(context);
     Fluttertoast.showToast(msg: "Logging Out!");
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => Home()));
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => Home()));
   }

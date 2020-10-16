@@ -1,5 +1,5 @@
+import 'package:authentication_app/UI/dashboard.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -109,17 +109,18 @@ class TimeSlots extends StatefulWidget {
         databaseManageSchedule.reference().child("schedule");
 
     //Code to enter the shedule to the database
+    bool slotStatus = false;
     for (String days in schedule.keys) {
       for (int i = 0; i < 24; i++) {
         if (schedule[days].containsKey(i)) {
-          referenceManageSchedule.child(currentUserId).child(days).update({
-            i.toString(): schedule[days][i].toString(),
-          });
+          slotStatus = schedule[days][i];
         } else {
-          referenceManageSchedule.child(currentUserId).child(days).update({
-            i.toString(): "false",
-          });
+          slotStatus = false;
         }
+        //Inserting the slot-status in the database
+        referenceManageSchedule.child(currentUserId).child(days).update({
+          i.toString(): slotStatus.toString(),
+        });
       }
     }
 
@@ -132,7 +133,10 @@ class TimeSlots extends StatefulWidget {
     Future.delayed(const Duration(seconds: 4), () {
       progressDialog.hide();
     });
+
     //Code to navigate back to the dashboard
+    // Navigator.popUntil(
+    //     globalContextTimeSlots, ModalRoute.withName('./UI/dashboard.dart'));
   }
 }
 
@@ -165,6 +169,7 @@ class _TimeSlotsState extends State<TimeSlots> {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             onPressed: () {
+              //Logic to implement the selection and discarding of a particular time slot
               setState(() {
                 pressed = true;
                 counter = counter + 1;
