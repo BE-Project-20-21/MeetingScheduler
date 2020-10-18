@@ -13,9 +13,11 @@ class SignupInputs extends StatelessWidget {
 
   //The variables required to save the inputs
   String fullname = "";
+  String username = "";
   String email = "";
   String password = "";
   String confirmPassword = "";
+  String contact = "";
 
   @override
   Widget build(BuildContext context) {
@@ -23,267 +25,322 @@ class SignupInputs extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
     Firebase.initializeApp();
     // TODO: implement build
-    return Container(
-      height: height,
-      width: width,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(
-                "Please enter your details",
+    return SingleChildScrollView(
+      child: Container(
+        height: height,
+        width: width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  "Please enter your details",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
+                    fontSize: 20.0,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: height / 50,
+            ),
+            Container(
+              height: height / 13,
+              alignment: Alignment.centerLeft,
+              child: TextField(
+                onChanged: (fullnameInput) {
+                  fullname = fullnameInput;
+                },
+                keyboardType: TextInputType.name,
                 style: TextStyle(
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.0,
-                  fontSize: 20.0,
                 ),
+                decoration: InputDecoration(
+                    hintText: "Name",
+                    hintStyle: TextStyle(
+                      color: Colors.white,
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.only(top: 14.0),
+                    prefixIcon: Icon(
+                      Icons.account_circle,
+                      color: Colors.white,
+                    )),
+              ),
+              decoration: BoxDecoration(
+                color: Color(0xFF6CA8F1),
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 6.0,
+                    offset: Offset(0, 2),
+                  ),
+                ],
               ),
             ),
-          ),
-          SizedBox(
-            height: height / 50,
-          ),
-          Container(
-            height: height / 13,
-            alignment: Alignment.centerLeft,
-            child: TextField(
-              onChanged: null,
-              keyboardType: TextInputType.name,
-              style: TextStyle(
-                color: Colors.white,
+            SizedBox(
+              height: height / 50,
+            ),
+            Container(
+              height: height / 13,
+              alignment: Alignment.centerLeft,
+              child: TextField(
+                onChanged: (usernameInputs) {
+                  username = usernameInputs;
+                },
+                keyboardType: TextInputType.text,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+                decoration: InputDecoration(
+                    hintText: "Username",
+                    hintStyle: TextStyle(
+                      color: Colors.white,
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.only(top: 14.0),
+                    prefixIcon: Icon(
+                      Icons.account_box,
+                      color: Colors.white,
+                    )),
               ),
-              decoration: InputDecoration(
-                  hintText: "Name",
+              decoration: BoxDecoration(
+                color: Color(0xFF6CA8F1),
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 6.0,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: height / 50,
+            ),
+            Container(
+              height: height / 13,
+              alignment: Alignment.centerLeft,
+              child: TextField(
+                onChanged: (contactInput) {
+                  contact = contactInput;
+                },
+                keyboardType: TextInputType.number,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+                decoration: InputDecoration(
+                    hintText: "Contact",
+                    hintStyle: TextStyle(
+                      color: Colors.white,
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.only(top: 14.0),
+                    prefixIcon: Icon(
+                      Icons.phone,
+                      color: Colors.white,
+                    )),
+              ),
+              decoration: BoxDecoration(
+                color: Color(0xFF6CA8F1),
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 6.0,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: height / 50,
+            ),
+            Container(
+              height: height / 13,
+              alignment: Alignment.centerLeft,
+              child: TextField(
+                onChanged: (emailInput) {
+                  email = emailInput;
+                },
+                keyboardType: TextInputType.emailAddress,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+                decoration: InputDecoration(
+                  hintText: "Email",
                   hintStyle: TextStyle(
                     color: Colors.white,
                   ),
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.only(top: 14.0),
                   prefixIcon: Icon(
-                    Icons.account_circle,
+                    Icons.email,
                     color: Colors.white,
-                  )),
-            ),
-            decoration: BoxDecoration(
-              color: Color(0xFF6CA8F1),
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 6.0,
-                  offset: Offset(0, 2),
+                  ),
                 ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: height / 50,
-          ),
-          Container(
-            height: height / 13,
-            alignment: Alignment.centerLeft,
-            child: TextField(
-              onChanged: null,
-              keyboardType: TextInputType.text,
-              style: TextStyle(
-                color: Colors.white,
               ),
-              decoration: InputDecoration(
-                  hintText: "Username",
+              decoration: BoxDecoration(
+                color: Color(0xFF6CA8F1),
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 6.0,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: height / 50,
+            ),
+            Container(
+              height: height / 13,
+              alignment: Alignment.centerLeft,
+              child: TextField(
+                onChanged: (passwordInput) {
+                  password = passwordInput;
+                },
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+                decoration: InputDecoration(
+                  hintText: "Password",
                   hintStyle: TextStyle(
                     color: Colors.white,
                   ),
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.only(top: 14.0),
                   prefixIcon: Icon(
-                    Icons.account_box,
+                    Icons.lock,
                     color: Colors.white,
-                  )),
-            ),
-            decoration: BoxDecoration(
-              color: Color(0xFF6CA8F1),
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 6.0,
-                  offset: Offset(0, 2),
+                  ),
                 ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: height / 50,
-          ),
-          Container(
-            height: height / 13,
-            alignment: Alignment.centerLeft,
-            child: TextField(
-              onChanged: (emailInput) {
-                email = emailInput;
-              },
-              keyboardType: TextInputType.emailAddress,
-              style: TextStyle(
-                color: Colors.white,
+                obscureText: true,
               ),
-              decoration: InputDecoration(
-                hintText: "Email",
-                hintStyle: TextStyle(
-                  color: Colors.white,
-                ),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.only(top: 14.0),
-                prefixIcon: Icon(
-                  Icons.email,
-                  color: Colors.white,
-                ),
+              decoration: BoxDecoration(
+                color: Color(0xFF6CA8F1),
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 6.0,
+                    offset: Offset(0, 2),
+                  ),
+                ],
               ),
             ),
-            decoration: BoxDecoration(
-              color: Color(0xFF6CA8F1),
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 6.0,
-                  offset: Offset(0, 2),
-                ),
-              ],
+            SizedBox(
+              height: height / 50,
             ),
-          ),
-          SizedBox(
-            height: height / 50,
-          ),
-          Container(
-            height: height / 13,
-            alignment: Alignment.centerLeft,
-            child: TextField(
-              onChanged: null,
-              style: TextStyle(
-                color: Colors.white,
-              ),
-              decoration: InputDecoration(
-                hintText: "Password",
-                hintStyle: TextStyle(
+            Container(
+              height: height / 13,
+              alignment: Alignment.centerLeft,
+              child: TextField(
+                onChanged: (confirmPasswordInput) {
+                  confirmPassword = confirmPasswordInput;
+                },
+                style: TextStyle(
                   color: Colors.white,
                 ),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.only(top: 14.0),
-                prefixIcon: Icon(
-                  Icons.lock,
-                  color: Colors.white,
+                decoration: InputDecoration(
+                  hintText: "Confirm Password",
+                  hintStyle: TextStyle(
+                    color: Colors.white,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.only(top: 14.0),
+                  prefixIcon: Icon(
+                    Icons.lock,
+                    color: Colors.white,
+                  ),
                 ),
+                obscureText: true,
               ),
-              obscureText: true,
-            ),
-            decoration: BoxDecoration(
-              color: Color(0xFF6CA8F1),
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 6.0,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: height / 50,
-          ),
-          Container(
-            height: height / 13,
-            alignment: Alignment.centerLeft,
-            child: TextField(
-              onChanged: (emailInput) {
-                email = emailInput;
-              },
-              style: TextStyle(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: Color(0xFF6CA8F1),
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 6.0,
+                    offset: Offset(0, 2),
+                  ),
+                ],
               ),
-              decoration: InputDecoration(
-                hintText: "Confirm Password",
-                hintStyle: TextStyle(
-                  color: Colors.white,
-                ),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.only(top: 14.0),
-                prefixIcon: Icon(
-                  Icons.lock,
-                  color: Colors.white,
-                ),
-              ),
-              obscureText: true,
             ),
-            decoration: BoxDecoration(
-              color: Color(0xFF6CA8F1),
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 6.0,
-                  offset: Offset(0, 2),
-                ),
-              ],
+            SizedBox(
+              height: height / 30,
             ),
-          ),
-          // GestureDetector(
-          //   onTap: () {
-          //     validateAndSignup(
-          //         fullname, email, password, confirmPassword, context);
-          //   },
-          // ),
-          SizedBox(
-            height: height / 30,
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 2.0),
-              width: width / 3,
-              child: RaisedButton(
-                elevation: 5.0,
-                onPressed: () {},
-                padding: EdgeInsets.all(15.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                color: Colors.white,
-                child: Text(
-                  'SIGN UP',
-                  style: TextStyle(
-                    color: Color(0xFF527DAA),
-                    letterSpacing: 1,
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 2.0),
+                width: width / 3,
+                child: RaisedButton(
+                  elevation: 5.0,
+                  onPressed: () {
+                    //Call the method to validate the inputs and then signup the user
+                    validateAndSignup(fullname, username, contact, email,
+                        password, confirmPassword, context);
+                  },
+                  padding: EdgeInsets.all(15.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  color: Colors.white,
+                  child: Text(
+                    'SIGN UP',
+                    style: TextStyle(
+                      color: Color(0xFF527DAA),
+                      letterSpacing: 1,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-      margin: EdgeInsets.all(20),
-      padding: EdgeInsets.symmetric(
-        vertical: 10.0,
-        horizontal: 30.0,
+            SizedBox(
+              height: height / 30,
+            ),
+          ],
+        ),
+        margin: EdgeInsets.all(20),
+        padding: EdgeInsets.symmetric(
+          vertical: 10.0,
+          horizontal: 30.0,
+        ),
       ),
     );
   }
 
   //Method to validate the function (Nested Validation)
-  void validateAndSignup(String fullname, String email, String password,
-      String confirmPassword, BuildContext context) {
+  void validateAndSignup(
+      String fullname,
+      String username,
+      String contact,
+      String email,
+      String password,
+      String confirmPassword,
+      BuildContext context) {
     //Handling the inputs
+    //To check that no field is empty
     if (fullname.isNotEmpty &&
         email.isNotEmpty &&
         password.isNotEmpty &&
-        confirmPassword.isNotEmpty) {
-      //To check that no field is empty
+        confirmPassword.isNotEmpty &&
+        username.isNotEmpty &&
+        contact.isNotEmpty) {
       //Pattern matching for the email
       Pattern pattern =
           r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
