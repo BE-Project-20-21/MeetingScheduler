@@ -239,7 +239,9 @@ class Login extends StatelessWidget {
                           width: width / 2.9,
                           child: RaisedButton(
                             elevation: 5.0,
-                            onPressed: () {},
+                            onPressed: () {
+                              //Code to Carry on google Signin
+                            },
                             padding: EdgeInsets.all(15.0),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0),
