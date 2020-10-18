@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Model/FadeAnimation.dart';
+import '../UI/signup.dart';
 
 class Login extends StatelessWidget {
   //Declaring Database references
@@ -269,7 +270,12 @@ class Login extends StatelessWidget {
                         height: height / 60,
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Signup()));
+                        },
                         child: Align(
                           alignment: Alignment.center,
                           child: Container(

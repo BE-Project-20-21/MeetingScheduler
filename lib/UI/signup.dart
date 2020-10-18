@@ -14,7 +14,7 @@ class Signup extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
-          textTheme: GoogleFonts.aBeeZeeTextTheme(
+          textTheme: GoogleFonts.hammersmithOneTextTheme(
             Theme.of(context).textTheme,
           )),
       home: Material(
@@ -24,13 +24,16 @@ class Signup extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.lightBlue,
-                  Colors.blue,
-                  Colors.deepPurpleAccent,
-                ]),
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFF73AEF5),
+                Color(0xFF61A4F1),
+                Color(0xFF478DE0),
+                Color(0xFF398AE5),
+              ],
+              stops: [0.1, 0.4, 0.7, 0.9],
+            ),
           ),
         ),
       ),
