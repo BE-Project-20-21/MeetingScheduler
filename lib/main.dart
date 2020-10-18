@@ -1,9 +1,10 @@
 import 'dart:async';
+import 'package:authentication_app/UI/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'UI/Home.dart';
+import 'UI/login.dart';
 import 'UI/dashboard.dart';
 
 void main() async {
@@ -48,7 +49,7 @@ class _FirstPageState extends State<FirstPage> {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Home(),
+          builder: (context) => Login(),
         ));
   }
 
