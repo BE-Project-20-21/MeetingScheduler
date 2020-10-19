@@ -2,8 +2,11 @@ import 'package:authentication_app/UI/dashboard.dart';
 import 'package:authentication_app/UI/forgot_pasword.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Model/FadeAnimation.dart';
@@ -12,6 +15,8 @@ import '../UI/signup.dart';
 class Login extends StatelessWidget {
   //Declaring Database references
   final FirebaseAuth authLogIn = FirebaseAuth.instance;
+  //Creating an object of ProgressDialog
+  ProgressDialog progressDialog;
 
   //To declare the variables required for the inputs
   String email = "";
@@ -64,10 +69,6 @@ class Login extends StatelessWidget {
                           ),
                         )),
                   ),
-                  // Image(
-                  //   image: AssetImage("assets/images/triangles.png"),
-                  //   height: 25,
-                  // ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,6 +242,8 @@ class Login extends StatelessWidget {
                             elevation: 5.0,
                             onPressed: () {
                               //Code to Carry on google Signin
+                              //Call the method to carry on google signin
+                              signInWithGoogle(context);
                             },
                             padding: EdgeInsets.all(15.0),
                             shape: RoundedRectangleBorder(
@@ -363,5 +366,61 @@ class Login extends StatelessWidget {
       print(e);
       Fluttertoast.showToast(msg: "Incorrect Password!");
     }
+  }
+
+  //Method to implement Google Signin
+  void signInWithGoogle(BuildContext context) async {
+    //Code to implement google signin
+    final googleSignIn = GoogleSignIn();
+    //Code to provide interface to choose the google account to SignIn
+    GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    //After choosing the account
+    if (googleSignInAccount != null) {
+      GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
+      AuthCredential authCredential = GoogleAuthProvider.credential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken);
+      UserCredential result =
+          await authLogIn.signInWithCredential(authCredential);
+
+      //Adding user to authentication is complete, now we need to handle the navigation based on whether the user has provided the personal details
+      //Code to show the progres bar (UI BASED)
+      progressDialog = new ProgressDialog(context,
+          type: ProgressDialogType.Normal, isDismissible: false);
+      progressDialog.style(
+        child: Container(
+          color: Colors.white,
+          child: CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(Colors.lightBlue),
+          ),
+          margin: EdgeInsets.all(10.0),
+        ),
+        message: "Checking Information..",
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        elevation: 40.0,
+        progress: 0.0,
+        maxProgress: 100.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressWidgetAlignment: Alignment.center,
+        progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
+        messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
+      );
+      progressDialog.show();
+
+      //Code to fetch the UID of the newly authenticated user
+      final User userLogIn = await authLogIn.currentUser;
+      final String uid = userLogIn.uid.toString();
+
+      //Calling the function to handle the navigation
+      navigateSignUp(uid, context);
+    }
+  }
+
+  //Method to handle navigation for google Signin
+  void navigateSignUp(String uid, BuildContext context) async {
+    //Declaring the database reference to the node in "users" node
+    //FirebaseDatabase databaseLookUp = new FirebaseDatabase();
   }
 }
