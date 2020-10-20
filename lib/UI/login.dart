@@ -1,5 +1,6 @@
 import 'package:authentication_app/UI/dashboard.dart';
 import 'package:authentication_app/UI/forgot_pasword.dart';
+import 'package:authentication_app/UI/userinfo_google_signin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -410,7 +411,7 @@ class Login extends StatelessWidget {
       progressDialog.show();
 
       //Code to fetch the UID of the newly authenticated user
-      final User userLogIn = await authLogIn.currentUser;
+      final User userLogIn = authLogIn.currentUser;
       final String uid = userLogIn.uid.toString();
 
       //Calling the function to handle the navigation
@@ -421,6 +422,17 @@ class Login extends StatelessWidget {
   //Method to handle navigation for google Signin
   void navigateSignUp(String uid, BuildContext context) async {
     //Declaring the database reference to the node in "users" node
-    //FirebaseDatabase databaseLookUp = new FirebaseDatabase();
+    FirebaseDatabase databaseLookUp = new FirebaseDatabase();
+    DatabaseReference referenceLookUp =
+        databaseLookUp.reference().child("users");
+    await referenceLookUp.child(uid).once().then((DataSnapshot datasnapshot) {
+      if (datasnapshot.value == null) {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => UserInfoGoogleSignIn()));
+      } else {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Dashboard()));
+      }
+    });
   }
 }

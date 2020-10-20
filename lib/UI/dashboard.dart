@@ -266,8 +266,6 @@ class PopupOptionMenu extends StatelessWidget {
     Fluttertoast.showToast(msg: "Logging Out!");
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => Home()));
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Home()));
   }
 }
 
