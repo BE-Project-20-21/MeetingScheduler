@@ -1,10 +1,13 @@
+import 'package:authentication_app/UI/login.dart';
 import 'package:authentication_app/Model/dashboard_first.dart';
 import 'package:authentication_app/Model/dashboard_second.dart';
 import 'package:authentication_app/Model/dashboard_third.dart';
+import 'package:authentication_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import './manage_schedule.dart';
 import 'Home.dart';
@@ -262,10 +265,25 @@ class PopupOptionMenu extends StatelessWidget {
 
   void logOut(BuildContext context) async {
     final FirebaseAuth authLogOut = FirebaseAuth.instance;
+    User userSignOut = authLogOut.currentUser;
+    final GoogleSignIn googleSignIn = new GoogleSignIn();
+    await googleSignIn.signOut();
     await authLogOut.signOut();
-    Fluttertoast.showToast(msg: "Logging Out!");
+    //If the user has logged in using google Signin
+    // print(userSignOut.providerData[0].providerId);
+    // if (userSignOut.providerData[0].providerId == 'google.com') {
+    //   final GoogleSignIn googleSignIn = new GoogleSignIn();
+    //   await googleSignIn.signOut().then((value) => Navigator.pushReplacement(
+    //       context, MaterialPageRoute(builder: (context) => Login())));
+    // }
+    // //Incase of normal login
+    // else {
+    //   await authLogOut.signOut().then((value) => Navigator.pushReplacement(
+    //       context, MaterialPageRoute(builder: (context) => Login())));
+    // }
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Home()));
+        context, MaterialPageRoute(builder: (context) => Login()));
+    Fluttertoast.showToast(msg: "Logging Out!");
   }
 }
 

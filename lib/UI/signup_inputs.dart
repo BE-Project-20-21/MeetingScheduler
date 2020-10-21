@@ -341,7 +341,7 @@ class SignupInputs extends StatelessWidget {
         confirmPassword.isNotEmpty &&
         username.isNotEmpty &&
         contact.isNotEmpty) {
-      //To check with the database if the username is unique
+      //To check with the database if the username is unique (pending)
 
       //Pattern matching for the email
       Pattern pattern =

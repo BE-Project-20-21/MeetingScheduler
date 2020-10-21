@@ -427,9 +427,11 @@ class Login extends StatelessWidget {
         databaseLookUp.reference().child("users");
     await referenceLookUp.child(uid).once().then((DataSnapshot datasnapshot) {
       if (datasnapshot.value == null) {
+        progressDialog.hide();
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => UserInfoGoogleSignIn()));
       } else {
+        progressDialog.hide();
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => Dashboard()));
       }
