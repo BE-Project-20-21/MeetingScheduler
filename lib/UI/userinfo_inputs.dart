@@ -1,27 +1,34 @@
 import 'package:authentication_app/UI/dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import './login.dart';
 
 class UserInfoInputs extends StatelessWidget {
   //Declaring the variables to store the user input
-  String gfullname;
-  String gcontact;
-  String gusername;
-  String gemail;
+  String gfullname = "";
+  String gcontact = "";
+  String gusername = "";
+  String gemail = "";
 
   //Declaring database instances
   final FirebaseAuth authUserInfo = FirebaseAuth.instance;
 
   //Creating an object of ProgressDialog
   ProgressDialog progressDialog;
+  //Declaring variable required to save the email of signed in user
+  final User userEmail = FirebaseAuth.instance.currentUser;
+  final GoogleSignIn googleSignIn = new GoogleSignIn();
 
   //Code to render the UI
   @override
   Widget build(BuildContext context) {
+    String emailUsed = userEmail.providerData[0].email;
     // TODO: implement build
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
@@ -222,7 +229,7 @@ class UserInfoInputs extends StatelessWidget {
                   ),
                   color: Colors.white,
                   child: Text(
-                    'SIGN UP',
+                    'SUBMIT',
                     style: TextStyle(
                       color: Color(0xFF527DAA),
                       letterSpacing: 1,
@@ -235,6 +242,46 @@ class UserInfoInputs extends StatelessWidget {
             ),
             SizedBox(
               height: height / 30,
+            ),
+            GestureDetector(
+              onTap: () async {
+                //Code to logout of the app
+                await googleSignIn.signOut();
+                await FirebaseAuth.instance.signOut();
+                Fluttertoast.showToast(msg: "Logging Out!");
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => Login()));
+              },
+              child: Align(
+                alignment: Alignment.center,
+                child: Container(
+                  margin: EdgeInsets.all(16.0),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                            text: "Signed in as $emailUsed",
+                            style: GoogleFonts.hammersmithOne(
+                              textStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            )),
+                        TextSpan(
+                          text: '\nLog Out?',
+                          style: GoogleFonts.hammersmithOne(
+                              textStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold,
+                          )),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
