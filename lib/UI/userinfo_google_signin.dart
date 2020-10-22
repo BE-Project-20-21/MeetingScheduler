@@ -8,7 +8,7 @@ class UserInfoGoogleSignIn extends StatelessWidget {
     // TODO: implement build
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Signup",
+      title: "User Inputs",
       theme: ThemeData(
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
