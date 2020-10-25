@@ -52,7 +52,9 @@ class _FirstPageState extends State<FirstPage> {
       print("ERROR 1");
       final User userMain = authMain.currentUser;
       String _uidMain = userMain.uid.toString();
-      print("UID: ${_uidMain}");
+      String l = userMain.providerData[0].providerId;
+      print("Provider: $l");
+      print("UID: $_uidMain");
       //Declaring Database Reference
       FirebaseDatabase databaseMain = new FirebaseDatabase();
       //Checking if user has provided his information

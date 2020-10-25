@@ -1,11 +1,10 @@
-import 'package:authentication_app/UI/dashboard.dart';
+import '../main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SignupInputs extends StatelessWidget {
   //Declaring Database references
@@ -373,16 +372,25 @@ class SignupInputs extends StatelessWidget {
     try {
       await authSignUp.createUserWithEmailAndPassword(
           email: email, password: password);
-      //To add the User information to the databse and then navigate
-      addDataToDatabase(fullname, email, context);
+      try {
+        //Send email verification mail
+        User userSignUp = authSignUp.currentUser;
+        await userSignUp.sendEmailVerification().then((value) {
+          addDataToDatabase(fullname, email, context);
+        });
+      } catch (e1) {
+        Fluttertoast.showToast(msg: "Some unknown error has occured");
+      }
+      // //To add the User information to the databse and then navigate
+      // addDataToDatabase(fullname, email, context);
     } catch (e) {
       //Handle Exceptions
-      Fluttertoast.showToast(
-          msg: "Email Address you have entered already exists!");
+      Fluttertoast.showToast(msg: "Some unknown error has occured");
     }
   }
 
-  void addDataToDatabase(String fullname, String email, BuildContext context) {
+  void addDataToDatabase(
+      String fullname, String email, BuildContext context) async {
     try {
       //Declaring Database references
       FirebaseDatabase databaseSignUp = new FirebaseDatabase();
@@ -394,8 +402,9 @@ class SignupInputs extends StatelessWidget {
       //To add the inputs into the database
       referenceSignUp.child(uid).set({"name": fullname, "email": email});
       Fluttertoast.showToast(msg: "Account created Successfully");
+      await authSignUp.signOut();
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Dashboard()));
+          context, MaterialPageRoute(builder: (context) => MyApp()));
     } catch (e) {
       //To handle errors
       Fluttertoast.showToast(msg: "Some unknown error has occured!");

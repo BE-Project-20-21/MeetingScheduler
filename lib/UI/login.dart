@@ -358,14 +358,25 @@ class Login extends StatelessWidget {
       String email, String password, BuildContext context) async {
     //Creating account using inbuilt function
     try {
-      await authLogIn.signInWithEmailAndPassword(
-          email: email, password: password);
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Dashboard()));
+      await authLogIn
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((value) => checkEmailVerification(context));
     } catch (e) {
       //Handle Exceptions
       print(e);
       Fluttertoast.showToast(msg: "Incorrect Password!");
+    }
+  }
+
+  //Method to check if user email is verified and navigate accordingly
+  void checkEmailVerification(BuildContext context) {
+    User userLogin = authLogIn.currentUser;
+    if (userLogin.emailVerified) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Dashboard()));
+    } else {
+      //Navigate to the page which shows up if email is not verified
+      Fluttertoast.showToast(msg: "Please Verify your email!");
     }
   }
 
