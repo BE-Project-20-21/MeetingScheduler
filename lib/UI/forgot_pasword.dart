@@ -3,171 +3,178 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class ForgotPassword extends StatelessWidget{
+class ForgotPassword extends StatelessWidget {
   //To declare database references
   final FirebaseAuth authForgotPassword = FirebaseAuth.instance;
 
   //To declare all the variables required for input fields
   String email = "";
+
   @override
   Widget build(BuildContext context) {
     Firebase.initializeApp();
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     // TODO: implement build
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Forgot Password",
+      title: "User Inputs",
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          textTheme: GoogleFonts.hammersmithOneTextTheme(
+            Theme.of(context).textTheme,
+          )),
       home: Material(
         child: Container(
           child: SafeArea(
             child: Container(
+              height: height,
+              width: width,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    child: Text(
-                      "Reset Password",
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Please enter your registered address",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.0,
+                          fontSize: 20.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: height / 50,
+                  ),
+                  Container(
+                    height: height / 13,
+                    alignment: Alignment.centerLeft,
+                    child: TextField(
+                      onChanged: (forgotPasswordEmailInput) {
+                        email = forgotPasswordEmailInput;
+                      },
+                      keyboardType: TextInputType.emailAddress,
                       style: TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30.0,
                       ),
-                    ),
-                    margin: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      //color: Colors.black.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(10.0),
-                      border: Border.all(color: Colors.white, width: 2.0),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      vertical: 15.0,
-                      horizontal: 15.0,
-                    ),
-                  ),
-                  TextField(
-                    onChanged: (emailInput){
-                      email = emailInput;
-                    },
-                    decoration: InputDecoration(
-                      labelStyle: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.0,
-                      ),
-                      labelText: "Enter registerd email address:",
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 25.0,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: (){
-                      validateAndSendLink(email, context);
-                    },
-                    child: Container(
-                      child: Text(
-                        "SEND LINK!",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30.0),
-                        boxShadow: [new BoxShadow(
-                          color: Colors.black,
-                          spreadRadius: 1.0,
-                          blurRadius: 2.0,
-                          offset: Offset(
-                            3.0,
-                            3.0,
+                      decoration: InputDecoration(
+                          hintText: "Email",
+                          hintStyle: TextStyle(
+                            color: Colors.white,
                           ),
-                        ),],
-                      ),
-                      width: double.infinity,
-                      margin: EdgeInsets.symmetric(
-                        horizontal: 28.0,
-                        vertical: 25.0,
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        vertical: 20.0,
-                        horizontal: 20.0,
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.only(top: 14.0),
+                          prefixIcon: Icon(
+                            Icons.email,
+                            color: Colors.white,
+                          )),
+                    ),
+                    decoration: BoxDecoration(
+                      color: Color(0xFF6CA8F1),
+                      borderRadius: BorderRadius.circular(10.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 6.0,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: height / 30,
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 2.0),
+                      width: width / 3,
+                      child: RaisedButton(
+                        elevation: 5.0,
+                        onPressed: () {
+                          //Call the method to validate and send link to reset password
+                          validateAndSendLink(email, context);
+                        },
+                        padding: EdgeInsets.all(15.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        color: Colors.white,
+                        child: Text(
+                          'SUBMIT',
+                          style: TextStyle(
+                            color: Color(0xFF527DAA),
+                            letterSpacing: 1,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ],),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 3.0,
-                  ),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                margin: EdgeInsets.all(20),
-                padding: EdgeInsets.symmetric(
-                  vertical: 20.0,
-                  horizontal: 30.0,
-                ),
+                ],
               ),
+              margin: EdgeInsets.all(20),
+              padding: EdgeInsets.symmetric(
+                vertical: 10.0,
+                horizontal: 30.0,
+              ),
+            ),
           ),
-          decoration: BoxDecoration(gradient: LinearGradient(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Colors.lightBlue,
-                Colors.blue,
-                Colors.deepPurpleAccent,
-              ]
-          )),
+                Color(0xFF73AEF5),
+                Color(0xFF61A4F1),
+                Color(0xFF478DE0),
+                Color(0xFF398AE5),
+              ],
+              stops: [0.1, 0.4, 0.7, 0.9],
+            ),
+          ),
         ),
       ),
     );
   }
+
   //To validate the email entered
   void validateAndSendLink(String email, BuildContext context) {
-    if (email.isNotEmpty){
-      Pattern pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    if (email.isNotEmpty) {
+      Pattern pattern =
+          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
       RegExp regex = new RegExp(pattern);
-      if (regex.hasMatch(email)){
-        SendLink(email, context);
-      }
-      else{
+      if (regex.hasMatch(email)) {
+        sendLink(email, context);
+      } else {
         //To handle the error if the email format is incorrect
         Fluttertoast.showToast(msg: "Please enter a valid email address!");
       }
-    }
-    else{
+    } else {
       //To handle the error if the field is empty
       Fluttertoast.showToast(msg: "Please fill all the fields!");
     }
   }
+
   //To implement the reset password link on the registered email address
-  Future<void> SendLink(String email, BuildContext context) async {
-    try{
+  Future<void> sendLink(String email, BuildContext context) async {
+    try {
       await authForgotPassword.sendPasswordResetEmail(email: email);
-      Fluttertoast.showToast(msg: "The link to reset the password has been sent to your registered email address!");
+      Fluttertoast.showToast(
+          msg:
+              "The link to reset the password has been sent to your registered email address!");
       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Login())
-      );
-    }
-    catch(e){
+          context, MaterialPageRoute(builder: (context) => Login()));
+    } catch (e) {
       //To handle in case of unknown email address entered
       Fluttertoast.showToast(msg: "Please enter a registered email address");
     }

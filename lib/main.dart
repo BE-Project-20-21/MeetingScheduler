@@ -2,19 +2,16 @@ import 'dart:async';
 import 'package:authentication_app/UI/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:authentication_app/UI/userinfo_google_signin.dart';
 import 'UI/login.dart';
 import 'UI/dashboard.dart';
-
-//To make sure that app has initialized connection with the database.
-bool isConnected = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  //Ensured that app has initialized connection with the database.
-  isConnected = true;
   runApp(MyApp());
 }
 
@@ -35,6 +32,9 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
+  //Declaring database references
+  FirebaseAuth authMain = FirebaseAuth.instance;
+
   @override
   void initState() {
     super.initState();
@@ -42,11 +42,33 @@ class _FirstPageState extends State<FirstPage> {
   }
 
   startTimer() async {
-    var duration = Duration(seconds: 2);
+    //Complete navigation handling from Main.dart
+    var duration = Duration(seconds: 3);
+    //In case no one is logged in
     if (FirebaseAuth.instance.currentUser == null) {
       return Timer(duration, route1);
     } else {
-      return Timer(duration, route2);
+      //Code to get the UID of the current user
+      print("ERROR 1");
+      final User userMain = authMain.currentUser;
+      String _uidMain = userMain.uid.toString();
+      String l = userMain.providerData[0].providerId;
+      print("Provider: $l");
+      print("UID: $_uidMain");
+      //Declaring Database Reference
+      FirebaseDatabase databaseMain = new FirebaseDatabase();
+      //Checking if user has provided his information
+      DatabaseReference referenceMain = databaseMain.reference().child("users");
+      await referenceMain
+          .child(_uidMain)
+          .once()
+          .then((DataSnapshot datasnapshot) {
+        if (datasnapshot.value == null) {
+          return Timer(duration, route3);
+        } else {
+          return Timer(duration, route2);
+        }
+      });
     }
   }
 
@@ -63,6 +85,14 @@ class _FirstPageState extends State<FirstPage> {
         context,
         MaterialPageRoute(
           builder: (context) => Dashboard(),
+        ));
+  }
+
+  route3() {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UserInfoGoogleSignIn(),
         ));
   }
 
