@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:authentication_app/UI/userinfo_google_signin.dart';
 import 'UI/login.dart';
 import 'UI/dashboard.dart';
+import 'UI/verify_email.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,23 +53,35 @@ class _FirstPageState extends State<FirstPage> {
       print("ERROR 1");
       final User userMain = authMain.currentUser;
       String _uidMain = userMain.uid.toString();
+      print("UID: $_uidMain");
       String l = userMain.providerData[0].providerId;
       print("Provider: $l");
-      print("UID: $_uidMain");
-      //Declaring Database Reference
-      FirebaseDatabase databaseMain = new FirebaseDatabase();
-      //Checking if user has provided his information
-      DatabaseReference referenceMain = databaseMain.reference().child("users");
-      await referenceMain
-          .child(_uidMain)
-          .once()
-          .then((DataSnapshot datasnapshot) {
-        if (datasnapshot.value == null) {
-          return Timer(duration, route3);
-        } else {
+      if (l == "password") {
+        //Check if user email address is verifiied
+        if (await userMain.emailVerified) {
+          //Navigate to dashboard
           return Timer(duration, route2);
+        } else {
+          //Navigate to the email verification page
+          return Timer(duration, route4);
         }
-      });
+      } else {
+        //Declaring Database Reference
+        FirebaseDatabase databaseMain = new FirebaseDatabase();
+        //Checking if user has provided his information
+        DatabaseReference referenceMain =
+            databaseMain.reference().child("users");
+        await referenceMain
+            .child(_uidMain)
+            .once()
+            .then((DataSnapshot datasnapshot) {
+          if (datasnapshot.value == null) {
+            return Timer(duration, route3);
+          } else {
+            return Timer(duration, route2);
+          }
+        });
+      }
     }
   }
 
@@ -93,6 +106,14 @@ class _FirstPageState extends State<FirstPage> {
         context,
         MaterialPageRoute(
           builder: (context) => UserInfoGoogleSignIn(),
+        ));
+  }
+
+  route4() {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => VerifyEmail(),
         ));
   }
 

@@ -368,7 +368,7 @@ class UserInfoInputs extends StatelessWidget {
       "email": gemail,
     });
 
-    //Code to add the username to the lists of username
+    //Code to add the username to the lists of usernames
     DatabaseReference referenceUsername =
         databaseUserInfo.reference().child("usernames");
     await referenceUsername.child(gusername).set({"name": gfullname});

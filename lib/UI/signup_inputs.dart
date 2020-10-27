@@ -1,14 +1,17 @@
 import '../main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class SignupInputs extends StatelessWidget {
   //Declaring Database references
   final FirebaseAuth authSignUp = FirebaseAuth.instance;
+
+  //Creating an object of ProgressDialog
+  ProgressDialog progressDialog;
 
   //The variables required to save the inputs
   String fullname = "";
@@ -22,7 +25,6 @@ class SignupInputs extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    Firebase.initializeApp();
     // TODO: implement build
     return SingleChildScrollView(
       child: Container(
@@ -332,6 +334,30 @@ class SignupInputs extends StatelessWidget {
       String password,
       String confirmPassword,
       BuildContext context) {
+    //Code to show the progres bar (UI BASED)
+    progressDialog = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialog.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Colors.lightBlue),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Checking Information..",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
+    );
+    progressDialog.show();
+
     //Handling the inputs
     //To check that no field is empty
     if (fullname.isNotEmpty &&
@@ -348,8 +374,8 @@ class SignupInputs extends StatelessWidget {
       RegExp regex = new RegExp(pattern);
       if (regex.hasMatch(email)) {
         if (password == confirmPassword) {
-          signUpWithEmailandPassword(
-              fullname, email, password, confirmPassword, context);
+          signUpWithEmailandPassword(fullname, username, contact, email,
+              password, confirmPassword, context);
         } else {
           //Handle error for non matching passwords
           Fluttertoast.showToast(
@@ -366,8 +392,14 @@ class SignupInputs extends StatelessWidget {
   }
 
   //Method to Create account and add user data into the databse as well
-  void signUpWithEmailandPassword(String fullname, String email,
-      String password, String confirmPassword, BuildContext context) async {
+  void signUpWithEmailandPassword(
+      String fullname,
+      String username,
+      String contact,
+      String email,
+      String password,
+      String confirmPassword,
+      BuildContext context) async {
     //Creating account using inbuilt function
     try {
       await authSignUp.createUserWithEmailAndPassword(
@@ -376,7 +408,7 @@ class SignupInputs extends StatelessWidget {
         //Send email verification mail
         User userSignUp = authSignUp.currentUser;
         await userSignUp.sendEmailVerification().then((value) {
-          addDataToDatabase(fullname, email, context);
+          addDataToDatabase(fullname, username, contact, email, context);
         });
       } catch (e1) {
         Fluttertoast.showToast(msg: "Some unknown error has occured");
@@ -389,8 +421,8 @@ class SignupInputs extends StatelessWidget {
     }
   }
 
-  void addDataToDatabase(
-      String fullname, String email, BuildContext context) async {
+  void addDataToDatabase(String fullname, String username, String contact,
+      String email, BuildContext context) async {
     try {
       //Declaring Database references
       FirebaseDatabase databaseSignUp = new FirebaseDatabase();
@@ -400,9 +432,25 @@ class SignupInputs extends StatelessWidget {
       final User userSignUp = authSignUp.currentUser;
       final String uid = userSignUp.uid.toString();
       //To add the inputs into the database
-      referenceSignUp.child(uid).set({"name": fullname, "email": email});
-      Fluttertoast.showToast(msg: "Account created Successfully");
+      referenceSignUp.child(uid).set({
+        "name": fullname,
+        "username": username,
+        "contact": contact,
+        "email": email
+      });
+
+      //Code to add the username to the lists of usernames
+      DatabaseReference referenceUsername =
+          databaseSignUp.reference().child("usernames");
+      await referenceUsername.child(username).set({"name": fullname});
+
+      Fluttertoast.showToast(
+          msg:
+              "Account created Successfully, Please verify the email address and login again!");
+
+      //Code to logout and navigate back to login page
       await authSignUp.signOut();
+      progressDialog.hide();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => MyApp()));
     } catch (e) {
