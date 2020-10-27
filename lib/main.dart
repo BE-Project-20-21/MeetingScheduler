@@ -52,13 +52,15 @@ class _FirstPageState extends State<FirstPage> {
       //Code to get the UID of the current user
       print("ERROR 1");
       final User userMain = authMain.currentUser;
+      await userMain.reload();
       String _uidMain = userMain.uid.toString();
       print("UID: $_uidMain");
       String l = userMain.providerData[0].providerId;
       print("Provider: $l");
       if (l == "password") {
-        //Check if user email address is verifiied
-        if (await userMain.emailVerified) {
+        //Check if user email address is verifiied\
+        print("status $userMain.emailVerified");
+        if (userMain.emailVerified) {
           //Navigate to dashboard
           return Timer(duration, route2);
         } else {
