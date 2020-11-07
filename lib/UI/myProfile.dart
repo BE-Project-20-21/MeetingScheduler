@@ -10,7 +10,10 @@ class MyProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    double height = MediaQuery.of(context).size.height -
+        MediaQuery.of(context).padding.top -
+        MediaQuery.of(context).padding.bottom;
+    double height2 = 250;
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -28,7 +31,7 @@ class MyProfile extends StatelessWidget {
                       boxShadow: [],
                       clipper: WaveClipperTwo(),
                       child: Container(
-                        height: height / 2.8,
+                        height: height2,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
@@ -46,12 +49,12 @@ class MyProfile extends StatelessWidget {
                 ),
                 Positioned(
                     left: width * 10 / 100,
-                    top: height * 25 / 100,
+                    top: height2 * 65 / 100,
                     child:
                         CircularProfileAvatar('', elevation: 10, radius: 70)),
                 Positioned(
                   right: width * 10 / 100,
-                  top: height * 27 / 100,
+                  top: height2 * 70 / 100,
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 2.0),
                     width: width / 4,
