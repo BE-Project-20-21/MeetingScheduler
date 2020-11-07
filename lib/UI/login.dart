@@ -390,29 +390,6 @@ class Login extends StatelessWidget {
     final googleSignIn = GoogleSignIn();
     //Code to provide interface to choose the google account to SignIn
     GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-    //Code to show the progres bar (UI BASED)
-    progressDialog = new ProgressDialog(context,
-        type: ProgressDialogType.Normal, isDismissible: false);
-    progressDialog.style(
-      child: Container(
-        color: Colors.white,
-        child: CircularProgressIndicator(
-          valueColor: new AlwaysStoppedAnimation<Color>(Colors.lightBlue),
-        ),
-        margin: EdgeInsets.all(10.0),
-      ),
-      message: "Checking Information..",
-      borderRadius: 10.0,
-      backgroundColor: Colors.white,
-      elevation: 40.0,
-      progress: 0.0,
-      maxProgress: 100.0,
-      insetAnimCurve: Curves.easeInOut,
-      progressWidgetAlignment: Alignment.center,
-      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
-      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
-    );
-    progressDialog.show();
     //After choosing the account
     if (googleSignInAccount != null) {
       GoogleSignInAuthentication googleSignInAuthentication =
@@ -424,6 +401,29 @@ class Login extends StatelessWidget {
           await authLogIn.signInWithCredential(authCredential);
 
       //Adding user to authentication is complete, now we need to handle the navigation based on whether the user has provided the personal details
+      //Code to show the progres bar (UI BASED)
+      progressDialog = new ProgressDialog(context,
+          type: ProgressDialogType.Normal, isDismissible: false);
+      progressDialog.style(
+        child: Container(
+          color: Colors.white,
+          child: CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(Colors.lightBlue),
+          ),
+          margin: EdgeInsets.all(10.0),
+        ),
+        message: "Checking Information..",
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        elevation: 40.0,
+        progress: 0.0,
+        maxProgress: 100.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressWidgetAlignment: Alignment.center,
+        progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
+        messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
+      );
+      progressDialog.show();
 
       //Code to fetch the UID of the newly authenticated user
       final User userLogIn = authLogIn.currentUser;

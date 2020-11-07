@@ -367,24 +367,35 @@ class SignupInputs extends StatelessWidget {
         username.isNotEmpty &&
         contact.isNotEmpty) {
       //To check with the database if the username is unique (pending)
-
-      //Pattern matching for the email
-      Pattern pattern =
-          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-      RegExp regex = new RegExp(pattern);
-      if (regex.hasMatch(email)) {
-        if (password == confirmPassword) {
-          signUpWithEmailandPassword(fullname, username, contact, email,
-              password, confirmPassword, context);
+      FirebaseDatabase checkUsername = new FirebaseDatabase();
+      DatabaseReference checkUsernameReferenece =
+          checkUsername.reference().child("usernames");
+      checkUsernameReferenece
+          .child(username)
+          .once()
+          .then((DataSnapshot datasnapshot) {
+        if (datasnapshot.value != null) {
+          Fluttertoast.showToast(msg: "The username is not available.");
         } else {
-          //Handle error for non matching passwords
-          Fluttertoast.showToast(
-              msg: "The passwords you have entered do not match!");
+          //Pattern matching for the email
+          Pattern pattern =
+              r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+          RegExp regex = new RegExp(pattern);
+          if (regex.hasMatch(email)) {
+            if (password == confirmPassword) {
+              signUpWithEmailandPassword(fullname, username, contact, email,
+                  password, confirmPassword, context);
+            } else {
+              //Handle error for non matching passwords
+              Fluttertoast.showToast(
+                  msg: "The passwords you have entered do not match!");
+            }
+          } else {
+            //Handle error for incorrect email format
+            Fluttertoast.showToast(msg: "Please enter a valid email address!");
+          }
         }
-      } else {
-        //Handle error for incorrect email format
-        Fluttertoast.showToast(msg: "Please enter a valid email address!");
-      }
+      });
     } else {
       //Handle error if any field is empty
       Fluttertoast.showToast(msg: "Please fill all the fields!");
