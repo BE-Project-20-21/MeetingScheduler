@@ -1,16 +1,14 @@
-import 'package:authentication_app/UI/signup_inputs.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:authentication_app/UI/userinfo_inputs.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Signup extends StatelessWidget {
+class UserInfoGoogleSignIn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Firebase.initializeApp();
     // TODO: implement build
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Signup",
+      title: "User Inputs",
       theme: ThemeData(
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -20,7 +18,7 @@ class Signup extends StatelessWidget {
       home: Material(
         child: Container(
           child: SafeArea(
-            child: SignupInputs(),
+            child: UserInfoInputs(),
           ),
           decoration: BoxDecoration(
             gradient: LinearGradient(

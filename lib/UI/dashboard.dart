@@ -1,31 +1,37 @@
+import 'package:authentication_app/UI/login.dart';
 import 'package:authentication_app/Model/dashboard_first.dart';
 import 'package:authentication_app/Model/dashboard_second.dart';
 import 'package:authentication_app/Model/dashboard_third.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import './manage_schedule.dart';
+import '../UI/myProfile.dart';
 
-class Dashboard extends StatefulWidget{
+//To save the context of the entire Dashboard page (As there are popUp menus present)
+BuildContext globalContext;
+
+class Dashboard extends StatefulWidget {
   @override
   DashboardState createState() => DashboardState();
 }
 
-class DashboardState extends State<Dashboard> with SingleTickerProviderStateMixin {
+class DashboardState extends State<Dashboard>
+    with SingleTickerProviderStateMixin {
   TabController tabController;
 
   @override
-  void initState(){
+  void initState() {
+    Firebase.initializeApp();
     super.initState();
-    tabController = new TabController(
-        vsync: this,
-        length: 3
-    );
+    tabController = new TabController(vsync: this, length: 3);
   }
 
   @override
-  void dispose(){
+  void dispose() {
     tabController.dispose();
     super.dispose();
   }
@@ -33,77 +39,118 @@ class DashboardState extends State<Dashboard> with SingleTickerProviderStateMixi
   @override
   Widget build(BuildContext context) {
     Firebase.initializeApp();
+    globalContext = context;
     // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Dashboard",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 30.0,
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          primarySwatch: Colors.red,
+          textTheme: GoogleFonts.hammersmithOneTextTheme(
+            Theme.of(context).textTheme,
+          )),
+      home: Material(
+        child: Scaffold(
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: Container(
+              width: 65,
+              height: 65,
+              margin: EdgeInsets.only(bottom: 20),
+              child: FloatingActionButton(
+                onPressed: () {
+                  //ADD meeting module
+                },
+                child: Icon(
+                  Icons.add,
+                  size: 40,
+                ),
+                backgroundColor: Colors.black,
+              )),
+          appBar: AppBar(
+            title: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      "Dashboard",
+                      style: GoogleFonts.hammersmithOne(
+                          textStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: 25.0,
+                      )),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            backgroundColor: Colors.white,
+            actions: <Widget>[
+              PopupOptionMenu(),
+            ],
+            bottom: TabBar(
+              controller: tabController,
+              tabs: <Tab>[
+                new Tab(
+                  child: Text(
+                    "UPCOMING",
+                    style: GoogleFonts.hammersmithOne(
+                        textStyle: TextStyle(
+                      color: Colors.black,
+                      // fontWeight: FontWeight.bold,
+                      fontSize: 15.0,
+                    )),
+                  ),
+                ),
+                new Tab(
+                  child: Text("REQUESTED",
+                      style: GoogleFonts.hammersmithOne(
+                          textStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15.0,
+                      ))),
+                ),
+                new Tab(
+                  child: Text(
+                    "CHATS",
+                    style: GoogleFonts.hammersmithOne(
+                        textStyle: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15.0,
+                    )),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          body: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: new TabBarView(
+              controller: tabController,
+              children: <Widget>[
+                new DashboardFirst(),
+                new DashboardSecond(),
+                new DashboardThird(),
+              ],
+            ),
           ),
         ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        actions: <Widget>[
-          PopupOptionMenu(
-          ),
-        ],
-        bottom: TabBar(
-          controller: tabController,
-          tabs: <Tab>[
-            new Tab(
-              child: Text(
-                "Upcoming",
-                style: TextStyle(
-                  color: Colors.black,
-                  // fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
-                ),
-              ),
-            ),
-            new Tab(
-              child: Text(
-                "Requested",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20.0,
-                ),
-              ),
-            ),
-            new Tab(
-              child: Text(
-                "Your profile",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20.0,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      body: new TabBarView(
-        controller: tabController,
-        children: <Widget>[
-          new DashboardFirst(),
-          new DashboardSecond(),
-          new DashboardThird(),
-        ],
       ),
     );
   }
 }
 
 //Menu facilitator
-enum MenuOption {
- logout,
- settings,
- feedback,
-}
+enum MenuOption { logout, settings, feedback, manage_schedule, my_profile }
+
 // Class to build the menu
 class PopupOptionMenu extends StatelessWidget {
-  const PopupOptionMenu({Key key}) : super(key : key);
+  const PopupOptionMenu({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -112,8 +159,96 @@ class PopupOptionMenu extends StatelessWidget {
         Icons.menu,
         color: Colors.red,
       ),
-      itemBuilder: (BuildContext context1){
+      itemBuilder: (BuildContext context1) {
         return <PopupMenuEntry<MenuOption>>[
+          PopupMenuItem(
+            child: Row(
+              children: <Widget>[
+                Container(
+                  child: Icon(
+                    Icons.calendar_today,
+                    color: Colors.red,
+                  ),
+                  padding: EdgeInsets.all(5),
+                ),
+                Container(
+                  child: Text(
+                    "Manage Schedule",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  padding: EdgeInsets.all(5),
+                )
+              ],
+            ),
+            value: MenuOption.manage_schedule,
+          ),
+          PopupMenuItem(
+            child: Row(
+              children: <Widget>[
+                Container(
+                  child: Icon(
+                    Icons.settings,
+                    color: Colors.red,
+                  ),
+                  padding: EdgeInsets.all(5),
+                ),
+                Container(
+                  child: Text(
+                    "Settings",
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                  padding: EdgeInsets.all(5),
+                ),
+              ],
+            ),
+            value: MenuOption.settings,
+          ),
+          PopupMenuItem(
+            child: Row(
+              children: <Widget>[
+                Container(
+                  child: Icon(
+                    Icons.account_box,
+                    color: Colors.red,
+                  ),
+                  padding: EdgeInsets.all(5),
+                ),
+                Container(
+                  child: Text(
+                    "My Profile",
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                  padding: EdgeInsets.all(5),
+                ),
+              ],
+            ),
+            value: MenuOption.my_profile,
+          ),
+          PopupMenuItem(
+            child: Row(
+              children: <Widget>[
+                Container(
+                  child: Icon(
+                    Icons.feedback,
+                    color: Colors.red,
+                  ),
+                  padding: EdgeInsets.all(5),
+                ),
+                Container(
+                  child: Text(
+                    "Feedback",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  padding: EdgeInsets.all(5),
+                ),
+              ],
+            ),
+            value: MenuOption.feedback,
+          ),
           PopupMenuItem(
             child: Row(
               children: <Widget>[
@@ -137,57 +272,17 @@ class PopupOptionMenu extends StatelessWidget {
             ),
             value: MenuOption.logout,
           ),
-          PopupMenuItem(
-            child: Row(
-              children: <Widget>[
-                Container(
-                  child: Icon(
-                    Icons.settings,
-                    color: Colors.red,
-                  ),
-                  padding: EdgeInsets.all(5),
-                ),
-                Container(
-                    child: Text(
-                      "Settings",
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
-                  padding: EdgeInsets.all(5),
-                ),
-              ],
-            ),
-            value: MenuOption.settings,
-          ),
-          PopupMenuItem(
-            child: Row(
-              children: <Widget>[
-                Container(
-                  child: Icon(
-                    Icons.feedback,
-                    color: Colors.red,
-                  ),
-                  padding: EdgeInsets.all(5),
-                ),
-                Container(
-                  child: Text(
-                    "Feedback", 
-                    style: TextStyle(
-                        color: Colors.black
-                    ),
-                  ),
-                  padding: EdgeInsets.all(5),
-                ),
-              ],
-            ),
-            value: MenuOption.feedback,
-          ),
         ];
       },
-      onSelected: (selection){
-        if (selection == MenuOption.logout){
+      onSelected: (selection) {
+        if (selection == MenuOption.logout) {
           logOut(context);
+        }
+        if (selection == MenuOption.manage_schedule) {
+          manageSchedule(globalContext);
+        }
+        if (selection == MenuOption.my_profile) {
+          myProfile(globalContext);
         }
       },
     );
@@ -195,9 +290,32 @@ class PopupOptionMenu extends StatelessWidget {
 
   void logOut(BuildContext context) async {
     final FirebaseAuth authLogOut = FirebaseAuth.instance;
+    final GoogleSignIn googleSignIn = new GoogleSignIn();
+    await googleSignIn.signOut();
     await authLogOut.signOut();
-    print(context);
-    Fluttertoast.showToast(msg: "Context: $context");
-    Navigator.pop(context);
+    //If the user has logged in using google Signin
+    // print(userSignOut.providerData[0].providerId);
+    // if (userSignOut.providerData[0].providerId == 'google.com') {
+    //   final GoogleSignIn googleSignIn = new GoogleSignIn();
+    //   await googleSignIn.signOut().then((value) => Navigator.pushReplacement(
+    //       context, MaterialPageRoute(builder: (context) => Login())));
+    // }
+    // //Incase of normal login
+    // else {
+    //   await authLogOut.signOut().then((value) => Navigator.pushReplacement(
+    //       context, MaterialPageRoute(builder: (context) => Login())));
+    // }
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => Login()));
+    Fluttertoast.showToast(msg: "Logging Out!");
   }
+}
+
+void manageSchedule(BuildContext context) {
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) => ManageSchedule()));
+}
+
+void myProfile(BuildContext context) {
+  Navigator.push(context, MaterialPageRoute(builder: (context) => MyProfile()));
 }

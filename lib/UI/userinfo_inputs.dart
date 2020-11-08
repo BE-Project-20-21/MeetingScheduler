@@ -1,29 +1,38 @@
-import '../main.dart';
+import 'package:authentication_app/UI/dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import './login.dart';
 
-class SignupInputs extends StatelessWidget {
-  //Declaring Database references
-  final FirebaseAuth authSignUp = FirebaseAuth.instance;
+class UserInfoInputs extends StatelessWidget {
+  //Declaring the variables to store the user input
+  String gfullname = "";
+  String gcontact = "";
+  String gusername = "";
+  String gemail = "";
 
-  //The variables required to save the inputs
-  String fullname = "";
-  String username = "";
-  String email = "";
-  String password = "";
-  String confirmPassword = "";
-  String contact = "";
+  //Declaring database instances
+  final FirebaseAuth authUserInfo = FirebaseAuth.instance;
 
+  //Creating an object of ProgressDialog
+  ProgressDialog progressDialog;
+  //Declaring variable required to save the email of signed in user
+  final User userEmail = FirebaseAuth.instance.currentUser;
+  final GoogleSignIn googleSignIn = new GoogleSignIn();
+
+  //Code to render the UI
   @override
   Widget build(BuildContext context) {
+    String emailUsed = userEmail.providerData[0].email;
+    // TODO: implement build
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     Firebase.initializeApp();
-    // TODO: implement build
     return SingleChildScrollView(
       child: Container(
         height: height,
@@ -53,8 +62,8 @@ class SignupInputs extends StatelessWidget {
               height: height / 13,
               alignment: Alignment.centerLeft,
               child: TextField(
-                onChanged: (fullnameInput) {
-                  fullname = fullnameInput;
+                onChanged: (gfullnameInput) {
+                  gfullname = gfullnameInput;
                 },
                 keyboardType: TextInputType.name,
                 style: TextStyle(
@@ -91,8 +100,8 @@ class SignupInputs extends StatelessWidget {
               height: height / 13,
               alignment: Alignment.centerLeft,
               child: TextField(
-                onChanged: (usernameInputs) {
-                  username = usernameInputs;
+                onChanged: (gusernameInput) {
+                  gusername = gusernameInput;
                 },
                 keyboardType: TextInputType.text,
                 style: TextStyle(
@@ -129,8 +138,8 @@ class SignupInputs extends StatelessWidget {
               height: height / 13,
               alignment: Alignment.centerLeft,
               child: TextField(
-                onChanged: (contactInput) {
-                  contact = contactInput;
+                onChanged: (gcontactInput) {
+                  gcontact = gcontactInput;
                 },
                 keyboardType: TextInputType.number,
                 style: TextStyle(
@@ -167,8 +176,8 @@ class SignupInputs extends StatelessWidget {
               height: height / 13,
               alignment: Alignment.centerLeft,
               child: TextField(
-                onChanged: (emailInput) {
-                  email = emailInput;
+                onChanged: (gemailInput) {
+                  gemail = gemailInput;
                 },
                 keyboardType: TextInputType.emailAddress,
                 style: TextStyle(
@@ -200,84 +209,6 @@ class SignupInputs extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: height / 50,
-            ),
-            Container(
-              height: height / 13,
-              alignment: Alignment.centerLeft,
-              child: TextField(
-                onChanged: (passwordInput) {
-                  password = passwordInput;
-                },
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-                decoration: InputDecoration(
-                  hintText: "Password",
-                  hintStyle: TextStyle(
-                    color: Colors.white,
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(top: 14.0),
-                  prefixIcon: Icon(
-                    Icons.lock,
-                    color: Colors.white,
-                  ),
-                ),
-                obscureText: true,
-              ),
-              decoration: BoxDecoration(
-                color: Color(0xFF6CA8F1),
-                borderRadius: BorderRadius.circular(10.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 6.0,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: height / 50,
-            ),
-            Container(
-              height: height / 13,
-              alignment: Alignment.centerLeft,
-              child: TextField(
-                onChanged: (confirmPasswordInput) {
-                  confirmPassword = confirmPasswordInput;
-                },
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-                decoration: InputDecoration(
-                  hintText: "Confirm Password",
-                  hintStyle: TextStyle(
-                    color: Colors.white,
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(top: 14.0),
-                  prefixIcon: Icon(
-                    Icons.lock,
-                    color: Colors.white,
-                  ),
-                ),
-                obscureText: true,
-              ),
-              decoration: BoxDecoration(
-                color: Color(0xFF6CA8F1),
-                borderRadius: BorderRadius.circular(10.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 6.0,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
               height: height / 30,
             ),
             Align(
@@ -288,9 +219,9 @@ class SignupInputs extends StatelessWidget {
                 child: RaisedButton(
                   elevation: 5.0,
                   onPressed: () {
-                    //Call the method to validate the inputs and then signup the user
-                    validateAndSignup(fullname, username, contact, email,
-                        password, confirmPassword, context);
+                    //Call the method to validate the inputs and enter the user inputs into database
+                    validateAndGSignUp(
+                        gfullname, gusername, gcontact, gemail, context);
                   },
                   padding: EdgeInsets.all(15.0),
                   shape: RoundedRectangleBorder(
@@ -298,7 +229,7 @@ class SignupInputs extends StatelessWidget {
                   ),
                   color: Colors.white,
                   child: Text(
-                    'SIGN UP',
+                    'SUBMIT',
                     style: TextStyle(
                       color: Color(0xFF527DAA),
                       letterSpacing: 1,
@@ -312,6 +243,46 @@ class SignupInputs extends StatelessWidget {
             SizedBox(
               height: height / 30,
             ),
+            GestureDetector(
+              onTap: () async {
+                //Code to logout of the app
+                await googleSignIn.signOut();
+                await FirebaseAuth.instance.signOut();
+                Fluttertoast.showToast(msg: "Logging Out!");
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => Login()));
+              },
+              child: Align(
+                alignment: Alignment.center,
+                child: Container(
+                  margin: EdgeInsets.all(16.0),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                            text: "Signed in as $emailUsed",
+                            style: GoogleFonts.hammersmithOne(
+                              textStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            )),
+                        TextSpan(
+                          text: '\nLog Out?',
+                          style: GoogleFonts.hammersmithOne(
+                              textStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold,
+                          )),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
         margin: EdgeInsets.all(20),
@@ -323,40 +294,30 @@ class SignupInputs extends StatelessWidget {
     );
   }
 
-  //Method to validate the function (Nested Validation)
-  void validateAndSignup(
-      String fullname,
-      String username,
-      String contact,
-      String email,
-      String password,
-      String confirmPassword,
-      BuildContext context) {
-    //Handling the inputs
-    //To check that no field is empty
-    if (fullname.isNotEmpty &&
-        email.isNotEmpty &&
-        password.isNotEmpty &&
-        confirmPassword.isNotEmpty &&
-        username.isNotEmpty &&
-        contact.isNotEmpty) {
-      //To check with the database if the username is unique (pending)
+  //Method to validate user inputs
+  validateAndGSignUp(String gfullname, String gusername, String gcontact,
+      String gemail, BuildContext context) {
+    //Code to check if no input is empty
+    if (gfullname.isNotEmpty &&
+        gemail.isNotEmpty &&
+        gusername.isNotEmpty &&
+        gcontact.isNotEmpty) {
+      //Code to check if username is unique(pending)
 
-      //Pattern matching for the email
+      //Code to validate the email
       Pattern pattern =
           r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
       RegExp regex = new RegExp(pattern);
-      if (regex.hasMatch(email)) {
-        if (password == confirmPassword) {
-          signUpWithEmailandPassword(
-              fullname, email, password, confirmPassword, context);
+      if (regex.hasMatch(gemail)) {
+        //Check the length of contact number
+        if (gcontact.length == 10) {
+          //Code to add data to the database
+          addUserInfoToDatabase(
+              gfullname, gusername, gcontact, gemail, context);
         } else {
-          //Handle error for non matching passwords
-          Fluttertoast.showToast(
-              msg: "The passwords you have entered do not match!");
+          Fluttertoast.showToast(msg: "Please enter a valid contact number");
         }
       } else {
-        //Handle error for incorrect email format
         Fluttertoast.showToast(msg: "Please enter a valid email address!");
       }
     } else {
@@ -365,49 +326,57 @@ class SignupInputs extends StatelessWidget {
     }
   }
 
-  //Method to Create account and add user data into the databse as well
-  void signUpWithEmailandPassword(String fullname, String email,
-      String password, String confirmPassword, BuildContext context) async {
-    //Creating account using inbuilt function
-    try {
-      await authSignUp.createUserWithEmailAndPassword(
-          email: email, password: password);
-      try {
-        //Send email verification mail
-        User userSignUp = authSignUp.currentUser;
-        await userSignUp.sendEmailVerification().then((value) {
-          addDataToDatabase(fullname, email, context);
-        });
-      } catch (e1) {
-        Fluttertoast.showToast(msg: "Some unknown error has occured");
-      }
-      // //To add the User information to the databse and then navigate
-      // addDataToDatabase(fullname, email, context);
-    } catch (e) {
-      //Handle Exceptions
-      Fluttertoast.showToast(msg: "Some unknown error has occured");
-    }
-  }
+  //Method to add User information to the database
+  addUserInfoToDatabase(String gfullname, String gusername, String gcontact,
+      String gemail, BuildContext context) async {
+    //Code to show the progres bar (UI BASED)
+    progressDialog = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialog.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Colors.lightBlue),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Creating Account!",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
+    );
+    progressDialog.show();
 
-  void addDataToDatabase(
-      String fullname, String email, BuildContext context) async {
-    try {
-      //Declaring Database references
-      FirebaseDatabase databaseSignUp = new FirebaseDatabase();
-      DatabaseReference referenceSignUp =
-          databaseSignUp.reference().child("users");
-      //To get the UID of the newly added user
-      final User userSignUp = authSignUp.currentUser;
-      final String uid = userSignUp.uid.toString();
-      //To add the inputs into the database
-      referenceSignUp.child(uid).set({"name": fullname, "email": email});
-      Fluttertoast.showToast(msg: "Account created Successfully");
-      await authSignUp.signOut();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => MyApp()));
-    } catch (e) {
-      //To handle errors
-      Fluttertoast.showToast(msg: "Some unknown error has occured!");
-    }
+    //Declaring Database Reference
+    FirebaseDatabase databaseUserInfo = new FirebaseDatabase();
+    DatabaseReference referenceUserInfo =
+        databaseUserInfo.reference().child("users");
+    //Code to get the uid of the current user
+    final User userGSignin = authUserInfo.currentUser;
+    String _uidUserInfo = userGSignin.uid.toString();
+    //Code to push the data into database
+    await referenceUserInfo.child(_uidUserInfo).set({
+      "name": gfullname,
+      "username": gusername,
+      "contact": gcontact,
+      "email": gemail,
+    });
+
+    //Code to add the username to the lists of username
+    DatabaseReference referenceUsername =
+        databaseUserInfo.reference().child("usernames");
+    await referenceUsername.child(gusername).set({"name": gfullname});
+
+    progressDialog.hide();
+
+    //Code to navigate to the Dashboard after creating and entering all the user data into the database
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => Dashboard()));
   }
 }
