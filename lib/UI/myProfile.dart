@@ -13,7 +13,13 @@ class MyProfile extends StatelessWidget {
     double height = MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top -
         MediaQuery.of(context).padding.bottom;
-    double height2 = 250;
+    double waveheight = 250;
+    double datacolumnheight = 325;
+    String name = "Amar VJKumar Singh";
+    String phone = "+919999999999";
+    String uname = "avsingh";
+    String organization = "Somaiya";
+    String email = "avsingh@gmail.com";
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -31,7 +37,7 @@ class MyProfile extends StatelessWidget {
                       boxShadow: [],
                       clipper: WaveClipperTwo(),
                       child: Container(
-                        height: height2,
+                        height: waveheight,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
@@ -49,12 +55,12 @@ class MyProfile extends StatelessWidget {
                 ),
                 Positioned(
                     left: width * 10 / 100,
-                    top: height2 * 65 / 100,
+                    top: waveheight * 65 / 100,
                     child:
                         CircularProfileAvatar('', elevation: 10, radius: 70)),
                 Positioned(
                   right: width * 10 / 100,
-                  top: height2 * 70 / 100,
+                  top: waveheight * 70 / 100,
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 2.0),
                     width: width / 4,
@@ -78,6 +84,84 @@ class MyProfile extends StatelessWidget {
                     ),
                   ),
                 ),
+                Positioned(
+                  top: height - 100,
+                  right: width * 10 / 100,
+                  child: FloatingActionButton(
+                    onPressed: () {},
+                    elevation: 10,
+                    backgroundColor: Color(0xFF398AE5),
+                    child: Icon(
+                      Icons.edit,
+                      size: 25,
+                    ),
+                  ),
+                ),
+                Positioned(
+                    right: width * 14 / 100,
+                    top: waveheight,
+                    child: Text(
+                      '@' + uname,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
+                    )),
+                Positioned(
+                  left: width * 10 / 100,
+                  top: datacolumnheight,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        child: Text(
+                          name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 20.0,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        child: Text(
+                          email,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18.0,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        child: Text(
+                          phone,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18.0,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        child: Text(
+                          organization,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18.0,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                )
               ]),
               color: Colors.white),
         )));
