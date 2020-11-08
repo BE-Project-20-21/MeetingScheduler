@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import './manage_schedule.dart';
+import '../UI/myProfile.dart';
 
 //To save the context of the entire Dashboard page (As there are popUp menus present)
 BuildContext globalContext;
@@ -44,7 +45,7 @@ class DashboardState extends State<Dashboard>
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primarySwatch: Colors.red,
-          textTheme: GoogleFonts.aBeeZeeTextTheme(
+          textTheme: GoogleFonts.hammersmithOneTextTheme(
             Theme.of(context).textTheme,
           )),
       home: Material(
@@ -77,7 +78,7 @@ class DashboardState extends State<Dashboard>
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
                       "Dashboard",
-                      style: GoogleFonts.aBeeZee(
+                      style: GoogleFonts.hammersmithOne(
                           textStyle: TextStyle(
                         color: Colors.black,
                         fontSize: 25.0,
@@ -97,7 +98,7 @@ class DashboardState extends State<Dashboard>
                 new Tab(
                   child: Text(
                     "UPCOMING",
-                    style: GoogleFonts.aBeeZee(
+                    style: GoogleFonts.hammersmithOne(
                         textStyle: TextStyle(
                       color: Colors.black,
                       // fontWeight: FontWeight.bold,
@@ -107,7 +108,7 @@ class DashboardState extends State<Dashboard>
                 ),
                 new Tab(
                   child: Text("REQUESTED",
-                      style: GoogleFonts.aBeeZee(
+                      style: GoogleFonts.hammersmithOne(
                           textStyle: TextStyle(
                         color: Colors.black,
                         fontSize: 15.0,
@@ -115,8 +116,8 @@ class DashboardState extends State<Dashboard>
                 ),
                 new Tab(
                   child: Text(
-                    "MY PROFILE",
-                    style: GoogleFonts.aBeeZee(
+                    "CHATS",
+                    style: GoogleFonts.hammersmithOne(
                         textStyle: TextStyle(
                       color: Colors.black,
                       fontSize: 15.0,
@@ -145,7 +146,7 @@ class DashboardState extends State<Dashboard>
 }
 
 //Menu facilitator
-enum MenuOption { logout, settings, feedback, manage_schedule }
+enum MenuOption { logout, settings, feedback, manage_schedule, my_profile }
 
 // Class to build the menu
 class PopupOptionMenu extends StatelessWidget {
@@ -209,6 +210,29 @@ class PopupOptionMenu extends StatelessWidget {
               children: <Widget>[
                 Container(
                   child: Icon(
+                    Icons.account_box,
+                    color: Colors.red,
+                  ),
+                  padding: EdgeInsets.all(5),
+                ),
+                Container(
+                  child: Text(
+                    "My Profile",
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                  padding: EdgeInsets.all(5),
+                ),
+              ],
+            ),
+            value: MenuOption.my_profile,
+          ),
+          PopupMenuItem(
+            child: Row(
+              children: <Widget>[
+                Container(
+                  child: Icon(
                     Icons.feedback,
                     color: Colors.red,
                   ),
@@ -257,6 +281,9 @@ class PopupOptionMenu extends StatelessWidget {
         if (selection == MenuOption.manage_schedule) {
           manageSchedule(globalContext);
         }
+        if (selection == MenuOption.my_profile) {
+          myProfile(globalContext);
+        }
       },
     );
   }
@@ -287,4 +314,8 @@ class PopupOptionMenu extends StatelessWidget {
 void manageSchedule(BuildContext context) {
   Navigator.push(
       context, MaterialPageRoute(builder: (context) => ManageSchedule()));
+}
+
+void myProfile(BuildContext context) {
+  Navigator.push(context, MaterialPageRoute(builder: (context) => MyProfile()));
 }
