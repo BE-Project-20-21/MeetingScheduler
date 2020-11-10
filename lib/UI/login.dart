@@ -12,10 +12,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Model/FadeAnimation.dart';
 import '../UI/signup.dart';
+import './verify_email.dart';
 
 class Login extends StatelessWidget {
   //Declaring Database references
   final FirebaseAuth authLogIn = FirebaseAuth.instance;
+
   //Creating an object of ProgressDialog
   ProgressDialog progressDialog;
 
@@ -376,6 +378,8 @@ class Login extends StatelessWidget {
           context, MaterialPageRoute(builder: (context) => Dashboard()));
     } else {
       //Navigate to the page which shows up if email is not verified
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => VerifyEmail()));
       Fluttertoast.showToast(msg: "Please Verify your email!");
     }
   }

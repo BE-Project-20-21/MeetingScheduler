@@ -302,24 +302,36 @@ class UserInfoInputs extends StatelessWidget {
         gemail.isNotEmpty &&
         gusername.isNotEmpty &&
         gcontact.isNotEmpty) {
-      //Code to check if username is unique(pending)
-
-      //Code to validate the email
-      Pattern pattern =
-          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-      RegExp regex = new RegExp(pattern);
-      if (regex.hasMatch(gemail)) {
-        //Check the length of contact number
-        if (gcontact.length == 10) {
-          //Code to add data to the database
-          addUserInfoToDatabase(
-              gfullname, gusername, gcontact, gemail, context);
+      //Code to check if username is unique
+      FirebaseDatabase checkUsername = new FirebaseDatabase();
+      DatabaseReference checkUsernameReferenece =
+          checkUsername.reference().child("usernames");
+      checkUsernameReferenece
+          .child(gusername)
+          .once()
+          .then((DataSnapshot dataSnapshot) {
+        if (dataSnapshot.value != null) {
+          Fluttertoast.showToast(msg: "The username is not available.");
         } else {
-          Fluttertoast.showToast(msg: "Please enter a valid contact number");
+          //Code to validate the email
+          Pattern pattern =
+              r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+          RegExp regex = new RegExp(pattern);
+          if (regex.hasMatch(gemail)) {
+            //Check the length of contact number
+            if (gcontact.length == 10) {
+              //Code to add data to the database
+              addUserInfoToDatabase(
+                  gfullname, gusername, gcontact, gemail, context);
+            } else {
+              Fluttertoast.showToast(
+                  msg: "Please enter a valid contact number");
+            }
+          } else {
+            Fluttertoast.showToast(msg: "Please enter a valid email address!");
+          }
         }
-      } else {
-        Fluttertoast.showToast(msg: "Please enter a valid email address!");
-      }
+      });
     } else {
       //Handle error if any field is empty
       Fluttertoast.showToast(msg: "Please fill all the fields!");
@@ -368,7 +380,7 @@ class UserInfoInputs extends StatelessWidget {
       "email": gemail,
     });
 
-    //Code to add the username to the lists of username
+    //Code to add the username to the lists of usernames
     DatabaseReference referenceUsername =
         databaseUserInfo.reference().child("usernames");
     await referenceUsername.child(gusername).set({"name": gfullname});
