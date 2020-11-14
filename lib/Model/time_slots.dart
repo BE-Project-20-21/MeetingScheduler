@@ -155,25 +155,6 @@ class _TimeSlotsState extends State<TimeSlots> {
     User userSchedule = authSchedule.currentUser;
     String uidSchedule = userSchedule.uid.toString();
 
-    //Code to check whether the schedule exists
-    FirebaseDatabase databaseSchedule = new FirebaseDatabase();
-    DatabaseReference referenceSchedule =
-        databaseSchedule.reference().child("schedule");
-    await referenceSchedule
-        .reference()
-        .child("schedule")
-        .child(uidSchedule)
-        .once()
-        .then((DataSnapshot dataSnapshot) {
-      if (dataSnapshot.value != null) {
-        //Code to load the existing schedule and populate the Maps
-        displaySchedule(uidSchedule);
-      }
-    });
-  }
-
-  //Method to display the pre-submitted schedule
-  void displaySchedule(String uidSchedule) {
     //Code to show the progress bar
     progressDialogSchedule = new ProgressDialog(globalContextTimeSlots,
         type: ProgressDialogType.Normal, isDismissible: false);
@@ -199,7 +180,113 @@ class _TimeSlotsState extends State<TimeSlots> {
     );
     progressDialogSchedule.show();
 
+    //Code to check whether the schedule exists
+    FirebaseDatabase databaseSchedule = new FirebaseDatabase();
+    DatabaseReference referenceSchedule =
+        databaseSchedule.reference().child("schedule");
+    await referenceSchedule
+        .reference()
+        .child("schedule")
+        .child(uidSchedule)
+        .once()
+        .then((DataSnapshot dataSnapshot) {
+      if (dataSnapshot.value != null) {
+        //Code to load the existing schedule and populate the Maps
+        displaySchedule(uidSchedule);
+      } else {
+        //Setting the UI rendering parameters to normal
+        pressed = false;
+        counter = 1;
+        progressDialogSchedule.hide();
+      }
+    });
+  }
+
+  //Method to display the pre-submitted schedule
+  void displaySchedule(String uidSchedule) async {
+    //Saving each node containing the day name in the list
+    var listDays = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ];
+
     //Retrieving schedule from the database and populating the maps
+    FirebaseDatabase databaseRetrieveSchdeule = new FirebaseDatabase();
+    DatabaseReference referenceRetrieveSchdeule = databaseRetrieveSchdeule
+        .reference()
+        .child("schedule")
+        .child(uidSchedule);
+    //Code to retrieve the data from the database
+    //Iterating over the list to save the schedule for ith index day in the list from the database to the map for that day
+    for (int i = 0; i < listDays.length; i++) {
+      await referenceRetrieveSchdeule
+          .child(listDays[i])
+          .once()
+          .then((DataSnapshot datasnapshot) {
+        //Code to save the entire schedule for a day into the map and then shift it to the schedule map
+        Map<dynamic, dynamic> slots = datasnapshot.value;
+        slots.forEach((key, value) {
+          if (listDays[i] == "Sunday") {
+            sundayMap[key] = value;
+          } else if (listDays[i] == "Monday") {
+            mondayMap[key] = value;
+          } else if (listDays[i] == "Tuesday") {
+            tuesdayMap[key] = value;
+          } else if (listDays[i] == "Wednesday") {
+            wednesdayMap[key] = value;
+          } else if (listDays[i] == "Thursday") {
+            thursdayMap[key] = value;
+          } else if (listDays[i] == "Friday") {
+            fridayMap[key] = value;
+          } else if (listDays[i] == "Saturday") {
+            saturdayMap[key] = value;
+          }
+        });
+      });
+    }
+
+    //Setting the UI rendering parameters to not normal (pressed)
+    if (widget.day == "Sunday") {
+      if (sundayMap[widget.time] == true) {
+        pressed = true;
+        counter = 2;
+      }
+    } else if (widget.day == "Monday") {
+      if (mondayMap[widget.time] == true) {
+        pressed = true;
+        counter = 2;
+      }
+    } else if (widget.day == "Tuesday") {
+      if (tuesdayMap[widget.time] == true) {
+        pressed = true;
+        counter = 2;
+      }
+    } else if (widget.day == "Wednesday") {
+      if (wednesdayMap[widget.time] == true) {
+        pressed = true;
+        counter = 2;
+      }
+    } else if (widget.day == "Thursday") {
+      if (thursdayMap[widget.time] == true) {
+        pressed = true;
+        counter = 2;
+      }
+    } else if (widget.day == "Friday") {
+      if (fridayMap[widget.time] == true) {
+        pressed = true;
+        counter = 2;
+      }
+    } else if (widget.day == "Saturday") {
+      if (saturdayMap[widget.time] == true) {
+        pressed = true;
+        counter = 2;
+      }
+    }
   }
 
   @override
