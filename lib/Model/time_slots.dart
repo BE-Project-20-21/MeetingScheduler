@@ -25,6 +25,9 @@ class TimeSlots extends StatefulWidget {
   bool trigger;
   var schedule = new Map();
 
+  //Creating an object of ProgressDialog
+  ProgressDialog progressDialog;
+
   TimeSlots(int time, String day, bool trigger) {
     this.time = time;
     this.day = day;
@@ -47,9 +50,6 @@ class TimeSlots extends StatefulWidget {
 
   @override
   _TimeSlotsState createState() => _TimeSlotsState();
-
-  //Creating an object of ProgressDialog
-  ProgressDialog progressDialog;
 
   //Here comes the code when the user submits the schedule (Entering the schedule in the database)
   void createMap() {
@@ -136,120 +136,19 @@ class TimeSlots extends StatefulWidget {
 }
 
 class _TimeSlotsState extends State<TimeSlots> {
-  //Creating an object of ProgressDialog
-  ProgressDialog progressDialogSchedule;
-
   //Variables required to handle the selected/un-selected state of each slot
   bool pressed = false;
   int counter = 1;
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
-    //Here Goes the entire code to check if schedule already submitted
-    // and if submitted read the schedule from the Database and reflect the schedule on the application
-    //Starting the progress bar for the period to gather the already submitted schedule
-
-    //Getting the authentication reference and getting the current user data
-    FirebaseAuth authSchedule = FirebaseAuth.instance;
-    User userSchedule = authSchedule.currentUser;
-    String uidSchedule = userSchedule.uid.toString();
-
-    //Code to show the progress bar
-    progressDialogSchedule = new ProgressDialog(globalContextTimeSlots,
-        type: ProgressDialogType.Normal, isDismissible: false);
-    progressDialogSchedule.style(
-      child: Container(
-        color: Colors.white,
-        child: CircularProgressIndicator(
-          valueColor:
-              new AlwaysStoppedAnimation<Color>(Colors.deepOrangeAccent),
-        ),
-        margin: EdgeInsets.all(10.0),
-      ),
-      message: "Submitting your Schedule....",
-      borderRadius: 10.0,
-      backgroundColor: Colors.white,
-      elevation: 40.0,
-      progress: 0.0,
-      maxProgress: 100.0,
-      insetAnimCurve: Curves.easeInOut,
-      progressWidgetAlignment: Alignment.center,
-      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
-      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
-    );
-    progressDialogSchedule.show();
-
-    //Code to check whether the schedule exists
-    FirebaseDatabase databaseSchedule = new FirebaseDatabase();
-    DatabaseReference referenceSchedule =
-        databaseSchedule.reference().child("schedule");
-    await referenceSchedule
-        .reference()
-        .child("schedule")
-        .child(uidSchedule)
-        .once()
-        .then((DataSnapshot dataSnapshot) {
-      if (dataSnapshot.value != null) {
-        //Code to load the existing schedule and populate the Maps
-        displaySchedule(uidSchedule);
-      } else {
-        //Setting the UI rendering parameters to normal
-        pressed = false;
-        counter = 1;
-        progressDialogSchedule.hide();
-      }
-    });
+    pressed = false;
+    counter = 1;
   }
 
-  //Method to display the pre-submitted schedule
-  void displaySchedule(String uidSchedule) async {
-    //Saving each node containing the day name in the list
-    var listDays = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday"
-    ];
-
-    //Retrieving schedule from the database and populating the maps
-    FirebaseDatabase databaseRetrieveSchdeule = new FirebaseDatabase();
-    DatabaseReference referenceRetrieveSchdeule = databaseRetrieveSchdeule
-        .reference()
-        .child("schedule")
-        .child(uidSchedule);
-    //Code to retrieve the data from the database
-    //Iterating over the list to save the schedule for ith index day in the list from the database to the map for that day
-    for (int i = 0; i < listDays.length; i++) {
-      await referenceRetrieveSchdeule
-          .child(listDays[i])
-          .once()
-          .then((DataSnapshot datasnapshot) {
-        //Code to save the entire schedule for a day into the map and then shift it to the schedule map
-        Map<dynamic, dynamic> slots = datasnapshot.value;
-        slots.forEach((key, value) {
-          if (listDays[i] == "Sunday") {
-            sundayMap[key] = value;
-          } else if (listDays[i] == "Monday") {
-            mondayMap[key] = value;
-          } else if (listDays[i] == "Tuesday") {
-            tuesdayMap[key] = value;
-          } else if (listDays[i] == "Wednesday") {
-            wednesdayMap[key] = value;
-          } else if (listDays[i] == "Thursday") {
-            thursdayMap[key] = value;
-          } else if (listDays[i] == "Friday") {
-            fridayMap[key] = value;
-          } else if (listDays[i] == "Saturday") {
-            saturdayMap[key] = value;
-          }
-        });
-      });
-    }
-
+  @override
+  Widget build(BuildContext context) {
     //Setting the UI rendering parameters to not normal (pressed)
     if (widget.day == "Sunday") {
       if (sundayMap[widget.time] == true) {
@@ -287,11 +186,6 @@ class _TimeSlotsState extends State<TimeSlots> {
         counter = 2;
       }
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    globalContextTimeSlots = context;
     return Container(
       child: Flexible(
         child: Padding(
