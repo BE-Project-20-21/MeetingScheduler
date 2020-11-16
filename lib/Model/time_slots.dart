@@ -3,15 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-
-//The map for each day containing the time slots, and boolean value for each slot; true: free, false: occupied.
-var sundayMap = new Map<int, bool>();
-var mondayMap = new Map<int, bool>();
-var tuesdayMap = new Map<int, bool>();
-var wednesdayMap = new Map<int, bool>();
-var thursdayMap = new Map<int, bool>();
-var fridayMap = new Map<int, bool>();
-var saturdayMap = new Map<int, bool>();
+import '../UI/dashboard.dart';
+import '../UI/manage_schedule.dart';
 
 //Map to put the schedule of each day in one packet, ready to be pushed into the database
 var schedule = new Map<String, Map>();
@@ -25,9 +18,6 @@ class TimeSlots extends StatefulWidget {
   bool trigger;
   var schedule = new Map();
 
-  //Creating an object of ProgressDialog
-  ProgressDialog progressDialog;
-
   TimeSlots(int time, String day, bool trigger) {
     this.time = time;
     this.day = day;
@@ -36,20 +26,13 @@ class TimeSlots extends StatefulWidget {
     if (trigger) {
       createMap();
     }
-    //To clear the map everytime the user leaves the manage_schedule page and gets back to dashboard
-    else {
-      sundayMap.clear();
-      mondayMap.clear();
-      tuesdayMap.clear();
-      wednesdayMap.clear();
-      thursdayMap.clear();
-      fridayMap.clear();
-      saturdayMap.clear();
-    }
   }
 
   @override
   _TimeSlotsState createState() => _TimeSlotsState();
+
+  //Creating an object of ProgressDialog
+  ProgressDialog progressDialog;
 
   //Here comes the code when the user submits the schedule (Entering the schedule in the database)
   void createMap() {
@@ -128,10 +111,11 @@ class TimeSlots extends StatefulWidget {
 
   closeActivity() {
     //Code to hide the progress bar
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 1), () {
       progressDialog.hide();
     });
     //Code to implement the navigation right after submitting the schedule
+    // Navigator.pop(globalContextManageSchedule);
   }
 }
 
@@ -143,49 +127,62 @@ class _TimeSlotsState extends State<TimeSlots> {
   @override
   void initState() {
     super.initState();
-    pressed = false;
-    counter = 1;
+    //Setting the UI rendering parameters to not normal (pressed)
+    if (widget.day == "Sunday") {
+      if (sundayMap[widget.time] == true) {
+        setState(() {
+          pressed = true;
+          counter = counter + 1;
+        });
+      }
+    } else if (widget.day == "Monday") {
+      if (mondayMap[widget.time] == true) {
+        setState(() {
+          pressed = true;
+          counter = counter + 1;
+        });
+      }
+    } else if (widget.day == "Tuesday") {
+      if (tuesdayMap[widget.time] == true) {
+        setState(() {
+          pressed = true;
+          counter = counter + 1;
+        });
+      }
+    } else if (widget.day == "Wednesday") {
+      if (wednesdayMap[widget.time] == true) {
+        setState(() {
+          pressed = true;
+          counter = counter + 1;
+        });
+      }
+    } else if (widget.day == "Thursday") {
+      if (thursdayMap[widget.time] == true) {
+        setState(() {
+          pressed = true;
+          counter = counter + 1;
+        });
+      }
+    } else if (widget.day == "Friday") {
+      if (fridayMap[widget.time] == true) {
+        setState(() {
+          pressed = true;
+          counter = counter + 1;
+        });
+      }
+    } else if (widget.day == "Saturday") {
+      if (saturdayMap[widget.time] == true) {
+        setState(() {
+          pressed = true;
+          counter = counter + 1;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    //Setting the UI rendering parameters to not normal (pressed)
-    if (widget.day == "Sunday") {
-      if (sundayMap[widget.time] == true) {
-        pressed = true;
-        counter = 2;
-      }
-    } else if (widget.day == "Monday") {
-      if (mondayMap[widget.time] == true) {
-        pressed = true;
-        counter = 2;
-      }
-    } else if (widget.day == "Tuesday") {
-      if (tuesdayMap[widget.time] == true) {
-        pressed = true;
-        counter = 2;
-      }
-    } else if (widget.day == "Wednesday") {
-      if (wednesdayMap[widget.time] == true) {
-        pressed = true;
-        counter = 2;
-      }
-    } else if (widget.day == "Thursday") {
-      if (thursdayMap[widget.time] == true) {
-        pressed = true;
-        counter = 2;
-      }
-    } else if (widget.day == "Friday") {
-      if (fridayMap[widget.time] == true) {
-        pressed = true;
-        counter = 2;
-      }
-    } else if (widget.day == "Saturday") {
-      if (saturdayMap[widget.time] == true) {
-        pressed = true;
-        counter = 2;
-      }
-    }
+    globalContextTimeSlots = context;
     return Container(
       child: Flexible(
         child: Padding(
