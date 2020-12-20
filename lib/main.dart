@@ -44,7 +44,7 @@ class _FirstPageState extends State<FirstPage> {
 
   startTimer() async {
     //Complete navigation handling from Main.dart
-    var duration = Duration(seconds: 3);
+    var duration = Duration(seconds: 0);
     //In case no one is logged in
     if (FirebaseAuth.instance.currentUser == null) {
       return Timer(duration, route1);

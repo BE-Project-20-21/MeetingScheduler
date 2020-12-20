@@ -27,8 +27,10 @@ class SearchState extends State<Search> {
             Theme.of(context).textTheme,
           )),
       home: Material(
+        color: Colors.blueAccent,
         child: SingleChildScrollView(
           child: Container(
+            color: Colors.blueAccent,
             child: SafeArea(
               child: Container(
                 margin: EdgeInsets.symmetric(
@@ -99,10 +101,22 @@ class SearchState extends State<Search> {
                         ],
                       ),
                     ),
-                    //   ListView(
-                    //       children: tempSearchStore.map((element) {
-                    //     return nameCard(element["name"]);
-                    //   }).toList())
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15.0),
+                        color: Colors.white,
+                        boxShadow: kElevationToShadow[6],
+                      ),
+                      margin: EdgeInsets.only(top: 20.0),
+                      child: ListView.builder(
+                        itemCount: tempSearchStore.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return nameCard(tempSearchStore[index]["name"]);
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -113,18 +127,28 @@ class SearchState extends State<Search> {
     );
   }
 
-  Widget nameCard(element) {
+  Widget nameCard(String name) {
     return Material(
-      child: GestureDetector(
-        child: Container(
-          child: Text(
-            element,
-            style: TextStyle(
-              fontSize: 15.0,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          GestureDetector(
+            child: Container(
+              child: Text(
+                name,
+                style: TextStyle(
+                  fontSize: 22.0,
+                ),
+              ),
+              padding: EdgeInsets.all(10.0),
             ),
           ),
-          padding: EdgeInsets.all(5.0),
-        ),
+          Container(
+            width: double.infinity,
+            height: 0.5,
+            color: Colors.blue,
+          ),
+        ],
       ),
     );
   }
@@ -137,11 +161,7 @@ class SearchState extends State<Search> {
       });
     }
 
-    var formattedQuery =
-        query.substring(0, 1).toUpperCase() + query.substring(1);
-
     if (queryResultSet.length == 0 && query.length == 1) {
-      print("entry 1");
       await FirebaseFirestore.instance
           .collection("names")
           .get()
@@ -149,19 +169,26 @@ class SearchState extends State<Search> {
         for (int i = 0; i < querySnapshot.docs.length; ++i) {
           queryResultSet.add(querySnapshot.docs[i].data());
         }
+        tempSearchStore = [];
+        queryResultSet.forEach((element) {
+          if (element["name"].startsWith(query.substring(0, 1).toUpperCase())) {
+            setState(() {
+              tempSearchStore.add(element);
+            });
+          }
+        });
       });
     } else {
+      var formattedQuery =
+          query.substring(0, 1).toUpperCase() + query.substring(1);
       tempSearchStore = [];
       queryResultSet.forEach((element) {
         if (element["name"].startsWith(formattedQuery)) {
-          print("entry 3");
           setState(() {
             tempSearchStore.add(element);
           });
         }
       });
     }
-    var show = print("q: $queryResultSet");
-    print("t: $tempSearchStore");
   }
 }
