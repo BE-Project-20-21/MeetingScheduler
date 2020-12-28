@@ -1,3 +1,4 @@
+import 'package:authentication_app/Model/scheduling_interface.dart';
 import 'package:authentication_app/UI/login.dart';
 import 'package:authentication_app/Model/dashboard_first.dart';
 import 'package:authentication_app/Model/dashboard_second.dart';
@@ -75,8 +76,10 @@ class DashboardState extends State<Dashboard>
               child: FloatingActionButton(
                 onPressed: () {
                   //ADD meeting module
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Search()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ScheduleInterface()));
                 },
                 child: Icon(
                   Icons.add,
