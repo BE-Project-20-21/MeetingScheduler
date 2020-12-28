@@ -3,15 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-
-//The map for each day containing the time slots, and boolean value for each slot; true: free, false: occupied.
-var sundayMap = new Map<int, bool>();
-var mondayMap = new Map<int, bool>();
-var tuesdayMap = new Map<int, bool>();
-var wednesdayMap = new Map<int, bool>();
-var thursdayMap = new Map<int, bool>();
-var fridayMap = new Map<int, bool>();
-var saturdayMap = new Map<int, bool>();
+import '../UI/dashboard.dart';
+import '../UI/manage_schedule.dart';
 
 //Map to put the schedule of each day in one packet, ready to be pushed into the database
 var schedule = new Map<String, Map>();
@@ -32,16 +25,6 @@ class TimeSlots extends StatefulWidget {
     //Triggered on clicking the Submit button on the manage_schedule page
     if (trigger) {
       createMap();
-    }
-    //To clear the map everytime the user leaves the manage_schedule page and gets back to dashboard
-    else {
-      sundayMap.clear();
-      mondayMap.clear();
-      tuesdayMap.clear();
-      wednesdayMap.clear();
-      thursdayMap.clear();
-      fridayMap.clear();
-      saturdayMap.clear();
     }
   }
 
@@ -101,7 +84,6 @@ class TimeSlots extends StatefulWidget {
   void submitSchedule(Map schedule) {
     //To get the UID of the current User
     final String currentUserId = FirebaseAuth.instance.currentUser.uid;
-
     //Declaring Database references and setting th ereference to the target node
     FirebaseDatabase databaseManageSchedule = new FirebaseDatabase();
     DatabaseReference referenceManageSchedule =

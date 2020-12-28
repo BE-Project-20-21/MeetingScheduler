@@ -1,3 +1,4 @@
+import 'package:authentication_app/Model/scheduling_interface.dart';
 import 'package:authentication_app/UI/login.dart';
 import 'package:authentication_app/Model/dashboard_first.dart';
 import 'package:authentication_app/Model/dashboard_second.dart';
@@ -5,11 +6,27 @@ import 'package:authentication_app/Model/dashboard_third.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import './manage_schedule.dart';
 import '../UI/myProfile.dart';
+import '../Model/chatbot.dart';
+import '../Model/search.dart';
+
+//The map for each day containing the time slots, and boolean value for each slot; true: free, false: occupied.
+var sundayMap = new Map<int, bool>();
+var mondayMap = new Map<int, bool>();
+var tuesdayMap = new Map<int, bool>();
+var wednesdayMap = new Map<int, bool>();
+var thursdayMap = new Map<int, bool>();
+var fridayMap = new Map<int, bool>();
+var saturdayMap = new Map<int, bool>();
+
+//Creating an object of ProgressDialog
+ProgressDialog progressDialogSchedule;
 
 //To save the context of the entire Dashboard page (As there are popUp menus present)
 BuildContext globalContext;
@@ -59,6 +76,10 @@ class DashboardState extends State<Dashboard>
               child: FloatingActionButton(
                 onPressed: () {
                   //ADD meeting module
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ScheduleInterface()));
                 },
                 child: Icon(
                   Icons.add,
@@ -293,18 +314,6 @@ class PopupOptionMenu extends StatelessWidget {
     final GoogleSignIn googleSignIn = new GoogleSignIn();
     await googleSignIn.signOut();
     await authLogOut.signOut();
-    //If the user has logged in using google Signin
-    // print(userSignOut.providerData[0].providerId);
-    // if (userSignOut.providerData[0].providerId == 'google.com') {
-    //   final GoogleSignIn googleSignIn = new GoogleSignIn();
-    //   await googleSignIn.signOut().then((value) => Navigator.pushReplacement(
-    //       context, MaterialPageRoute(builder: (context) => Login())));
-    // }
-    // //Incase of normal login
-    // else {
-    //   await authLogOut.signOut().then((value) => Navigator.pushReplacement(
-    //       context, MaterialPageRoute(builder: (context) => Login())));
-    // }
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => Login()));
     Fluttertoast.showToast(msg: "Logging Out!");
@@ -312,6 +321,137 @@ class PopupOptionMenu extends StatelessWidget {
 }
 
 void manageSchedule(BuildContext context) {
+  //Code to retrieve the schedule if any and then move to manage schedule page
+  //Here Goes the entire code to check if schedule already submitted
+  // and if submitted read the schedule from the Database and reflect the schedule on the application
+  //Starting the progress bar for the period to gather the already submitted schedule
+
+  //Getting the authentication reference and getting the current user data
+  FirebaseAuth authSchedule = FirebaseAuth.instance;
+  User userSchedule = authSchedule.currentUser;
+  String uidSchedule = userSchedule.uid.toString();
+
+  //Code to show the progress bar
+  progressDialogSchedule = new ProgressDialog(context,
+      type: ProgressDialogType.Normal, isDismissible: false);
+  progressDialogSchedule.style(
+    child: Container(
+      color: Colors.white,
+      child: CircularProgressIndicator(
+        valueColor: new AlwaysStoppedAnimation<Color>(Colors.deepOrangeAccent),
+      ),
+      margin: EdgeInsets.all(10.0),
+    ),
+    message: "Fetching your Schedule!",
+    borderRadius: 10.0,
+    backgroundColor: Colors.white,
+    elevation: 40.0,
+    progress: 0.0,
+    maxProgress: 100.0,
+    insetAnimCurve: Curves.easeInOut,
+    progressWidgetAlignment: Alignment.center,
+    progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
+    messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
+  );
+  progressDialogSchedule.show();
+
+  //Code to check whether the schedule exists
+  FirebaseDatabase databaseSchedule = new FirebaseDatabase();
+  DatabaseReference referenceSchedule =
+      databaseSchedule.reference().child("schedule");
+  referenceSchedule
+      .reference()
+      .child(uidSchedule)
+      .once()
+      .then((DataSnapshot dataSnapshot) {
+    if (dataSnapshot.value != null) {
+      //Code to load the existing schedule and populate the Maps
+      displaySchedule(uidSchedule, context);
+    } else {
+      progressDialogSchedule.hide();
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => ManageSchedule()));
+    }
+  });
+}
+
+//Method to display the pre-submitted schedule
+void displaySchedule(String uidSchedule, BuildContext context) async {
+  //Saving each node containing the day name in the list
+  var listDays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+  ];
+
+  //Retrieving schedule from the database and populating the maps
+  FirebaseDatabase databaseRetrieveSchdeule = new FirebaseDatabase();
+  DatabaseReference referenceRetrieveSchdeule =
+      databaseRetrieveSchdeule.reference().child("schedule").child(uidSchedule);
+  //Code to retrieve the data from the database
+  //Iterating over the list to save the schedule for ith index day in the list from the database to the map for that day
+  for (int i = 0; i < listDays.length; i++) {
+    await referenceRetrieveSchdeule
+        .child(listDays.elementAt(i))
+        .once()
+        .then((DataSnapshot datasnapshot) {
+      List<dynamic> slots = datasnapshot.value;
+      print("$slots");
+      int len = slots.length;
+      print("$len");
+      //Code to save the entire schedule for a day into the map and then shift it to the schedule map
+      for (int j = 0; j < slots.length; j++) {
+        if (listDays.elementAt(i) == "Sunday") {
+          if (slots.elementAt(j) == "true") {
+            sundayMap[j] = true;
+          } else {
+            sundayMap[j] = false;
+          }
+        } else if (listDays.elementAt(i) == "Monday") {
+          if (slots.elementAt(j) == "true") {
+            mondayMap[j] = true;
+          } else {
+            mondayMap[j] = false;
+          }
+        } else if (listDays.elementAt(i) == "Tuesday") {
+          if (slots.elementAt(j) == "true") {
+            tuesdayMap[j] = true;
+          } else {
+            tuesdayMap[j] = false;
+          }
+        } else if (listDays.elementAt(i) == "Wednesday") {
+          if (slots.elementAt(j) == "true") {
+            wednesdayMap[j] = true;
+          } else {
+            wednesdayMap[j] = false;
+          }
+        } else if (listDays.elementAt(i) == "Thursday") {
+          if (slots.elementAt(j) == "true") {
+            thursdayMap[j] = true;
+          } else {
+            thursdayMap[j] = false;
+          }
+        } else if (listDays.elementAt(i) == "Friday") {
+          if (slots.elementAt(j) == "true") {
+            fridayMap[j] = true;
+          } else {
+            fridayMap[j] = false;
+          }
+        } else if (listDays.elementAt(i) == "Saturday") {
+          if (slots.elementAt(j) == "true") {
+            saturdayMap[j] = true;
+          } else {
+            saturdayMap[j] = false;
+          }
+        }
+      }
+    });
+  }
+  progressDialogSchedule.hide();
   Navigator.push(
       context, MaterialPageRoute(builder: (context) => ManageSchedule()));
 }

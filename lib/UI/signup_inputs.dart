@@ -356,7 +356,6 @@ class SignupInputs extends StatelessWidget {
       progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
       messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
     );
-    progressDialog.show();
 
     //Handling the inputs
     //To check that no field is empty
@@ -377,6 +376,8 @@ class SignupInputs extends StatelessWidget {
         if (datasnapshot.value != null) {
           Fluttertoast.showToast(msg: "The username is not available.");
         } else {
+          //Show progress bar only if username is available
+          progressDialog.show();
           //Pattern matching for the email
           Pattern pattern =
               r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
