@@ -13,8 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import './manage_schedule.dart';
 import '../UI/myProfile.dart';
-import '../Model/chatbot.dart';
-import '../Model/search.dart';
 
 //The map for each day containing the time slots, and boolean value for each slot; true: free, false: occupied.
 var sundayMap = new Map<int, bool>();
@@ -79,7 +77,7 @@ class DashboardState extends State<Dashboard>
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ScheduleInterface()));
+                          builder: (context) => ScheduleInterface(false)));
                 },
                 child: Icon(
                   Icons.add,
