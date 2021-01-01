@@ -468,7 +468,7 @@ class SearchState extends State<Search> {
   //Method to navigate back to scheduling interface
   void navigateBack() {
     if (totalSelected > 0) {
-      Navigator.push(context,
+      Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => ScheduleInterface(true)));
     } else {
       Fluttertoast.showToast(
