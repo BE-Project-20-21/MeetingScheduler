@@ -1,8 +1,16 @@
+import 'package:authentication_app/Model/dayselector.dart';
 import 'package:authentication_app/Model/engine_response_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import "./search.dart";
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 //variable to store the selected members
 var selectedMembers = Map();
@@ -21,12 +29,14 @@ class ScheduleInterface extends StatefulWidget {
 }
 
 class _ScheduleInterfaceState extends State<ScheduleInterface> {
+  String daySelected = "";
   //Variables(boolean) to handle the UI bot messages rendering
   bool membersSelected = false;
   bool membersConfirmed = false;
   bool subjectGiven = false;
   bool dayChoosen = false;
   bool dayConfirmed = false;
+  bool selectAday = false;
 
   //Variables to lock irreversible commits on the scheduling interface
   bool membersLocked = false;
@@ -296,10 +306,126 @@ class _ScheduleInterfaceState extends State<ScheduleInterface> {
                       Opacity(
                           opacity: subjectGiven ? 1.0 : 0.0,
                           child: ERBubble("${responseList[3]}")),
+                      Container(
+                        width: width / 2,
+                        margin: EdgeInsets.only(
+                            left: 30, right: 30, top: 10, bottom: 10),
+                        child: DropdownSearch<String>(
+                          mode: Mode.BOTTOM_SHEET,
+                          maxHeight: 300,
+                          items: [
+                            "Sunday",
+                            "Monday",
+                            "Tuesday",
+                            "Wednesday",
+                            "Thursday",
+                            "Friday",
+                            "Saturday"
+                          ],
+                          popupBarrierColor: Colors.white,
+                          label: "Select a day!",
+                          onChanged: (day) {
+                            daySelected = day;
+                            //Method to fetch common empty slots for the day as soon as the user selects a day
+                            fetchEmptySlots(daySelected);
+                          },
+                          popupBackgroundColor: Colors.white,
+                          showClearButton: true,
+                          showSearchBox: true,
+                          searchBoxDecoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            fillColor: Colors.white,
+                            contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
+                            labelText: "Search the day!",
+                          ),
+                          popupTitle: Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Color(0xFF398AE5),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Conduct a meet on?',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          popupShape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(24),
+                              topRight: Radius.circular(24),
+                            ),
+                          ),
+                        ),
+                      ),
                     ]),
               ),
             )),
           ),
         ));
+  }
+
+  void fetchEmptySlots(String daySelected) async {
+    print("selected Uid: $selectedNames");
+    print("Day selected: $daySelected");
+    int test = selectedNames.elementAt(0).trim().length;
+    print("test: $test");
+    //Declaring the firebase instances and references
+    FirebaseDatabase databaseSlots = new FirebaseDatabase();
+    DatabaseReference referenceSlots =
+        databaseSlots.reference().child("schedule");
+    List<dynamic> referenceSchedule = [];
+    var recurringSet = <int>{};
+    var tempSet = <int>{};
+    if (totalSelected != 0) {
+      for (int i = 0; i < selectedNames.length; i++) {
+        if (i == 0) {
+          await referenceSlots
+              .child(selectedNames.elementAt(i).trim())
+              .child(daySelected)
+              .once()
+              .then((DataSnapshot dataSnapshot1) {
+            referenceSchedule = dataSnapshot1.value;
+            print("Schedule: $referenceSchedule");
+            for (int j = 0; j < referenceSchedule.length; j++) {
+              if (referenceSchedule.elementAt(j) == "true") {
+                recurringSet.add(j);
+              }
+            }
+            print("individual Set: $recurringSet");
+          });
+        } else {
+          await referenceSlots
+              .child(selectedNames.elementAt(i).trim())
+              .child(daySelected)
+              .once()
+              .then((DataSnapshot dataSnapshot1) {
+            referenceSchedule = dataSnapshot1.value;
+            print("Schedule: $referenceSchedule");
+          });
+          for (int j = 0; j < referenceSchedule.length; j++) {
+            if (referenceSchedule.elementAt(j) == "true") {
+              tempSet.add(j);
+            }
+          }
+          recurringSet = tempSet.intersection(recurringSet);
+          tempSet.clear();
+          print("individual Set: $recurringSet");
+        }
+      }
+      print("Commom FreeSlots: $recurringSet");
+    } else {
+      Fluttertoast.showToast(
+          msg: "Please select atleast one member for the meeting");
+    }
   }
 }
