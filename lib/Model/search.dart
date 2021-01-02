@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import './scheduling_interface.dart';
 
 class Search extends StatefulWidget {
   @override
@@ -18,10 +19,7 @@ class SearchState extends State<Search> {
   //Variable to store tghe output from the database for a particular search query
   var queryResultSet = [];
   var tempSearchStore = [];
-  //variable to store the selected members
-  var selectedMembers = new Map();
-  var selectedNames = <String>{};
-  int totalSelected = 0;
+
   String daySelected = "";
 
   @override
@@ -173,7 +171,7 @@ class SearchState extends State<Search> {
                         "Friday",
                         "Saturday"
                       ],
-                      popupBarrierColor: Colors.white,
+                      popupBarrierColor: Colors.transparent,
                       label: "Select a day!",
                       onChanged: (day) {
                         daySelected = day;
@@ -185,7 +183,7 @@ class SearchState extends State<Search> {
                       showSearchBox: true,
                       searchBoxDecoration: InputDecoration(
                         border: OutlineInputBorder(),
-                        fillColor: Colors.white,
+                        fillColor: Colors.transparent,
                         contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
                         labelText: "Search the day!",
                       ),
@@ -213,6 +211,32 @@ class SearchState extends State<Search> {
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(24),
                           topRight: Radius.circular(24),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Container(
+                      margin: EdgeInsets.all(10.0),
+                      child: RaisedButton(
+                        elevation: 5.0,
+                        onPressed: () {
+                          navigateBack();
+                        },
+                        padding: EdgeInsets.all(10.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        color: Colors.white,
+                        child: Text(
+                          'Proceed!',
+                          style: TextStyle(
+                            color: Color(0xFF398AE5),
+                            letterSpacing: 1,
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -367,6 +391,7 @@ class SearchState extends State<Search> {
     if (totalSelected < 4) {
       selectedNames.add(uid);
       selectedMembers[uid] = name;
+      membersNames.add(name);
       totalSelected++;
     } else {
       Fluttertoast.showToast(msg: "Maximum number of members reacehed!");
@@ -376,6 +401,7 @@ class SearchState extends State<Search> {
 
 //Method to remove member from the list
   void discardMember(String uid) {
+    membersNames.remove(selectedMembers[uid]);
     setState(() {
       selectedNames.remove(uid);
       selectedMembers.remove(uid);
@@ -396,7 +422,6 @@ class SearchState extends State<Search> {
     List<dynamic> referenceSchedule = [];
     var recurringSet = <int>{};
     var tempSet = <int>{};
-    var tempSet1 = <int>{};
     if (totalSelected != 0) {
       for (int i = 0; i < selectedNames.length; i++) {
         if (i == 0) {
@@ -437,6 +462,17 @@ class SearchState extends State<Search> {
     } else {
       Fluttertoast.showToast(
           msg: "Please select atleast one member for the meeting");
+    }
+  }
+
+  //Method to navigate back to scheduling interface
+  void navigateBack() {
+    if (totalSelected > 0) {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => ScheduleInterface(true)));
+    } else {
+      Fluttertoast.showToast(
+          msg: "Please choose the members for the meeting before proceeding!");
     }
   }
 }

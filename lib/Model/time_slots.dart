@@ -111,73 +111,78 @@ class TimeSlots extends StatefulWidget {
 
   closeActivity() {
     //Code to hide the progress bar
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 2), () {
       progressDialog.hide();
     });
     //Code to implement the navigation right after submitting the schedule
-    // Navigator.pop(globalContextManageSchedule);
   }
 }
 
 class _TimeSlotsState extends State<TimeSlots> {
+  //Creating an object of ProgressDialog
+  ProgressDialog progressDialogSchedule;
+
   //Variables required to handle the selected/un-selected state of each slot
   bool pressed = false;
   int counter = 1;
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
-    //Setting the UI rendering parameters to not normal (pressed)
-    if (widget.day == "Sunday") {
-      if (sundayMap[widget.time] == true) {
-        setState(() {
-          pressed = true;
-          counter = counter + 1;
-        });
+    //Here Goes the entire code to check if schedule already submitted
+    // and if submitted read the schedule from the Database and reflect the schedule on the application
+    //Starting the progress bar for the period to gather the already submitted schedule
+
+    //Getting the authentication reference and getting the current user data
+    FirebaseAuth authSchedule = FirebaseAuth.instance;
+    User userSchedule = authSchedule.currentUser;
+    String uidSchedule = userSchedule.uid.toString();
+
+    //Code to check whether the schedule exists
+    FirebaseDatabase databaseSchedule = new FirebaseDatabase();
+    DatabaseReference referenceSchedule =
+        databaseSchedule.reference().child("schedule");
+    await referenceSchedule
+        .reference()
+        .child("schedule")
+        .child(uidSchedule)
+        .once()
+        .then((DataSnapshot dataSnapshot) {
+      if (dataSnapshot.value != null) {
+        //Code to load the existing schedule and populate the Maps
+        displaySchedule(uidSchedule);
       }
-    } else if (widget.day == "Monday") {
-      if (mondayMap[widget.time] == true) {
-        setState(() {
-          pressed = true;
-          counter = counter + 1;
-        });
-      }
-    } else if (widget.day == "Tuesday") {
-      if (tuesdayMap[widget.time] == true) {
-        setState(() {
-          pressed = true;
-          counter = counter + 1;
-        });
-      }
-    } else if (widget.day == "Wednesday") {
-      if (wednesdayMap[widget.time] == true) {
-        setState(() {
-          pressed = true;
-          counter = counter + 1;
-        });
-      }
-    } else if (widget.day == "Thursday") {
-      if (thursdayMap[widget.time] == true) {
-        setState(() {
-          pressed = true;
-          counter = counter + 1;
-        });
-      }
-    } else if (widget.day == "Friday") {
-      if (fridayMap[widget.time] == true) {
-        setState(() {
-          pressed = true;
-          counter = counter + 1;
-        });
-      }
-    } else if (widget.day == "Saturday") {
-      if (saturdayMap[widget.time] == true) {
-        setState(() {
-          pressed = true;
-          counter = counter + 1;
-        });
-      }
-    }
+    });
+  }
+
+  //Method to display the pre-submitted schedule
+  void displaySchedule(String uidSchedule) {
+    //Code to show the progress bar
+    progressDialogSchedule = new ProgressDialog(globalContextTimeSlots,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialogSchedule.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor:
+              new AlwaysStoppedAnimation<Color>(Colors.deepOrangeAccent),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Submitting your Schedule....",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
+    );
+    progressDialogSchedule.show();
+
+    //Retrieving schedule from the database and populating the maps
   }
 
   @override
