@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:authentication_app/UI/dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import './login.dart';
@@ -365,6 +368,7 @@ class UserInfoInputs extends StatelessWidget {
     );
     progressDialog.show();
 
+    //Code to navigate to the Dashboard after creating and entering all the user data into the database
     //Declaring Database Reference
     FirebaseDatabase databaseUserInfo = new FirebaseDatabase();
     DatabaseReference referenceUserInfo =
@@ -385,10 +389,24 @@ class UserInfoInputs extends StatelessWidget {
         databaseUserInfo.reference().child("usernames");
     await referenceUsername.child(gusername).set({"name": gfullname});
 
-    progressDialog.hide();
-
-    //Code to navigate to the Dashboard after creating and entering all the user data into the database
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Dashboard()));
+    //Code to Enter the device token into the firebase database
+    //Code to get the uid of the current user
+    String uidToken = authUserInfo.currentUser.uid.toString();
+    FirebaseMessaging fcmToken = new FirebaseMessaging();
+    String tokenID = await fcmToken.getToken();
+    String platform;
+    if (Platform.isAndroid) {
+      platform = "Android";
+    } else {
+      platform = "IOS";
+    }
+    FirebaseDatabase databaseToken = new FirebaseDatabase();
+    DatabaseReference referenceToken = databaseToken.reference().child("token");
+    await referenceToken
+        .child(uidToken)
+        .set({"tokenId": tokenID, "platform": platform})
+        .then((value) => progressDialog.hide())
+        .then((value) => Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Dashboard())));
   }
 }
