@@ -4,7 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import './scheduling_interface.dart';
+import '../UI/scheduling_interface.dart';
 
 class Search extends StatefulWidget {
   @override
@@ -39,7 +39,19 @@ class SearchState extends State<Search> {
         color: Colors.blueAccent,
         child: SingleChildScrollView(
           child: Container(
-            color: Colors.blueAccent,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color(0xFF73AEF5),
+                  Color(0xFF61A4F1),
+                  Color(0xFF478DE0),
+                  Color(0xFF398AE5),
+                ],
+                stops: [0.1, 0.4, 0.7, 0.9],
+              ),
+            ),
             child: SafeArea(
               child: Container(
                 margin: EdgeInsets.symmetric(
@@ -154,64 +166,6 @@ class SearchState extends State<Search> {
                               selectedMembers[selectedNames.elementAt(index)],
                               selectedNames.elementAt(index));
                         },
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    DropdownSearch<String>(
-                      mode: Mode.BOTTOM_SHEET,
-                      maxHeight: 300,
-                      items: [
-                        "Sunday",
-                        "Monday",
-                        "Tuesday",
-                        "Wednesday",
-                        "Thursday",
-                        "Friday",
-                        "Saturday"
-                      ],
-                      popupBarrierColor: Colors.transparent,
-                      label: "Select a day!",
-                      onChanged: (day) {
-                        daySelected = day;
-                        //Method to fetch common empty slots for the day as soon as the user selects a day
-                        fetchEmptySlots(daySelected);
-                      },
-                      popupBackgroundColor: Colors.white,
-                      showClearButton: true,
-                      showSearchBox: true,
-                      searchBoxDecoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        fillColor: Colors.transparent,
-                        contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
-                        labelText: "Search the day!",
-                      ),
-                      popupTitle: Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.blueAccent,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Conduct a meet on?',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      popupShape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24),
-                        ),
                       ),
                     ),
                     SizedBox(
@@ -410,60 +364,6 @@ class SearchState extends State<Search> {
   }
 
 //Method to implement free slots fetching from the database
-  void fetchEmptySlots(String daySelected) async {
-    print("selected Uid: $selectedNames");
-    print("Day selected: $daySelected");
-    int test = selectedNames.elementAt(0).trim().length;
-    print("test: $test");
-    //Declaring the firebase instances and references
-    FirebaseDatabase databaseSlots = new FirebaseDatabase();
-    DatabaseReference referenceSlots =
-        databaseSlots.reference().child("schedule");
-    List<dynamic> referenceSchedule = [];
-    var recurringSet = <int>{};
-    var tempSet = <int>{};
-    if (totalSelected != 0) {
-      for (int i = 0; i < selectedNames.length; i++) {
-        if (i == 0) {
-          await referenceSlots
-              .child(selectedNames.elementAt(i).trim())
-              .child(daySelected)
-              .once()
-              .then((DataSnapshot dataSnapshot1) {
-            referenceSchedule = dataSnapshot1.value;
-            print("Schedule: $referenceSchedule");
-            for (int j = 0; j < referenceSchedule.length; j++) {
-              if (referenceSchedule.elementAt(j) == "true") {
-                recurringSet.add(j);
-              }
-            }
-            print("individual Set: $recurringSet");
-          });
-        } else {
-          await referenceSlots
-              .child(selectedNames.elementAt(i).trim())
-              .child(daySelected)
-              .once()
-              .then((DataSnapshot dataSnapshot1) {
-            referenceSchedule = dataSnapshot1.value;
-            print("Schedule: $referenceSchedule");
-          });
-          for (int j = 0; j < referenceSchedule.length; j++) {
-            if (referenceSchedule.elementAt(j) == "true") {
-              tempSet.add(j);
-            }
-          }
-          recurringSet = tempSet.intersection(recurringSet);
-          tempSet.clear();
-          print("individual Set: $recurringSet");
-        }
-      }
-      print("Commom FreeSlots: $recurringSet");
-    } else {
-      Fluttertoast.showToast(
-          msg: "Please select atleast one member for the meeting");
-    }
-  }
 
   //Method to navigate back to scheduling interface
   void navigateBack() {

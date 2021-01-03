@@ -1,4 +1,4 @@
-import 'package:authentication_app/Model/scheduling_interface.dart';
+import 'package:authentication_app/UI/scheduling_interface.dart';
 import 'package:authentication_app/UI/login.dart';
 import 'package:authentication_app/Model/dashboard_first.dart';
 import 'package:authentication_app/Model/dashboard_second.dart';
