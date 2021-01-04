@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
-
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import "./search.dart";
 import '../UI/scheduling_interface.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class DaySelect extends StatefulWidget {
   DaySelect({Key key}) : super(key: key);
