@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-
 import '../Model/confirm_slots.dart';
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-
-
 import '../UI/scheduling_interface.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class DaySelect extends StatefulWidget {
   DaySelect({Key key}) : super(key: key);
@@ -18,6 +14,8 @@ class DaySelect extends StatefulWidget {
 }
 
 class _DaySelectState extends State<DaySelect> {
+  //Creating an object of ProgressDialog
+  ProgressDialog progressDialogSlots;
   @override
   Widget build(BuildContext context) {
     String daySelected = "";
@@ -124,6 +122,29 @@ class _DaySelectState extends State<DaySelect> {
   }
 
   void fetchEmptySlots(String daySelected) async {
+    //Code to show the progress bar
+    progressDialogSlots = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialogSlots.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Colors.blueAccent),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Fetching your Schedule!",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
+    );
+    progressDialogSlots.show();
     print("selected Uid: $selectedNames");
     print("Day selected: $daySelected");
     int test = selectedNames.elementAt(0).trim().length;
@@ -176,7 +197,11 @@ class _DaySelectState extends State<DaySelect> {
       Fluttertoast.showToast(
           msg: "Please select atleast one member for the meeting");
     }
+    progressDialogSlots.hide();
 
-    commonslots = recurringSet.toList();
+    //Setting the state once the free slots is calculates
+    setState(() {
+      commonslots = recurringSet.toList();
+    });
   }
 }
