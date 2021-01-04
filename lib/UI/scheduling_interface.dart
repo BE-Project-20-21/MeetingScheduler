@@ -6,11 +6,13 @@ import 'package:google_fonts/google_fonts.dart';
 import '../Model/search.dart';
 import '../UI/days_slots_page.dart';
 
+
 //variable to store the selected members
 var selectedMembers = Map();
 var selectedNames = <String>{};
 var membersNames = List();
 int totalSelected = selectedNames.length;
+List<int> commonslots;
 
 class ScheduleInterface extends StatefulWidget {
   bool membersSelectedWidget;
