@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-
+import '../Model/confirm_slots.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import "./search.dart";
+
 import '../UI/scheduling_interface.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -105,19 +105,22 @@ class _DaySelectState extends State<DaySelect> {
           height: 40,
         ),
         Container(
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(20)),
-            child: ExpansionTile(
-              maintainState: true,
-              title: Text(
-                "Choose Slots",
-                style: GoogleFonts.aBeeZee(
-                    textStyle:
-                        TextStyle(color: Color(0xFF398AE5), fontSize: 15),
-                    letterSpacing: 1,
-                    fontWeight: FontWeight.bold),
-              ),
-            ))
+          child: ConfirmSlots(),
+          // decoration: BoxDecoration(
+          //     color: Colors.white, borderRadius: BorderRadius.circular(20)),
+          // child: ExpansionTile(
+          //   maintainState: true,
+          //   title: Text(
+          //     "Choose Slots",
+          //     style: GoogleFonts.aBeeZee(
+          //         textStyle:
+          //             TextStyle(color: Color(0xFF398AE5), fontSize: 15),
+          //         letterSpacing: 1,
+          //         fontWeight: FontWeight.bold),
+          //   ),
+          //   children: [ConfirmSlots()],
+          // )
+        )
       ]),
     );
   }
@@ -175,8 +178,7 @@ class _DaySelectState extends State<DaySelect> {
       Fluttertoast.showToast(
           msg: "Please select atleast one member for the meeting");
     }
-    displaySlots(recurringSet);
-  }
 
-  Widget displaySlots(Set recurringSet) {}
+    commonslots = recurringSet.toList();
+  }
 }

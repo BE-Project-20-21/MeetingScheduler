@@ -12,12 +12,14 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../Model/confirm_slots.dart';
 
 //variable to store the selected members
 var selectedMembers = Map();
 var selectedNames = <String>{};
 var membersNames = List();
 int totalSelected = selectedNames.length;
+List<int> commonslots;
 
 class ScheduleInterface extends StatefulWidget {
   bool membersSelectedWidget;
