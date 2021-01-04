@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:authentication_app/UI/dashboard.dart';
 import 'package:authentication_app/UI/forgot_pasword.dart';
 import 'package:authentication_app/UI/userinfo_google_signin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -371,11 +374,28 @@ class Login extends StatelessWidget {
   }
 
   //Method to check if user email is verified and navigate accordingly
-  void checkEmailVerification(BuildContext context) {
+  void checkEmailVerification(BuildContext context) async {
     User userLogin = authLogIn.currentUser;
     if (userLogin.emailVerified) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Dashboard()));
+      //Code to Enter the device token into the firebase database
+      //Code to get the uid of the current user
+      String uidToken = authLogIn.currentUser.uid.toString();
+      FirebaseMessaging fcmToken = new FirebaseMessaging();
+      String tokenID = await fcmToken.getToken();
+      String platform;
+      if (Platform.isAndroid) {
+        platform = "Android";
+      } else {
+        platform = "IOS";
+      }
+      FirebaseDatabase databaseToken = new FirebaseDatabase();
+      DatabaseReference referenceToken =
+          databaseToken.reference().child("token");
+      await referenceToken
+          .child(uidToken)
+          .set({"tokenId": tokenID, "platform": platform}).then((value) =>
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => Dashboard())));
     } else {
       //Navigate to the page which shows up if email is not verified
       Navigator.pushReplacement(
@@ -446,10 +466,30 @@ class Login extends StatelessWidget {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => UserInfoGoogleSignIn()));
       } else {
-        progressDialog.hide();
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Dashboard()));
+        navigateToDashboard(context);
       }
     });
+  }
+
+  navigateToDashboard(BuildContext context) async {
+    //Code to Enter the device token into the firebase database
+    //Code to get the uid of the current user
+    String uidToken = authLogIn.currentUser.uid.toString();
+    FirebaseMessaging fcmToken = new FirebaseMessaging();
+    String tokenID = await fcmToken.getToken();
+    String platform;
+    if (Platform.isAndroid) {
+      platform = "Android";
+    } else {
+      platform = "IOS";
+    }
+    FirebaseDatabase databaseToken = new FirebaseDatabase();
+    DatabaseReference referenceToken = databaseToken.reference().child("token");
+    await referenceToken
+        .child(uidToken)
+        .update({"tokenId": tokenID, "platform": platform})
+        .then((value) => progressDialog.hide())
+        .then((value) => Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Dashboard())));
   }
 }
