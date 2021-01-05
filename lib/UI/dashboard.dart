@@ -74,6 +74,12 @@ class DashboardState extends State<Dashboard>
               child: FloatingActionButton(
                 onPressed: () {
                   //ADD meeting module
+                  //Code to clear the global variables
+                  selectedMembers.clear();
+                  selectedNames.clear();
+                  membersNames.clear();
+                  commonslots.clear();
+                  totalSelected = 0;
                   Navigator.push(
                       context,
                       MaterialPageRoute(

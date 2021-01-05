@@ -6,13 +6,12 @@ import 'package:google_fonts/google_fonts.dart';
 import '../Model/search.dart';
 import '../UI/days_slots_page.dart';
 
-
 //variable to store the selected members
-var selectedMembers = Map();
-var selectedNames = <String>{};
-var membersNames = List();
+Map selectedMembers = new Map();
+Set<String> selectedNames = new Set();
+List membersNames = new List();
 int totalSelected = selectedNames.length;
-List<int> commonslots;
+List<int> commonslots = new List();
 
 class ScheduleInterface extends StatefulWidget {
   bool membersSelectedWidget;
@@ -117,14 +116,14 @@ class _ScheduleInterfaceState extends State<ScheduleInterface> {
                                   if (membersLocked) {
                                     Fluttertoast.showToast(
                                         msg:
-                                            "The members os the meeting are confirmed! Cannot make changes");
+                                            "The members of the meeting are confirmed! Cannot make changes");
                                   } else {
                                     Fluttertoast.showToast(
                                         msg:
                                             "Please edit the list of members selected");
                                   }
                                 } else {
-                                  Navigator.push(
+                                  Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => Search()));
@@ -164,7 +163,7 @@ class _ScheduleInterfaceState extends State<ScheduleInterface> {
                                       onPressed: () {
                                         //Here goes the code to navigate back to search page to edit the members
                                         if (!membersLocked) {
-                                          Navigator.push(
+                                          Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
@@ -345,6 +344,8 @@ class _ScheduleInterfaceState extends State<ScheduleInterface> {
                                 elevation: 5.0,
                                 onPressed: () {
                                   if (subjectGiven) {
+                                    //clearing the slots list
+                                    commonslots.clear();
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
