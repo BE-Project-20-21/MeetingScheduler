@@ -3,16 +3,9 @@ import 'package:authentication_app/UI/days_slots_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import '../Model/search.dart';
 import '../UI/days_slots_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dropdown_search/dropdown_search.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../Model/confirm_slots.dart';
+
 
 //variable to store the selected members
 var selectedMembers = Map();
@@ -301,14 +294,16 @@ class _ScheduleInterfaceState extends State<ScheduleInterface> {
                                         child: RaisedButton(
                                           elevation: 5.0,
                                           onPressed: () {
-                                            if (subject != "") {
-                                              setState(() {
-                                                subjectGiven = true;
-                                              });
-                                            } else {
-                                              Fluttertoast.showToast(
-                                                  msg:
-                                                      "Please provide the Subject for the meeting!");
+                                            if (membersLocked) {
+                                              if (subject != "") {
+                                                setState(() {
+                                                  subjectGiven = true;
+                                                });
+                                              } else {
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                        "Please provide the Subject for the meeting!");
+                                              }
                                             }
                                           },
                                           padding: EdgeInsets.all(10.0),
@@ -341,29 +336,35 @@ class _ScheduleInterfaceState extends State<ScheduleInterface> {
                         SizedBox(
                           height: 10,
                         ),
-                        Container(
+                        Opacity(
+                          opacity: subjectGiven ? 1.0 : 0.0,
                           child: Container(
-                            margin: EdgeInsets.only(right: 30),
-                            child: RaisedButton(
-                              elevation: 5.0,
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => DaySlotsPage()));
-                              },
-                              padding: EdgeInsets.all(10.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                              color: Colors.white,
-                              child: Text(
-                                "Select a Day",
-                                style: TextStyle(
-                                  color: Color(0xFF398AE5),
-                                  letterSpacing: 1,
-                                  fontSize: 12.0,
-                                  fontWeight: FontWeight.bold,
+                            child: Container(
+                              margin: EdgeInsets.only(right: 30),
+                              child: RaisedButton(
+                                elevation: 5.0,
+                                onPressed: () {
+                                  if (subjectGiven) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                DaySlotsPage()));
+                                  }
+                                },
+                                padding: EdgeInsets.all(10.0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                color: Colors.white,
+                                child: Text(
+                                  "Select a Day",
+                                  style: TextStyle(
+                                    color: Color(0xFF398AE5),
+                                    letterSpacing: 1,
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
