@@ -34,7 +34,7 @@ class SearchState extends State<Search> {
             Theme.of(context).textTheme,
           )),
       home: Material(
-        color: Colors.blueAccent,
+        color: Color(0xFF398AE5),
         child: SingleChildScrollView(
           child: Container(
             decoration: BoxDecoration(

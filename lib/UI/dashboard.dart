@@ -59,7 +59,7 @@ class DashboardState extends State<Dashboard>
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primarySwatch: Colors.red,
+          primarySwatch: Colors.blue,
           textTheme: GoogleFonts.hammersmithOneTextTheme(
             Theme.of(context).textTheme,
           )),
@@ -182,7 +182,7 @@ class PopupOptionMenu extends StatelessWidget {
     return PopupMenuButton<MenuOption>(
       icon: Icon(
         Icons.menu,
-        color: Colors.red,
+        color: Color(0xFF398AE5),
       ),
       itemBuilder: (BuildContext context1) {
         return <PopupMenuEntry<MenuOption>>[
@@ -192,7 +192,7 @@ class PopupOptionMenu extends StatelessWidget {
                 Container(
                   child: Icon(
                     Icons.calendar_today,
-                    color: Colors.red,
+                    color: Color(0xFF398AE5),
                   ),
                   padding: EdgeInsets.all(5),
                 ),
@@ -213,7 +213,7 @@ class PopupOptionMenu extends StatelessWidget {
                 Container(
                   child: Icon(
                     Icons.settings,
-                    color: Colors.red,
+                    color: Color(0xFF398AE5),
                   ),
                   padding: EdgeInsets.all(5),
                 ),
@@ -236,7 +236,7 @@ class PopupOptionMenu extends StatelessWidget {
                 Container(
                   child: Icon(
                     Icons.account_box,
-                    color: Colors.red,
+                    color: Color(0xFF398AE5),
                   ),
                   padding: EdgeInsets.all(5),
                 ),
@@ -259,7 +259,7 @@ class PopupOptionMenu extends StatelessWidget {
                 Container(
                   child: Icon(
                     Icons.feedback,
-                    color: Colors.red,
+                    color: Color(0xFF398AE5),
                   ),
                   padding: EdgeInsets.all(5),
                 ),
@@ -280,7 +280,7 @@ class PopupOptionMenu extends StatelessWidget {
                 Container(
                   child: Icon(
                     Icons.exit_to_app,
-                    color: Colors.red,
+                    color: Color(0xFF398AE5),
                   ),
                   padding: EdgeInsets.all(5),
                 ),
@@ -342,7 +342,7 @@ void manageSchedule(BuildContext context) {
     child: Container(
       color: Colors.white,
       child: CircularProgressIndicator(
-        valueColor: new AlwaysStoppedAnimation<Color>(Colors.deepOrangeAccent),
+        valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF398AE5)),
       ),
       margin: EdgeInsets.all(10.0),
     ),

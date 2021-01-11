@@ -155,7 +155,7 @@ class _TimeSlotsState extends State<TimeSlots> {
   //   });
   // }
 
-   @override
+  @override
   void initState() {
     super.initState();
     //Setting the UI rendering parameters to not normal (pressed)
@@ -249,12 +249,14 @@ class _TimeSlotsState extends State<TimeSlots> {
         child: Padding(
           padding: const EdgeInsets.only(left: 2.0),
           child: FlatButton(
-            child: Text(
-              "${widget.time.toString()}" + ":00",
-              style: GoogleFonts.sourceSansPro(
-                  textStyle: TextStyle(
-                      color: pressed ? Colors.white : Colors.deepOrangeAccent)),
-              overflow: TextOverflow.clip,
+            child: FittedBox(
+              child: Text(
+                "${widget.time.toString()}" + ":00",
+                style: GoogleFonts.sourceSansPro(
+                    textStyle: TextStyle(
+                        color: pressed ? Colors.white : Color(0xFF398AE5))),
+                overflow: TextOverflow.clip,
+              ),
             ),
             onHighlightChanged: (value) => {},
             shape:
@@ -274,7 +276,7 @@ class _TimeSlotsState extends State<TimeSlots> {
                 addToSchedule(widget.day, widget.time);
               }
             },
-            color: pressed ? Colors.deepOrange : Colors.white,
+            color: pressed ? Colors.blueAccent : Colors.white,
           ),
         ),
       ),
