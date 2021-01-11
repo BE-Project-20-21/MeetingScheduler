@@ -1,6 +1,7 @@
 import '../main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -455,6 +456,14 @@ class SignupInputs extends StatelessWidget {
       DatabaseReference referenceUsername =
           databaseSignUp.reference().child("usernames");
       await referenceUsername.child(username).set({"name": fullname});
+
+      //Code to add name to firestore to perform searching
+      String searchKey = fullname.substring(0, 1);
+      final firestoreInstance = FirebaseFirestore.instance;
+      await firestoreInstance
+          .collection("names")
+          .doc(uid)
+          .set({"name": fullname, "searchKey": searchKey, "uid": uid});
 
       Fluttertoast.showToast(
           msg:
