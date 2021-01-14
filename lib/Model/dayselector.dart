@@ -40,6 +40,8 @@ class _DaySelectState extends State<DaySelect> {
               icon: Icon(Icons.arrow_circle_down),
               iconDisabledColor: Color(0xFF398AE5),
               iconSize: 30,
+              items: [],
+              onChanged: (value) {},
             ),
             dropdownSearchDecoration: InputDecoration(
               hintText: "Select a Day!",
@@ -116,6 +118,31 @@ class _DaySelectState extends State<DaySelect> {
           //   ),
           //   children: [ConfirmSlots()],
           // )
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Container(
+          child: Container(
+            child: RaisedButton(
+              elevation: 5.0,
+              onPressed: () {},
+              padding: EdgeInsets.all(10.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              color: Colors.white,
+              child: Text(
+                "Confirm Meeting",
+                style: TextStyle(
+                  color: Color(0xFF398AE5),
+                  letterSpacing: 1,
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
         )
       ]),
     );
