@@ -5,6 +5,8 @@ import 'package:dropdown_search/dropdown_search.dart';
 import '../UI/scheduling_interface.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class DaySelect extends StatefulWidget {
   DaySelect({Key key}) : super(key: key);
@@ -126,7 +128,9 @@ class _DaySelectState extends State<DaySelect> {
           child: Container(
             child: RaisedButton(
               elevation: 5.0,
-              onPressed: () {},
+              onPressed: () {
+                confirmMeeting();
+              },
               padding: EdgeInsets.all(10.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0),
@@ -240,5 +244,38 @@ class _DaySelectState extends State<DaySelect> {
           backgroundColor: Colors.white,
           textColor: Colors.blue);
     }
+  }
+
+  void confirmMeeting() async {
+    //Declaring the list to save the devide token of the meeting members
+    List<String> deviceTokens = new List<String>();
+    //Declaring database reference to retrieve the device tokens of each users
+    FirebaseDatabase databaseNotifications = FirebaseDatabase.instance;
+    DatabaseReference referenceNotifications =
+        databaseNotifications.reference().child("token");
+    for (int i = 0; i < selectedNames.length; i++) {
+      await referenceNotifications
+          .child(selectedNames.elementAt(i))
+          .child("tokenId")
+          .once()
+          .then((DataSnapshot dataSnapshot) {
+        deviceTokens.add(dataSnapshot.value);
+      });
+    }
+    List<String> subjectList = List<String>();
+    subjectList.add(subject);
+    print(deviceTokens);
+
+    //Requesting the server to send notification to the list of device tokens
+    final response = await http.post(
+      'https://9c9be2902228.ngrok.io/notification',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, List<String>>{
+        'registrationTokens': deviceTokens,
+        "subject": subjectList,
+      }),
+    );
   }
 }
