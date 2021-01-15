@@ -279,7 +279,5 @@ class _DaySelectState extends State<DaySelect> {
         "subject": subjectList,
       }),
     );
-
-    print(response.);
   }
 }
