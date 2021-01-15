@@ -270,7 +270,7 @@ class _DaySelectState extends State<DaySelect> {
 
     //Requesting the server to send notification to the list of device tokens
     final response = await http.post(
-      'https://b765a07b5a1e.ngrok.io/notification',
+      'https://meeting-scheduler-function.azurewebsites.net/api/HttpTrigger1',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -279,5 +279,7 @@ class _DaySelectState extends State<DaySelect> {
         "subject": subjectList,
       }),
     );
+
+    print(response.);
   }
 }
