@@ -262,13 +262,15 @@ class _DaySelectState extends State<DaySelect> {
         deviceTokens.add(dataSnapshot.value);
       });
     }
+    //Fetching the name of the user who is scheduling the meeting
     List<String> subjectList = List<String>();
     subjectList.add(subject);
+    subjectList.add(membersNames.join(", "));
     print(deviceTokens);
 
     //Requesting the server to send notification to the list of device tokens
     final response = await http.post(
-      'https://9c9be2902228.ngrok.io/notification',
+      'https://b765a07b5a1e.ngrok.io/notification',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
