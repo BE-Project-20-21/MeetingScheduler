@@ -5,6 +5,7 @@ import 'package:authentication_app/Model/dashboard_second.dart';
 import 'package:authentication_app/Model/dashboard_third.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/rendering.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -58,13 +59,10 @@ class DashboardState extends State<Dashboard>
     // TODO: implement build
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          primarySwatch: Colors.blue,
-          textTheme: GoogleFonts.hammersmithOneTextTheme(
-            Theme.of(context).textTheme,
-          )),
+      theme: ThemeData(fontFamily: 'Metropolis'),
       home: Material(
         child: Scaffold(
+          extendBodyBehindAppBar: true,
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
           floatingActionButton: Container(
@@ -87,9 +85,10 @@ class DashboardState extends State<Dashboard>
                 },
                 child: Icon(
                   Icons.add,
-                  size: 40,
+                  size: 35,
+                  color: Color(0xFF516395),
                 ),
-                backgroundColor: Colors.black,
+                backgroundColor: Colors.white,
               )),
           appBar: AppBar(
             title: Container(
@@ -100,53 +99,74 @@ class DashboardState extends State<Dashboard>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
+                    padding: const EdgeInsets.only(top: 50.0, bottom: 30),
                     child: Text(
-                      "Dashboard",
-                      style: GoogleFonts.hammersmithOne(
-                          textStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 25.0,
-                      )),
+                      'Dashboard',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          color: Colors.white,
+                          letterSpacing: 1,
+                          fontSize: 30,
+                          fontFamily: 'Metropolis',
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
               ),
             ),
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
             actions: <Widget>[
-              PopupOptionMenu(),
+              Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: PopupOptionMenu(),
+              ),
             ],
             bottom: TabBar(
+              labelColor: Color(0xFF614385),
+              indicatorSize: TabBarIndicatorSize.label,
+              unselectedLabelColor: Colors.white,
+              indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50), color: Colors.white),
               controller: tabController,
               tabs: <Tab>[
                 new Tab(
-                  child: Text(
-                    "UPCOMING",
-                    style: GoogleFonts.hammersmithOne(
-                        textStyle: TextStyle(
-                      color: Colors.black,
-                      // fontWeight: FontWeight.bold,
-                      fontSize: 15.0,
-                    )),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    child: FittedBox(
+                      child: Text(
+                        "UPCOMING",
+                        style: TextStyle(
+                          fontSize: 15.0,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 new Tab(
-                  child: Text("REQUESTED",
-                      style: GoogleFonts.hammersmithOne(
-                          textStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15.0,
-                      ))),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    child: FittedBox(
+                      child: Text(
+                        "REQUESTED",
+                        style: TextStyle(
+                          fontSize: 15.0,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 new Tab(
-                  child: Text(
-                    "CHATS",
-                    style: GoogleFonts.hammersmithOne(
-                        textStyle: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15.0,
-                    )),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    child: FittedBox(
+                      child: Text(
+                        "CHATS",
+                        style: TextStyle(
+                          fontSize: 15.0,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -155,13 +175,24 @@ class DashboardState extends State<Dashboard>
           body: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            child: new TabBarView(
-              controller: tabController,
-              children: <Widget>[
-                new DashboardFirst(),
-                new DashboardSecond(),
-                new DashboardThird(),
-              ],
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [
+                      Color(0xFF614385),
+                      Color(0xFF516395),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [0.2, 0.8])),
+            child: SafeArea(
+              child: new TabBarView(
+                controller: tabController,
+                children: <Widget>[
+                  Text("Upcoming"),
+                  Text("Requested"),
+                  Text("Chats")
+                ],
+              ),
             ),
           ),
         ),
@@ -180,10 +211,7 @@ class PopupOptionMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return PopupMenuButton<MenuOption>(
-      icon: Icon(
-        Icons.menu,
-        color: Color(0xFF398AE5),
-      ),
+      icon: Icon(Icons.menu, color: Colors.white),
       itemBuilder: (BuildContext context1) {
         return <PopupMenuEntry<MenuOption>>[
           PopupMenuItem(
