@@ -26,173 +26,203 @@ class SearchState extends State<Search> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Search",
-      theme: ThemeData(
-          primarySwatch: Colors.orange,
-          accentColor: Colors.orangeAccent,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          textTheme: GoogleFonts.aBeeZeeTextTheme(
-            Theme.of(context).textTheme,
-          )),
+      theme:
+          ThemeData(fontFamily: 'Metropolis', dividerColor: Colors.transparent),
       home: Material(
-        color: Color(0xFF398AE5),
-        child: SingleChildScrollView(
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFF73AEF5),
-                  Color(0xFF61A4F1),
-                  Color(0xFF478DE0),
-                  Color(0xFF398AE5),
+        color: Color(0xFF516395),
+        child: Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            title: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 50.0, bottom: 30),
+                    child: Text(
+                      'Search Members',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          color: Colors.white,
+                          letterSpacing: 1,
+                          fontSize: 33,
+                          fontFamily: 'Metropolis',
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ],
-                stops: [0.1, 0.4, 0.7, 0.9],
               ),
             ),
+            elevation: 0.0,
+            backgroundColor: Colors.transparent,
+          ),
+          body: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [
+                      Color(0xFF614385),
+                      Color(0xFF516395),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [0.2, 0.8])),
             child: SafeArea(
-              child: Container(
-                margin: EdgeInsets.symmetric(
-                  horizontal: 10.0,
-                  vertical: 20.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    AnimatedContainer(
-                      duration: Duration(microseconds: 400),
-                      width: _folded ? 56 : double.infinity,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(32.0),
-                        color: Colors.white,
-                        boxShadow: kElevationToShadow[6],
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Container(
-                              padding: EdgeInsets.only(left: 16),
-                              child: !_folded
-                                  ? TextField(
-                                      onChanged: (query) {
-                                        searchQuery = query;
-                                        searchUsers(searchQuery);
-                                      },
-                                      keyboardType: TextInputType.name,
-                                      decoration: InputDecoration(
-                                        hintText: "Search",
-                                        hintStyle: TextStyle(
-                                          color: Colors.blue,
-                                        ),
-                                        border: InputBorder.none,
-                                      ),
-                                    )
-                                  : null,
-                            ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                      minHeight: MediaQuery.of(context).size.height),
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 20.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        AnimatedContainer(
+                          duration: Duration(microseconds: 400),
+                          width: _folded ? 56 : double.infinity,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(32.0),
+                            color: Colors.white,
+                            boxShadow: kElevationToShadow[6],
                           ),
-                          AnimatedContainer(
-                            duration: Duration(milliseconds: 400),
-                            child: Material(
-                              type: MaterialType.transparency,
-                              child: InkWell(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(_folded ? 32 : 0),
-                                  topRight: Radius.circular(32),
-                                  bottomLeft: Radius.circular(_folded ? 32 : 0),
-                                  bottomRight: Radius.circular(32),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 16),
+                                  child: !_folded
+                                      ? TextField(
+                                          onChanged: (query) {
+                                            searchQuery = query;
+                                            searchUsers(searchQuery);
+                                          },
+                                          keyboardType: TextInputType.name,
+                                          decoration: InputDecoration(
+                                            hintText: "Search",
+                                            hintStyle: TextStyle(
+                                              color: Color(0xFF614385),
+                                            ),
+                                            border: InputBorder.none,
+                                          ),
+                                        )
+                                      : null,
                                 ),
-                                child: Padding(
-                                  padding: EdgeInsets.all(16.0),
-                                  child: Icon(
-                                    _folded ? Icons.search : Icons.close,
-                                    color: Colors.blue,
+                              ),
+                              AnimatedContainer(
+                                duration: Duration(milliseconds: 400),
+                                child: Material(
+                                  type: MaterialType.transparency,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft:
+                                          Radius.circular(_folded ? 32 : 0),
+                                      topRight: Radius.circular(32),
+                                      bottomLeft:
+                                          Radius.circular(_folded ? 32 : 0),
+                                      bottomRight: Radius.circular(32),
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.all(16.0),
+                                      child: Icon(
+                                        _folded ? Icons.search : Icons.close,
+                                        color: Color(0xFF614385),
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      setState(() {
+                                        _folded = !_folded;
+                                      });
+                                    },
                                   ),
                                 ),
-                                onTap: () {
-                                  setState(() {
-                                    _folded = !_folded;
-                                  });
-                                },
                               ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.0),
+                            color: Colors.white,
+                            boxShadow: kElevationToShadow[6],
+                          ),
+                          margin: EdgeInsets.only(top: 20.0),
+                          child: ListView.builder(
+                            itemCount: tempSearchStore.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              return nameCard(tempSearchStore[index]["name"],
+                                  tempSearchStore[index]["uid"]);
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(10.0),
+                          child: Text(
+                            "Selected Members: $totalSelected",
+                            textAlign: TextAlign.center,
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 22.0),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.0),
+                            color: Colors.white,
+                            boxShadow: kElevationToShadow[6],
+                          ),
+                          margin: EdgeInsets.only(top: 20.0),
+                          child: ListView.builder(
+                            itemCount: selectedMembers.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              return listedMember(
+                                  selectedMembers[
+                                      selectedNames.elementAt(index)],
+                                  selectedNames.elementAt(index));
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(10.0),
+                          child: RaisedButton(
+                            elevation: 5.0,
+                            onPressed: () {
+                              navigateBack();
+                            },
+                            padding: EdgeInsets.all(10.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            color: Colors.white,
+                            child: Text(
+                              'Proceed!',
+                              style: TextStyle(
+                                  color: Color(0xFF614385),
+                                  letterSpacing: 1,
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Metropolis'),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.0),
-                        color: Colors.white,
-                        boxShadow: kElevationToShadow[6],
-                      ),
-                      margin: EdgeInsets.only(top: 20.0),
-                      child: ListView.builder(
-                        itemCount: tempSearchStore.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return nameCard(tempSearchStore[index]["name"],
-                              tempSearchStore[index]["uid"]);
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Container(
-                      margin: EdgeInsets.all(10.0),
-                      child: Text(
-                        "Selected Members: $totalSelected",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white, fontSize: 22.0),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.0),
-                        color: Colors.white,
-                        boxShadow: kElevationToShadow[6],
-                      ),
-                      margin: EdgeInsets.only(top: 20.0),
-                      child: ListView.builder(
-                        itemCount: selectedMembers.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return listedMember(
-                              selectedMembers[selectedNames.elementAt(index)],
-                              selectedNames.elementAt(index));
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Container(
-                      margin: EdgeInsets.all(10.0),
-                      child: RaisedButton(
-                        elevation: 5.0,
-                        onPressed: () {
-                          navigateBack();
-                        },
-                        padding: EdgeInsets.all(10.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
                         ),
-                        color: Colors.white,
-                        child: Text(
-                          'Proceed!',
-                          style: TextStyle(
-                            color: Color(0xFF398AE5),
-                            letterSpacing: 1,
-                            fontSize: 12.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -233,7 +263,7 @@ class SearchState extends State<Search> {
                     color: Colors.white,
                     child: Icon(
                       Icons.delete,
-                      color: Colors.black,
+                      color: Color(0xFF614385),
                     ),
                   ),
                 ),
@@ -242,7 +272,7 @@ class SearchState extends State<Search> {
             Container(
               width: double.infinity,
               height: 0.5,
-              color: Colors.blue,
+              color: Color(0xFF614385),
             ),
           ],
         ),
@@ -289,7 +319,7 @@ class SearchState extends State<Search> {
             Container(
               width: double.infinity,
               height: 0.5,
-              color: Colors.blue,
+              color: Color(0xFF614385),
             ),
           ],
         ),

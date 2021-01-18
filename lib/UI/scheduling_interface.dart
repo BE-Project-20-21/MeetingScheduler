@@ -63,12 +63,10 @@ class _ScheduleInterfaceState extends State<ScheduleInterface> {
         debugShowCheckedModeBanner: false,
         title: "Scheduling Interface",
         theme: ThemeData(
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-            textTheme: GoogleFonts.aBeeZeeTextTheme(
-              Theme.of(context).textTheme,
-            )),
+            fontFamily: 'Metropolis', dividerColor: Colors.transparent),
         home: Material(
           child: Scaffold(
+            extendBodyBehindAppBar: true,
             appBar: AppBar(
               title: Container(
                 width: MediaQuery.of(context).size.width,
@@ -78,281 +76,71 @@ class _ScheduleInterfaceState extends State<ScheduleInterface> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
+                      padding: const EdgeInsets.only(top: 50.0, bottom: 30),
                       child: Text(
-                        "New Meeting",
-                        style: GoogleFonts.hammersmithOne(
-                            textStyle: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20.0,
-                                letterSpacing: 1)),
+                        'New Meeting',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.white,
+                            letterSpacing: 1,
+                            fontSize: 33,
+                            fontFamily: 'Metropolis',
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
                 ),
               ),
-              backgroundColor: Colors.white,
+              elevation: 0.0,
+              backgroundColor: Colors.transparent,
             ),
             body: Container(
-              margin: EdgeInsets.only(top: 10),
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: [
+                        Color(0xFF614385),
+                        Color(0xFF516395),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: [0.2, 0.8])),
+              // margin: EdgeInsets.only(top: 10),
               child: SafeArea(
                   child: SingleChildScrollView(
-                child: Container(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        ERBubble("${responseList[0]}"),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          child: Container(
-                            margin: EdgeInsets.only(right: 30),
-                            child: RaisedButton(
-                              elevation: 5.0,
-                              onPressed: () {
-                                if (membersSelected) {
-                                  if (membersLocked) {
-                                    Fluttertoast.showToast(
-                                        msg:
-                                            "The members of the meeting are confirmed! Cannot make changes");
-                                  } else {
-                                    Fluttertoast.showToast(
-                                        msg:
-                                            "Please edit the list of members selected");
-                                  }
-                                } else {
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Search()));
-                                }
-                              },
-                              padding: EdgeInsets.all(10.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                              color: Colors.white,
-                              child: Text(
-                                "Search Members",
-                                style: TextStyle(
-                                  color: Color(0xFF398AE5),
-                                  letterSpacing: 1,
-                                  fontSize: 12.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
+                scrollDirection: Axis.vertical,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                      minHeight: MediaQuery.of(context).size.height),
+                  child: Container(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          ERBubble("${responseList[0]}"),
+                          SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        Opacity(
-                            opacity: membersSelected ? 1.0 : 0.0,
-                            child: ERBubble("${responseList[1]}")),
-                        Opacity(
-                            opacity: membersSelected ? 1.0 : 0.0,
-                            child: Container(
-                              margin: EdgeInsets.only(top: 10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(right: 10),
-                                    child: RaisedButton(
-                                      elevation: 5.0,
-                                      onPressed: () {
-                                        //Here goes the code to navigate back to search page to edit the members
-                                        if (!membersLocked) {
-                                          Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      Search()));
-                                        } else {
-                                          Fluttertoast.showToast(
-                                              msg:
-                                                  "You cannot makes changes now!");
-                                        }
-                                      },
-                                      padding: EdgeInsets.all(10.0),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                      ),
-                                      color: Colors.white,
-                                      child: Text(
-                                        'Edit',
-                                        style: TextStyle(
-                                          color: Color(0xFF398AE5),
-                                          letterSpacing: 1,
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(right: 30),
-                                    child: RaisedButton(
-                                      elevation: 5.0,
-                                      onPressed: () {
-                                        //Here goes the code to confirm the mebers selected
-                                        if (!membersLocked) {
-                                          setState(() {
-                                            membersConfirmed = true;
-                                          });
-                                          membersLocked = true;
-                                        } else {
-                                          Fluttertoast.showToast(
-                                              msg:
-                                                  "Members already confirmed!");
-                                        }
-                                      },
-                                      padding: EdgeInsets.all(10.0),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                      ),
-                                      color: Colors.white,
-                                      child: Text(
-                                        'Confirm',
-                                        style: TextStyle(
-                                          color: Color(0xFF398AE5),
-                                          letterSpacing: 1,
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )),
-                        Opacity(
-                          opacity: membersConfirmed ? 1.0 : 0.0,
-                          child: ERBubble(
-                              "The Selected Members for the meeting are: " +
-                                  membersNames.join(", ")),
-                        ),
-                        Opacity(
-                            opacity: membersConfirmed ? 1.0 : 0.0,
-                            child: ERBubble("${responseList[2]}")),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Opacity(
-                          opacity: membersConfirmed ? 1.0 : 0.0,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Flexible(
-                                child: Column(
-                                  children: <Widget>[
-                                    Container(
-                                      margin: EdgeInsets.only(right: 30),
-                                      width: width / 2,
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 8.0),
-                                        child: TextField(
-                                          onChanged: (subjectInput) {
-                                            subject = subjectInput;
-                                          },
-                                          textCapitalization:
-                                              TextCapitalization.sentences,
-                                          keyboardType: TextInputType.text,
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15),
-                                          decoration: InputDecoration(
-                                              border: InputBorder.none,
-                                              contentPadding:
-                                                  EdgeInsets.only(top: 5.0),
-                                              labelText: "Enter a Subject",
-                                              labelStyle: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                  letterSpacing: 1,
-                                                  color: Color(0xFF398AE5))),
-                                          autofocus: false,
-                                        ),
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black12,
-                                            blurRadius: 6.0,
-                                            offset: Offset(0, 2),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      child: Container(
-                                        child: RaisedButton(
-                                          elevation: 5.0,
-                                          onPressed: () {
-                                            if (membersLocked) {
-                                              if (subject != "") {
-                                                setState(() {
-                                                  subjectGiven = true;
-                                                });
-                                              } else {
-                                                Fluttertoast.showToast(
-                                                    msg:
-                                                        "Please provide the Subject for the meeting!");
-                                              }
-                                            }
-                                          },
-                                          padding: EdgeInsets.all(10.0),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                          ),
-                                          color: Colors.white,
-                                          child: Text(
-                                            'Confirm Subject',
-                                            style: TextStyle(
-                                              color: Color(0xFF398AE5),
-                                              letterSpacing: 1,
-                                              fontSize: 12.0,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Opacity(
-                            opacity: subjectGiven ? 1.0 : 0.0,
-                            child: ERBubble("${responseList[3]}")),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Opacity(
-                          opacity: subjectGiven ? 1.0 : 0.0,
-                          child: Container(
+                          Container(
                             child: Container(
                               margin: EdgeInsets.only(right: 30),
                               child: RaisedButton(
                                 elevation: 5.0,
                                 onPressed: () {
-                                  if (subjectGiven) {
-                                    //clearing the slots list
-                                    commonslots.clear();
-                                    Navigator.push(
+                                  if (membersSelected) {
+                                    if (membersLocked) {
+                                      Fluttertoast.showToast(
+                                          msg:
+                                              "The members of the meeting are confirmed! Cannot make changes");
+                                    } else {
+                                      Fluttertoast.showToast(
+                                          msg:
+                                              "Please edit the list of members selected");
+                                    }
+                                  } else {
+                                    Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                DaySlotsPage()));
+                                            builder: (context) => Search()));
                                   }
                                 },
                                 padding: EdgeInsets.all(10.0),
@@ -361,19 +149,247 @@ class _ScheduleInterfaceState extends State<ScheduleInterface> {
                                 ),
                                 color: Colors.white,
                                 child: Text(
-                                  "Select a Day",
+                                  "Search Members",
                                   style: TextStyle(
-                                    color: Color(0xFF398AE5),
-                                    letterSpacing: 1,
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.bold,
+                                      color: Color(0xFF614385),
+                                      letterSpacing: 1,
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Metropolis'),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Opacity(
+                              opacity: membersSelected ? 1.0 : 0.0,
+                              child: ERBubble("${responseList[1]}")),
+                          Opacity(
+                              opacity: membersSelected ? 1.0 : 0.0,
+                              child: Container(
+                                margin: EdgeInsets.only(top: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(right: 10),
+                                      child: RaisedButton(
+                                        elevation: 5.0,
+                                        onPressed: () {
+                                          //Here goes the code to navigate back to search page to edit the members
+                                          if (!membersLocked) {
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Search()));
+                                          } else {
+                                            Fluttertoast.showToast(
+                                                msg:
+                                                    "You cannot makes changes now!");
+                                          }
+                                        },
+                                        padding: EdgeInsets.all(10.0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30.0),
+                                        ),
+                                        color: Colors.white,
+                                        child: Text(
+                                          'Edit',
+                                          style: TextStyle(
+                                              color: Color(0xFF614385),
+                                              letterSpacing: 1,
+                                              fontSize: 12.0,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Metropolis'),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(right: 30),
+
+                                      child: RaisedButton(
+                                        elevation: 5.0,
+                                        onPressed: () {
+                                          //Here goes the code to confirm the mebers selected
+                                          if (!membersLocked) {
+                                            setState(() {
+                                              membersConfirmed = true;
+                                            });
+                                            membersLocked = true;
+                                          } else {
+                                            Fluttertoast.showToast(
+                                                msg:
+                                                    "Members already confirmed!");
+                                          }
+                                        },
+                                        padding: EdgeInsets.all(10.0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30.0),
+                                        ),
+                                        color: Colors.white,
+                                        child: Text(
+                                          'Confirm',
+                                          style: TextStyle(
+                                              color: Color(0xFF614385),
+                                              letterSpacing: 1,
+                                              fontSize: 12.0,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Metropolis'),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )),
+                          Opacity(
+                            opacity: membersConfirmed ? 1.0 : 0.0,
+                            child: ERBubble(
+                                "The Selected Members for the meeting are: " +
+                                    membersNames.join(", ")),
+                          ),
+                          Opacity(
+                              opacity: membersConfirmed ? 1.0 : 0.0,
+                              child: ERBubble("${responseList[2]}")),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Opacity(
+                            opacity: membersConfirmed ? 1.0 : 0.0,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Flexible(
+                                  child: Column(
+                                    children: <Widget>[
+                                      Container(
+                                        margin: EdgeInsets.only(right: 30),
+                                        width: width / 2,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 8.0),
+                                          child: TextField(
+                                            cursorColor: Color(0xFF614385),
+                                            onChanged: (subjectInput) {
+                                              subject = subjectInput;
+                                            },
+                                            keyboardType: TextInputType.text,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 15),
+                                            decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                                contentPadding:
+                                                    EdgeInsets.only(top: 5.0),
+                                                labelText: "Enter a Subject",
+                                                labelStyle: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    letterSpacing: 1,
+                                                    color: Color(0xFF614385),
+                                                    fontFamily: 'Metropolis')),
+                                            autofocus: false,
+                                          ),
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black12,
+                                              blurRadius: 6.0,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        child: Container(
+                                          child: RaisedButton(
+                                            elevation: 5.0,
+                                            onPressed: () {
+                                              if (membersLocked) {
+                                                if (subject != "") {
+                                                  setState(() {
+                                                    subjectGiven = true;
+                                                  });
+                                                } else {
+                                                  Fluttertoast.showToast(
+                                                      msg:
+                                                          "Please provide the Subject for the meeting!");
+                                                }
+                                              }
+                                            },
+                                            padding: EdgeInsets.all(10.0),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30.0),
+                                            ),
+                                            color: Colors.white,
+                                            child: Text(
+                                              'Confirm Subject',
+                                              style: TextStyle(
+                                                  color: Color(0xFF614385),
+                                                  letterSpacing: 1,
+                                                  fontSize: 12.0,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily: 'Metropolis'),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Opacity(
+                              opacity: subjectGiven ? 1.0 : 0.0,
+                              child: ERBubble("${responseList[3]}")),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Opacity(
+                            opacity: subjectGiven ? 1.0 : 0.0,
+                            child: Container(
+                              child: Container(
+                                margin: EdgeInsets.only(right: 30),
+                                child: RaisedButton(
+                                  elevation: 5.0,
+                                  onPressed: () {
+                                    if (subjectGiven) {
+                                      //clearing the slots list
+                                      commonslots.clear();
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  DaySlotsPage()));
+                                    }
+                                  },
+                                  padding: EdgeInsets.all(10.0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                  color: Colors.white,
+                                  child: Text(
+                                    "Select a Day",
+                                    style: TextStyle(
+                                        color: Color(0xFF614385),
+                                        letterSpacing: 1,
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Metropolis'),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ]),
+                        ]),
+                  ),
                 ),
               )),
             ),
