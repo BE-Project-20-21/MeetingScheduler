@@ -12,6 +12,7 @@ Set<String> selectedNames = new Set();
 List membersNames = new List();
 int totalSelected = selectedNames.length;
 List<int> commonslots = new List();
+String subject = "";
 
 class ScheduleInterface extends StatefulWidget {
   bool membersSelectedWidget;
@@ -54,7 +55,6 @@ class _ScheduleInterfaceState extends State<ScheduleInterface> {
     "Have a good day!"
   ];
 
-  String subject = "";
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -207,6 +207,7 @@ class _ScheduleInterfaceState extends State<ScheduleInterface> {
                                     ),
                                     Container(
                                       margin: EdgeInsets.only(right: 30),
+
                                       child: RaisedButton(
                                         elevation: 5.0,
                                         onPressed: () {

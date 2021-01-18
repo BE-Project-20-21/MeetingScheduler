@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -388,6 +389,14 @@ class UserInfoInputs extends StatelessWidget {
     DatabaseReference referenceUsername =
         databaseUserInfo.reference().child("usernames");
     await referenceUsername.child(gusername).set({"name": gfullname});
+
+    //Code to add name to firestore to perform searching
+    String searchKey = gfullname.substring(0, 1);
+    final firestoreInstance = FirebaseFirestore.instance;
+    await firestoreInstance
+        .collection("names")
+        .doc(_uidUserInfo)
+        .set({"name": gfullname, "searchKey": searchKey, "uid": _uidUserInfo});
 
     //Code to Enter the device token into the firebase database
     //Code to get the uid of the current user

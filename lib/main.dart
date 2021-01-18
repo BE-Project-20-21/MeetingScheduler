@@ -3,6 +3,7 @@ import 'package:authentication_app/UI/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:authentication_app/UI/userinfo_google_signin.dart';
@@ -35,9 +36,20 @@ class FirstPage extends StatefulWidget {
 class _FirstPageState extends State<FirstPage> {
   //Declaring database references
   FirebaseAuth authMain = FirebaseAuth.instance;
+  FirebaseMessaging _fcm = FirebaseMessaging();
 
   @override
   void initState() {
+    _fcm.configure(onMessage: (msg) {
+      print(msg);
+      return;
+    }, onLaunch: (msg) {
+      print(msg);
+      return;
+    }, onResume: (msg) {
+      print(msg);
+      return;
+    });
     super.initState();
     startTimer();
   }
