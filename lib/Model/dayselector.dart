@@ -37,19 +37,19 @@ class _DaySelectState extends State<DaySelect> {
               "Saturday"
             ],
             dropDownButton: DropdownButton(
-              icon: Icon(Icons.arrow_circle_down),
-              iconDisabledColor: Color(0xFF398AE5),
+              icon: Icon(Icons.keyboard_arrow_down_sharp),
+              iconDisabledColor: Color(0xFF614385),
               iconSize: 30,
             ),
             dropdownSearchDecoration: InputDecoration(
-              hintText: "Select a Day!",
+              hintText: "Days",
               hintStyle: TextStyle(
-                  color: Color(0xFF398AE5),
+                  color: Color(0xFF614385),
                   letterSpacing: 1,
                   fontSize: 15,
                   fontWeight: FontWeight.bold),
               enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFF398AE5)),
+                  borderSide: BorderSide(color: Color(0xFF614385)),
                   borderRadius: BorderRadius.circular(20)),
               contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
             ),
@@ -72,7 +72,7 @@ class _DaySelectState extends State<DaySelect> {
             popupTitle: Container(
               height: 50,
               decoration: BoxDecoration(
-                color: Color(0xFF398AE5),
+                color: Color(0xFF614385),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
@@ -82,10 +82,10 @@ class _DaySelectState extends State<DaySelect> {
                 child: Text(
                   'Conduct a meet on?',
                   style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'Metropolis'),
                 ),
               ),
             ),
@@ -130,7 +130,7 @@ class _DaySelectState extends State<DaySelect> {
         child: Container(
           color: Colors.white,
           child: CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(Colors.blueAccent),
+            valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF614385)),
           ),
           margin: EdgeInsets.all(10.0),
         ),
@@ -211,7 +211,7 @@ class _DaySelectState extends State<DaySelect> {
       Fluttertoast.showToast(
           msg: "Please select a day for meet",
           backgroundColor: Colors.white,
-          textColor: Colors.blue);
+          textColor: Color(0xFF614385));
     }
   }
 }

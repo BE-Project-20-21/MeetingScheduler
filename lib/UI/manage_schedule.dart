@@ -55,7 +55,7 @@ class _ManageScheduleState extends State<ManageSchedule> {
                       style: TextStyle(
                           color: Colors.white,
                           letterSpacing: 1,
-                          fontSize: 30,
+                          fontSize: 33,
                           fontFamily: 'Metropolis',
                           fontWeight: FontWeight.bold),
                     ),
@@ -126,18 +126,16 @@ class _ManageScheduleState extends State<ManageSchedule> {
                             children: [
                               Text(
                                 "${newDates(1).day}/${newDates(1).month}/${newDates(1).year}",
-                                style: GoogleFonts.aBeeZee(
-                                    textStyle: TextStyle(
-                                        color: Colors.white, fontSize: 15)),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
                               ),
                               SizedBox(
                                 width: 20,
                               ),
                               Text(
                                 "${DateFormat('EEEE').format(newDates(1))}",
-                                style: GoogleFonts.aBeeZee(
-                                    textStyle: TextStyle(
-                                        color: Colors.white, fontSize: 20)),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
                               ),
                             ],
                           ),
@@ -160,18 +158,16 @@ class _ManageScheduleState extends State<ManageSchedule> {
                             children: [
                               Text(
                                 "${newDates(2).day}/${newDates(2).month}/${newDates(2).year}",
-                                style: GoogleFonts.aBeeZee(
-                                    textStyle: TextStyle(
-                                        color: Colors.white, fontSize: 15)),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
                               ),
                               SizedBox(
                                 width: 20,
                               ),
                               Text(
                                 "${DateFormat('EEEE').format(newDates(2))}",
-                                style: GoogleFonts.aBeeZee(
-                                    textStyle: TextStyle(
-                                        color: Colors.white, fontSize: 20)),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
                               ),
                             ],
                           ),
@@ -194,18 +190,16 @@ class _ManageScheduleState extends State<ManageSchedule> {
                             children: [
                               Text(
                                 "${newDates(3).day}/${newDates(3).month}/${newDates(3).year}",
-                                style: GoogleFonts.aBeeZee(
-                                    textStyle: TextStyle(
-                                        color: Colors.white, fontSize: 15)),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
                               ),
                               SizedBox(
                                 width: 20,
                               ),
                               Text(
                                 "${DateFormat('EEEE').format(newDates(3))}",
-                                style: GoogleFonts.aBeeZee(
-                                    textStyle: TextStyle(
-                                        color: Colors.white, fontSize: 20)),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
                               ),
                             ],
                           ),
@@ -228,18 +222,16 @@ class _ManageScheduleState extends State<ManageSchedule> {
                             children: [
                               Text(
                                 "${newDates(4).day}/${newDates(4).month}/${newDates(4).year}",
-                                style: GoogleFonts.aBeeZee(
-                                    textStyle: TextStyle(
-                                        color: Colors.white, fontSize: 15)),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
                               ),
                               SizedBox(
                                 width: 20,
                               ),
                               Text(
                                 "${DateFormat('EEEE').format(newDates(4))}",
-                                style: GoogleFonts.aBeeZee(
-                                    textStyle: TextStyle(
-                                        color: Colors.white, fontSize: 20)),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
                               ),
                             ],
                           ),
@@ -262,18 +254,16 @@ class _ManageScheduleState extends State<ManageSchedule> {
                             children: [
                               Text(
                                 "${newDates(5).day}/${newDates(5).month}/${newDates(5).year}",
-                                style: GoogleFonts.aBeeZee(
-                                    textStyle: TextStyle(
-                                        color: Colors.white, fontSize: 15)),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
                               ),
                               SizedBox(
                                 width: 20,
                               ),
                               Text(
                                 "${DateFormat('EEEE').format(newDates(5))}",
-                                style: GoogleFonts.aBeeZee(
-                                    textStyle: TextStyle(
-                                        color: Colors.white, fontSize: 20)),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
                               ),
                             ],
                           ),
@@ -296,18 +286,16 @@ class _ManageScheduleState extends State<ManageSchedule> {
                             children: [
                               Text(
                                 "${newDates(6).day}/${newDates(6).month}/${newDates(6).year}",
-                                style: GoogleFonts.aBeeZee(
-                                    textStyle: TextStyle(
-                                        color: Colors.white, fontSize: 15)),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
                               ),
                               SizedBox(
                                 width: 20,
                               ),
                               Text(
                                 "${DateFormat('EEEE').format(newDates(6))}",
-                                style: GoogleFonts.aBeeZee(
-                                    textStyle: TextStyle(
-                                        color: Colors.white, fontSize: 20)),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
                               ),
                             ],
                           ),
@@ -335,11 +323,11 @@ class _ManageScheduleState extends State<ManageSchedule> {
                               child: Text(
                                 "Submit Schedule",
                                 style: TextStyle(
-                                  color: Color(0xFF398AE5),
-                                  letterSpacing: 1,
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                    color: Color(0xFF614385),
+                                    letterSpacing: 1,
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Metropolis'),
                               ),
                             ),
                           ),

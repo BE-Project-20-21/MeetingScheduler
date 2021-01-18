@@ -276,7 +276,7 @@ class _TimeSlotsState extends State<TimeSlots> {
                 addToSchedule(widget.day, widget.time);
               }
             },
-            color: pressed ? Color(0xff3d166b) : Colors.white,
+            color: pressed ? Color(0xffc3d166b) : Colors.white,
           ),
         ),
       ),

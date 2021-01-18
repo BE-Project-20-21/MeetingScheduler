@@ -28,11 +28,11 @@ class SIInput extends StatelessWidget {
           child: Text(
             label,
             style: TextStyle(
-              color: Color(0xFF398AE5),
-              letterSpacing: 1,
-              fontSize: 12.0,
-              fontWeight: FontWeight.bold,
-            ),
+                color: Color(0xFF398AE5),
+                letterSpacing: 1,
+                fontSize: 12.0,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Metropolis'),
           ),
         ),
       ),

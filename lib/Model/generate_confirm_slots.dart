@@ -25,7 +25,7 @@ class _GCSState extends State<GCS> {
             overflow: TextOverflow.clip,
             style: GoogleFonts.sourceSansPro(
                 textStyle: TextStyle(
-                    color: pressed ? Colors.white : Color(0xFF398AE5))),
+                    color: pressed ? Colors.white : Color(0xFF614385))),
           ),
         ),
         onHighlightChanged: (value) => {},
@@ -42,7 +42,7 @@ class _GCSState extends State<GCS> {
             });
           }
         },
-        color: pressed ? Colors.blueAccent : Colors.white,
+        color: pressed ? Color(0xffc3d166b) : Colors.white,
       ),
     ));
   }

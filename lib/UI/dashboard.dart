@@ -66,8 +66,8 @@ class DashboardState extends State<Dashboard>
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
           floatingActionButton: Container(
-              width: 65,
-              height: 65,
+              width: 60,
+              height: 60,
               margin: EdgeInsets.only(bottom: 20),
               child: FloatingActionButton(
                 onPressed: () {
@@ -106,7 +106,7 @@ class DashboardState extends State<Dashboard>
                       style: TextStyle(
                           color: Colors.white,
                           letterSpacing: 1,
-                          fontSize: 30,
+                          fontSize: 33,
                           fontFamily: 'Metropolis',
                           fontWeight: FontWeight.bold),
                     ),
