@@ -11,30 +11,22 @@ class Signup extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Signup",
-      theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          textTheme: GoogleFonts.hammersmithOneTextTheme(
-            Theme.of(context).textTheme,
-          )),
+      theme:
+          ThemeData(fontFamily: 'Metropolis', dividerColor: Colors.transparent),
       home: Material(
         child: Container(
           child: SafeArea(
             child: SignupInputs(),
           ),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFF73AEF5),
-                Color(0xFF61A4F1),
-                Color(0xFF478DE0),
-                Color(0xFF398AE5),
-              ],
-              stops: [0.1, 0.4, 0.7, 0.9],
-            ),
-          ),
+              gradient: LinearGradient(
+                  colors: [
+                    Color(0xFF614385),
+                    Color(0xFF516395),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.2, 0.8])),
         ),
       ),
     );

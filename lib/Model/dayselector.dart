@@ -5,6 +5,8 @@ import 'package:dropdown_search/dropdown_search.dart';
 import '../UI/scheduling_interface.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class DaySelect extends StatefulWidget {
   DaySelect({Key key}) : super(key: key);
@@ -37,19 +39,21 @@ class _DaySelectState extends State<DaySelect> {
               "Saturday"
             ],
             dropDownButton: DropdownButton(
-              icon: Icon(Icons.arrow_circle_down),
-              iconDisabledColor: Color(0xFF398AE5),
+              icon: Icon(Icons.keyboard_arrow_down_sharp),
+              iconDisabledColor: Color(0xFF614385),
               iconSize: 30,
+              items: [],
+              onChanged: (value) {},
             ),
             dropdownSearchDecoration: InputDecoration(
-              hintText: "Select a Day!",
+              hintText: "Days",
               hintStyle: TextStyle(
-                  color: Color(0xFF398AE5),
+                  color: Color(0xFF614385),
                   letterSpacing: 1,
                   fontSize: 15,
                   fontWeight: FontWeight.bold),
               enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFF398AE5)),
+                  borderSide: BorderSide(color: Color(0xFF614385)),
                   borderRadius: BorderRadius.circular(20)),
               contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
             ),
@@ -72,7 +76,7 @@ class _DaySelectState extends State<DaySelect> {
             popupTitle: Container(
               height: 50,
               decoration: BoxDecoration(
-                color: Color(0xFF398AE5),
+                color: Color(0xFF614385),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
@@ -82,10 +86,10 @@ class _DaySelectState extends State<DaySelect> {
                 child: Text(
                   'Conduct a meet on?',
                   style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'Metropolis'),
                 ),
               ),
             ),
@@ -116,6 +120,33 @@ class _DaySelectState extends State<DaySelect> {
           //   ),
           //   children: [ConfirmSlots()],
           // )
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Container(
+          child: Container(
+            child: RaisedButton(
+              elevation: 5.0,
+              onPressed: () {
+                confirmMeeting();
+              },
+              padding: EdgeInsets.all(10.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              color: Colors.white,
+              child: Text(
+                "Confirm Meeting",
+                style: TextStyle(
+                    color: Color(0xFF614385),
+                    letterSpacing: 1,
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Metropolis'),
+              ),
+            ),
+          ),
         )
       ]),
     );
@@ -130,7 +161,7 @@ class _DaySelectState extends State<DaySelect> {
         child: Container(
           color: Colors.white,
           child: CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(Colors.blueAccent),
+            valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF614385)),
           ),
           margin: EdgeInsets.all(10.0),
         ),
@@ -211,7 +242,42 @@ class _DaySelectState extends State<DaySelect> {
       Fluttertoast.showToast(
           msg: "Please select a day for meet",
           backgroundColor: Colors.white,
-          textColor: Colors.blue);
+          textColor: Color(0xFF614385));
     }
+  }
+
+  void confirmMeeting() async {
+    //Declaring the list to save the devide token of the meeting members
+    List<String> deviceTokens = new List<String>();
+    //Declaring database reference to retrieve the device tokens of each users
+    FirebaseDatabase databaseNotifications = FirebaseDatabase.instance;
+    DatabaseReference referenceNotifications =
+        databaseNotifications.reference().child("token");
+    for (int i = 0; i < selectedNames.length; i++) {
+      await referenceNotifications
+          .child(selectedNames.elementAt(i))
+          .child("tokenId")
+          .once()
+          .then((DataSnapshot dataSnapshot) {
+        deviceTokens.add(dataSnapshot.value);
+      });
+    }
+    //Fetching the name of the user who is scheduling the meeting
+    List<String> subjectList = List<String>();
+    subjectList.add(subject);
+    subjectList.add(membersNames.join(", "));
+    print(deviceTokens);
+
+    //Requesting the server to send notification to the list of device tokens
+    final response = await http.post(
+      'https://meeting-scheduler-function.azurewebsites.net/api/HttpTrigger1',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, List<String>>{
+        'registrationTokens': deviceTokens,
+        "subject": subjectList,
+      }),
+    );
   }
 }

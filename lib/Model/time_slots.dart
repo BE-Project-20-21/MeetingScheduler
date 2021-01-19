@@ -254,7 +254,7 @@ class _TimeSlotsState extends State<TimeSlots> {
                 "${widget.time.toString()}" + ":00",
                 style: GoogleFonts.sourceSansPro(
                     textStyle: TextStyle(
-                        color: pressed ? Colors.white : Color(0xFF398AE5))),
+                        color: pressed ? Colors.white : Color(0xFF614385))),
                 overflow: TextOverflow.clip,
               ),
             ),
@@ -276,7 +276,7 @@ class _TimeSlotsState extends State<TimeSlots> {
                 addToSchedule(widget.day, widget.time);
               }
             },
-            color: pressed ? Colors.blueAccent : Colors.white,
+            color: pressed ? Color(0xffc3d166b) : Colors.white,
           ),
         ),
       ),
