@@ -220,14 +220,15 @@ class PopupOptionMenu extends StatelessWidget {
                 Container(
                   child: Icon(
                     Icons.calendar_today,
-                    color: Color(0xFF398AE5),
+                    color: Color(0xFF614385),
                   ),
                   padding: EdgeInsets.all(5),
                 ),
                 Container(
                   child: Text(
                     "Manage Schedule",
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(
+                        color: Color(0xFF614385), fontWeight: FontWeight.bold),
                   ),
                   padding: EdgeInsets.all(5),
                 )
@@ -241,7 +242,7 @@ class PopupOptionMenu extends StatelessWidget {
                 Container(
                   child: Icon(
                     Icons.settings,
-                    color: Color(0xFF398AE5),
+                    color: Color(0xFF614385),
                   ),
                   padding: EdgeInsets.all(5),
                 ),
@@ -249,7 +250,8 @@ class PopupOptionMenu extends StatelessWidget {
                   child: Text(
                     "Settings",
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Color(0xFF614385),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   padding: EdgeInsets.all(5),
@@ -264,7 +266,7 @@ class PopupOptionMenu extends StatelessWidget {
                 Container(
                   child: Icon(
                     Icons.account_box,
-                    color: Color(0xFF398AE5),
+                    color: Color(0xFF614385),
                   ),
                   padding: EdgeInsets.all(5),
                 ),
@@ -272,7 +274,8 @@ class PopupOptionMenu extends StatelessWidget {
                   child: Text(
                     "My Profile",
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Color(0xFF614385),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   padding: EdgeInsets.all(5),
@@ -287,14 +290,15 @@ class PopupOptionMenu extends StatelessWidget {
                 Container(
                   child: Icon(
                     Icons.feedback,
-                    color: Color(0xFF398AE5),
+                    color: Color(0xFF614385),
                   ),
                   padding: EdgeInsets.all(5),
                 ),
                 Container(
                   child: Text(
                     "Feedback",
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(
+                        color: Color(0xFF614385), fontWeight: FontWeight.bold),
                   ),
                   padding: EdgeInsets.all(5),
                 ),
@@ -308,7 +312,7 @@ class PopupOptionMenu extends StatelessWidget {
                 Container(
                   child: Icon(
                     Icons.exit_to_app,
-                    color: Color(0xFF398AE5),
+                    color: Color(0xFF614385),
                   ),
                   padding: EdgeInsets.all(5),
                 ),
@@ -316,7 +320,8 @@ class PopupOptionMenu extends StatelessWidget {
                   child: Text(
                     "Logout!",
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Color(0xFF614385),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   padding: EdgeInsets.all(5),
