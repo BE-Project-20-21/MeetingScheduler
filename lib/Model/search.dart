@@ -210,11 +210,11 @@ class SearchState extends State<Search> {
                             ),
                             color: Colors.white,
                             child: Text(
-                              'Proceed!',
+                              'Proceed',
                               style: TextStyle(
                                   color: Color(0xFF614385),
                                   letterSpacing: 1,
-                                  fontSize: 12.0,
+                                  fontSize: 15.0,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: 'Metropolis'),
                             ),

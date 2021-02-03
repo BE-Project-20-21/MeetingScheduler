@@ -143,11 +143,11 @@ class _DaySelectState extends State<DaySelect> {
               child: Text(
                 "Confirm Meeting",
                 style: TextStyle(
-                  color: Color(0xFF398AE5),
-                  letterSpacing: 1,
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.bold,
-                ),
+                    color: Color(0xFF614385),
+                    letterSpacing: 1,
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Metropolis'),
               ),
             ),
           ),

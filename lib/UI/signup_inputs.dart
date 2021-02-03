@@ -56,6 +56,7 @@ class SignupInputs extends StatelessWidget {
               height: height / 13,
               alignment: Alignment.centerLeft,
               child: TextField(
+                cursorColor: Colors.white,
                 onChanged: (fullnameInput) {
                   fullname = fullnameInput;
                 },
@@ -76,16 +77,23 @@ class SignupInputs extends StatelessWidget {
                     )),
               ),
               decoration: BoxDecoration(
-                color: Color(0xFF6CA8F1),
-                borderRadius: BorderRadius.circular(10.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 6.0,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF614385),
+                  // gradient: LinearGradient(
+                  //   begin: Alignment.topCenter,
+                  //   end: Alignment.bottomCenter,
+                  //   colors: [
+                  //     Color(0xff5F0A87),
+                  //     Color(0xff7a3c68),
+                  //   ],
+                  // ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 6.0,
+                      offset: Offset(0, 2),
+                    )
+                  ]),
             ),
             SizedBox(
               height: height / 50,
@@ -94,6 +102,7 @@ class SignupInputs extends StatelessWidget {
               height: height / 13,
               alignment: Alignment.centerLeft,
               child: TextField(
+                cursorColor: Colors.white,
                 onChanged: (usernameInputs) {
                   username = usernameInputs;
                 },
@@ -114,16 +123,23 @@ class SignupInputs extends StatelessWidget {
                     )),
               ),
               decoration: BoxDecoration(
-                color: Color(0xFF6CA8F1),
-                borderRadius: BorderRadius.circular(10.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 6.0,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF614385),
+                  // gradient: LinearGradient(
+                  //   begin: Alignment.topCenter,
+                  //   end: Alignment.bottomCenter,
+                  //   colors: [
+                  //     Color(0xff5F0A87),
+                  //     Color(0xff7a3c68),
+                  //   ],
+                  // ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 6.0,
+                      offset: Offset(0, 2),
+                    )
+                  ]),
             ),
             SizedBox(
               height: height / 50,
@@ -132,6 +148,7 @@ class SignupInputs extends StatelessWidget {
               height: height / 13,
               alignment: Alignment.centerLeft,
               child: TextField(
+                cursorColor: Colors.white,
                 onChanged: (contactInput) {
                   contact = contactInput;
                 },
@@ -152,16 +169,23 @@ class SignupInputs extends StatelessWidget {
                     )),
               ),
               decoration: BoxDecoration(
-                color: Color(0xFF6CA8F1),
-                borderRadius: BorderRadius.circular(10.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 6.0,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF614385),
+                  // gradient: LinearGradient(
+                  //   begin: Alignment.topCenter,
+                  //   end: Alignment.bottomCenter,
+                  //   colors: [
+                  //     Color(0xff5F0A87),
+                  //     Color(0xff7a3c68),
+                  //   ],
+                  // ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 6.0,
+                      offset: Offset(0, 2),
+                    )
+                  ]),
             ),
             SizedBox(
               height: height / 50,
@@ -170,6 +194,7 @@ class SignupInputs extends StatelessWidget {
               height: height / 13,
               alignment: Alignment.centerLeft,
               child: TextField(
+                cursorColor: Colors.white,
                 onChanged: (emailInput) {
                   email = emailInput;
                 },
@@ -191,16 +216,23 @@ class SignupInputs extends StatelessWidget {
                 ),
               ),
               decoration: BoxDecoration(
-                color: Color(0xFF6CA8F1),
-                borderRadius: BorderRadius.circular(10.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 6.0,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF614385),
+                  // gradient: LinearGradient(
+                  //   begin: Alignment.topCenter,
+                  //   end: Alignment.bottomCenter,
+                  //   colors: [
+                  //     Color(0xff5F0A87),
+                  //     Color(0xff7a3c68),
+                  //   ],
+                  // ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 6.0,
+                      offset: Offset(0, 2),
+                    )
+                  ]),
             ),
             SizedBox(
               height: height / 50,
@@ -209,6 +241,7 @@ class SignupInputs extends StatelessWidget {
               height: height / 13,
               alignment: Alignment.centerLeft,
               child: TextField(
+                cursorColor: Colors.white,
                 onChanged: (passwordInput) {
                   password = passwordInput;
                 },
@@ -230,16 +263,23 @@ class SignupInputs extends StatelessWidget {
                 obscureText: true,
               ),
               decoration: BoxDecoration(
-                color: Color(0xFF6CA8F1),
-                borderRadius: BorderRadius.circular(10.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 6.0,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF614385),
+                  // gradient: LinearGradient(
+                  //   begin: Alignment.topCenter,
+                  //   end: Alignment.bottomCenter,
+                  //   colors: [
+                  //     Color(0xff5F0A87),
+                  //     Color(0xff7a3c68),
+                  //   ],
+                  // ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 6.0,
+                      offset: Offset(0, 2),
+                    )
+                  ]),
             ),
             SizedBox(
               height: height / 50,
@@ -248,6 +288,7 @@ class SignupInputs extends StatelessWidget {
               height: height / 13,
               alignment: Alignment.centerLeft,
               child: TextField(
+                cursorColor: Colors.white,
                 onChanged: (confirmPasswordInput) {
                   confirmPassword = confirmPasswordInput;
                 },
@@ -269,16 +310,23 @@ class SignupInputs extends StatelessWidget {
                 obscureText: true,
               ),
               decoration: BoxDecoration(
-                color: Color(0xFF6CA8F1),
-                borderRadius: BorderRadius.circular(10.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 6.0,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF614385),
+                  // gradient: LinearGradient(
+                  //   begin: Alignment.topCenter,
+                  //   end: Alignment.bottomCenter,
+                  //   colors: [
+                  //     Color(0xff5F0A87),
+                  //     Color(0xff7a3c68),
+                  //   ],
+                  // ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 6.0,
+                      offset: Offset(0, 2),
+                    )
+                  ]),
             ),
             SizedBox(
               height: height / 30,
@@ -303,7 +351,7 @@ class SignupInputs extends StatelessWidget {
                   child: Text(
                     'SIGN UP',
                     style: TextStyle(
-                      color: Color(0xFF527DAA),
+                      color: Color(0xFF614385),
                       letterSpacing: 1,
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,

@@ -37,27 +37,19 @@ class Login extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Login",
-      theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          textTheme: GoogleFonts.hammersmithOneTextTheme(
-            Theme.of(context).textTheme,
-          )),
+      theme:
+          ThemeData(fontFamily: 'Metropolis', dividerColor: Colors.transparent),
       home: Material(
         child: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFF73AEF5),
-                Color(0xFF61A4F1),
-                Color(0xFF478DE0),
-                Color(0xFF398AE5),
-              ],
-              stops: [0.1, 0.4, 0.7, 0.9],
-            ),
-          ),
+              gradient: LinearGradient(
+                  colors: [
+                    Color(0xFF614385),
+                    Color(0xFF516395),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.2, 0.8])),
           child: SafeArea(
             child: Container(
               child: Stack(
@@ -83,7 +75,7 @@ class Login extends StatelessWidget {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            "MS",
+                            "Meeting Scheduler",
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -108,6 +100,7 @@ class Login extends StatelessWidget {
                         height: height / 13,
                         alignment: Alignment.centerLeft,
                         child: TextField(
+                          cursorColor: Colors.white,
                           onChanged: (emailInput) {
                             email = emailInput;
                           },
@@ -125,16 +118,23 @@ class Login extends StatelessWidget {
                           ),
                         ),
                         decoration: BoxDecoration(
-                          color: Color(0xFF6CA8F1),
-                          borderRadius: BorderRadius.circular(10.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 6.0,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color(0xFF614385),
+                            // gradient: LinearGradient(
+                            //   begin: Alignment.topCenter,
+                            //   end: Alignment.bottomCenter,
+                            //   colors: [
+                            //     Color(0xff5F0A87),
+                            //     Color(0xff7a3c68),
+                            //   ],
+                            // ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 6.0,
+                                offset: Offset(0, 2),
+                              )
+                            ]),
                       ),
                       SizedBox(
                         height: height / 50,
@@ -151,6 +151,7 @@ class Login extends StatelessWidget {
                         height: height / 13,
                         alignment: Alignment.centerLeft,
                         child: TextField(
+                          cursorColor: Colors.white,
                           onChanged: (passwordInput) {
                             password = passwordInput;
                           },
@@ -168,16 +169,23 @@ class Login extends StatelessWidget {
                           ),
                         ),
                         decoration: BoxDecoration(
-                          color: Color(0xFF6CA8F1),
-                          borderRadius: BorderRadius.circular(10.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 6.0,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color(0xFF614385),
+                            // gradient: LinearGradient(
+                            //   begin: Alignment.topCenter,
+                            //   end: Alignment.bottomCenter,
+                            //   colors: [
+                            //     Color(0xff5F0A87),
+                            //     Color(0xff7a3c68),
+                            //   ],
+                            // ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 6.0,
+                                offset: Offset(0, 2),
+                              )
+                            ]),
                       ),
                       SizedBox(
                         height: height / 60,
@@ -195,8 +203,8 @@ class Login extends StatelessWidget {
                             child: Text(
                               "Forgot Password?",
                               style: TextStyle(
-                                color: Colors.white,
-                              ),
+                                  color: Colors.white,
+                                  fontFamily: 'Metropolis'),
                             ),
                             margin: EdgeInsets.all(10.0),
                             padding: EdgeInsets.symmetric(
@@ -227,11 +235,11 @@ class Login extends StatelessWidget {
                             child: Text(
                               'LOG IN',
                               style: TextStyle(
-                                color: Color(0xFF527DAA),
-                                letterSpacing: 1,
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                  color: Color(0xFF614385),
+                                  letterSpacing: 1,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Metropolis'),
                             ),
                           ),
                         ),
@@ -261,16 +269,16 @@ class Login extends StatelessWidget {
                               children: [
                                 Image(
                                   image: AssetImage("assets/images/google.png"),
-                                  height: 25,
+                                  height: 18,
                                 ),
                                 Text(
                                   'SIGN IN',
                                   style: TextStyle(
-                                    color: Color(0xFF527DAA),
-                                    letterSpacing: 1,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                      color: Color(0xFF614385),
+                                      letterSpacing: 1,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Metropolis'),
                                 ),
                               ],
                             ),
@@ -295,23 +303,20 @@ class Login extends StatelessWidget {
                               text: TextSpan(
                                 children: [
                                   TextSpan(
-                                      text: 'Don\'t have an Account? ',
-                                      style: GoogleFonts.hammersmithOne(
-                                        textStyle: TextStyle(
+                                    text: 'Don\'t have an Account? ',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15.0,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'Metropolis'),
+                                  ),
+                                  TextSpan(
+                                      text: 'Sign Up',
+                                      style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 15.0,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      )),
-                                  TextSpan(
-                                    text: 'Sign Up',
-                                    style: GoogleFonts.hammersmithOne(
-                                        textStyle: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15.0,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                                  ),
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Metropolis')),
                                 ],
                               ),
                             ),
