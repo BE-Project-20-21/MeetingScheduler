@@ -137,13 +137,8 @@ class _FirstPageState extends State<FirstPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Authentication App",
-      theme: ThemeData(
-          primarySwatch: Colors.orange,
-          accentColor: Colors.orangeAccent,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          textTheme: GoogleFonts.aBeeZeeTextTheme(
-            Theme.of(context).textTheme,
-          )),
+      theme:
+          ThemeData(fontFamily: 'Metropolis', dividerColor: Colors.transparent),
       home: Material(
         child: Container(
           child: SafeArea(

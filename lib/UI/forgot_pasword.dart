@@ -21,12 +21,8 @@ class ForgotPassword extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "User Inputs",
-      theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          textTheme: GoogleFonts.hammersmithOneTextTheme(
-            Theme.of(context).textTheme,
-          )),
+      theme:
+          ThemeData(fontFamily: 'Metropolis', dividerColor: Colors.transparent),
       home: Material(
         child: Container(
           child: SafeArea(
@@ -58,6 +54,7 @@ class ForgotPassword extends StatelessWidget {
                     height: height / 13,
                     alignment: Alignment.centerLeft,
                     child: TextField(
+                      cursorColor: Colors.white,
                       onChanged: (forgotPasswordEmailInput) {
                         email = forgotPasswordEmailInput;
                       },
@@ -78,16 +75,23 @@ class ForgotPassword extends StatelessWidget {
                           )),
                     ),
                     decoration: BoxDecoration(
-                      color: Color(0xFF6CA8F1),
-                      borderRadius: BorderRadius.circular(10.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 6.0,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
+                        borderRadius: BorderRadius.circular(10),
+                        color: Color(0xFF614385),
+                        // gradient: LinearGradient(
+                        //   begin: Alignment.topCenter,
+                        //   end: Alignment.bottomCenter,
+                        //   colors: [
+                        //     Color(0xff5F0A87),
+                        //     Color(0xff7a3c68),
+                        //   ],
+                        // ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 6.0,
+                            offset: Offset(0, 2),
+                          )
+                        ]),
                   ),
                   SizedBox(
                     height: height / 30,
@@ -111,7 +115,7 @@ class ForgotPassword extends StatelessWidget {
                         child: Text(
                           'SUBMIT',
                           style: TextStyle(
-                            color: Color(0xFF527DAA),
+                            color: Color(0xFF614385),
                             letterSpacing: 1,
                             fontSize: 18.0,
                             fontWeight: FontWeight.bold,
@@ -130,18 +134,14 @@ class ForgotPassword extends StatelessWidget {
             ),
           ),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFF73AEF5),
-                Color(0xFF61A4F1),
-                Color(0xFF478DE0),
-                Color(0xFF398AE5),
-              ],
-              stops: [0.1, 0.4, 0.7, 0.9],
-            ),
-          ),
+              gradient: LinearGradient(
+                  colors: [
+                    Color(0xFF614385),
+                    Color(0xFF516395),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.2, 0.8])),
         ),
       ),
     );

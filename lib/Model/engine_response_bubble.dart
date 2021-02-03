@@ -47,8 +47,8 @@ class ERBubble extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Color(0xFF5F0A87),
-                    Color(0xFFA4508B),
+                    Color(0xff5F0A87),
+                    Color(0xff7a3c68),
                   ],
                 ),
                 boxShadow: [
