@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../Model/confirm_slots.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -16,11 +18,13 @@ class DaySelect extends StatefulWidget {
 }
 
 class _DaySelectState extends State<DaySelect> {
+  //Declaring the variables required
+  String daySelected = "";
+
   //Creating an object of ProgressDialog
   ProgressDialog progressDialogSlots;
   @override
   Widget build(BuildContext context) {
-    String daySelected = "";
     return Container(
       child: Column(children: [
         Container(
@@ -247,6 +251,8 @@ class _DaySelectState extends State<DaySelect> {
   }
 
   void confirmMeeting() async {
+    //TODO: ALGORITHM TO DISALLOW DISCONTINOUS SLOT PICKING
+
     //Declaring the list to save the devide token of the meeting members
     List<String> deviceTokens = new List<String>();
     //Declaring database reference to retrieve the device tokens of each users
@@ -268,8 +274,9 @@ class _DaySelectState extends State<DaySelect> {
     subjectList.add(membersNames.join(", "));
     print(deviceTokens);
 
-    //Requesting the server to send notification to the list of device tokens
-    final response = await http.post(
+    //Requesting the server to send notification to the list of device tokens and then add entries to the database
+    final response = await http
+        .post(
       'https://meeting-scheduler-function.azurewebsites.net/api/HttpTrigger1',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -278,6 +285,29 @@ class _DaySelectState extends State<DaySelect> {
         'registrationTokens': deviceTokens,
         "subject": subjectList,
       }),
-    );
+    )
+        .then((value) {
+      addMeetingEntries();
+    });
+  }
+
+  //Method to add the meeting entries in the database
+  void addMeetingEntries() async {
+    //To get the UID of the newly added user
+    FirebaseAuth authMeetingEntries = FirebaseAuth.instance;
+    final User userMeetingEntries = authMeetingEntries.currentUser;
+    final String uid = userMeetingEntries.uid.toString();
+    FirebaseDatabase databaseMeetingEntries = FirebaseDatabase.instance;
+    DatabaseReference referenceMeetingEntries =
+        databaseMeetingEntries.reference().child("meetings");
+    await referenceMeetingEntries.push().set({
+      "setBy": uid,
+      "subject": subject,
+      "day": daySelected,
+      "starTime": 15,
+      "endTime": 17,
+    }).then((value) {
+      Fluttertoast.showToast(msg: "Confirmed!");
+    });
   }
 }

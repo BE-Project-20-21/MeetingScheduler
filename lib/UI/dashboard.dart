@@ -1,8 +1,5 @@
 import 'package:authentication_app/UI/scheduling_interface.dart';
 import 'package:authentication_app/UI/login.dart';
-import 'package:authentication_app/Model/dashboard_first.dart';
-import 'package:authentication_app/Model/dashboard_second.dart';
-import 'package:authentication_app/Model/dashboard_third.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/rendering.dart';
@@ -11,7 +8,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import './manage_schedule.dart';
 import '../UI/myProfile.dart';
 
