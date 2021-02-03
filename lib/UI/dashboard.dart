@@ -1,7 +1,7 @@
 import 'package:authentication_app/UI/scheduling_interface.dart';
 import 'package:authentication_app/UI/login.dart';
-import 'package:authentication_app/Model/dashboard_first.dart';
-import 'package:authentication_app/Model/dashboard_second.dart';
+import 'package:authentication_app/Model/upcoming.dart';
+import 'package:authentication_app/Model/pending.dart';
 import 'package:authentication_app/Model/dashboard_third.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -90,86 +90,93 @@ class DashboardState extends State<Dashboard>
                 ),
                 backgroundColor: Colors.white,
               )),
-          appBar: AppBar(
-            title: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 50.0, bottom: 30),
-                    child: Text(
-                      'Dashboard',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          color: Colors.white,
-                          letterSpacing: 1,
-                          fontSize: 33,
-                          fontFamily: 'Metropolis',
-                          fontWeight: FontWeight.bold),
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(120.0),
+            child: AppBar(
+              title: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 50.0, bottom: 30),
+                      child: Text(
+                        'Dashboard',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.white,
+                            letterSpacing: 1,
+                            fontSize: 33,
+                            fontFamily: 'Metropolis',
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              actions: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: PopupOptionMenu(),
+                ),
+              ],
+              bottom: TabBar(
+                labelColor: Color(0xFF614385),
+                indicatorSize: TabBarIndicatorSize.label,
+                unselectedLabelColor: Colors.white,
+                indicator: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: Colors.white),
+                controller: tabController,
+                tabs: <Tab>[
+                  new Tab(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15, right: 15),
+                      child: FittedBox(
+                        child: Text(
+                          "UPCOMING",
+                          style: TextStyle(
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  new Tab(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15, right: 15),
+                      child: FittedBox(
+                        child: Text(
+                          "PENDING",
+                          style: TextStyle(
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  new Tab(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15, right: 15),
+                      child: FittedBox(
+                        child: Text(
+                          "CHATS",
+                          style: TextStyle(
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-            ),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 15),
-                child: PopupOptionMenu(),
-              ),
-            ],
-            bottom: TabBar(
-              labelColor: Color(0xFF614385),
-              indicatorSize: TabBarIndicatorSize.label,
-              unselectedLabelColor: Colors.white,
-              indicator: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50), color: Colors.white),
-              controller: tabController,
-              tabs: <Tab>[
-                new Tab(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15, right: 15),
-                    child: FittedBox(
-                      child: Text(
-                        "UPCOMING",
-                        style: TextStyle(
-                          fontSize: 15.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                new Tab(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15, right: 15),
-                    child: FittedBox(
-                      child: Text(
-                        "REQUESTED",
-                        style: TextStyle(
-                          fontSize: 15.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                new Tab(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15, right: 15),
-                    child: FittedBox(
-                      child: Text(
-                        "CHATS",
-                        style: TextStyle(
-                          fontSize: 15.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
             ),
           ),
           body: Container(
@@ -188,8 +195,8 @@ class DashboardState extends State<Dashboard>
               child: new TabBarView(
                 controller: tabController,
                 children: <Widget>[
-                  Text("Upcoming"),
-                  Text("Requested"),
+                  DashboardFirst(),
+                  DashboardSecond(),
                   Text("Chats")
                 ],
               ),
