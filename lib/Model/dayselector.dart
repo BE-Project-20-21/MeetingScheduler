@@ -319,15 +319,21 @@ class _DaySelectState extends State<DaySelect> {
     final String uid = userMeetingEntries.uid.toString();
     FirebaseDatabase databaseMeetingEntries = FirebaseDatabase.instance;
     DatabaseReference referenceMeetingEntries =
-        databaseMeetingEntries.reference().child("meetings");
-    await referenceMeetingEntries.push().set({
+        databaseMeetingEntries.reference().child("meetings").push();
+
+    //Fetching the newly created meeting ID
+    String meetingID = referenceMeetingEntries.key.toString();
+    await referenceMeetingEntries.set({
       "setBy": uid,
       "subject": subject,
       "day": daySelected,
       "starTime": slotSelected[0],
-      "endTime": slotSelected[slotSelected.length - 1],
+      "endTime": slotSelected[slotSelected.length - 1] + 1,
     }).then((value) {
       Fluttertoast.showToast(msg: "Confirmed!");
     });
+    referenceMeetingEntries =
+        databaseMeetingEntries.reference().child("meetings-list").child(uid);
+    await referenceMeetingEntries.child(meetingID).set({"status": "confirmed"});
   }
 }
