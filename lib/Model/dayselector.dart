@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../Model/confirm_slots.dart';
@@ -9,6 +8,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+//Declaring global variables
+List<int> slotSelected = new List<int>();
 
 class DaySelect extends StatefulWidget {
   DaySelect({Key key}) : super(key: key);
@@ -64,6 +66,8 @@ class _DaySelectState extends State<DaySelect> {
             popupBarrierColor: Colors.white,
             onChanged: (day) {
               daySelected = day;
+              //Clearing the selected slots if any
+              slotSelected.clear();
               //Method to fetch common empty slots for the day as soon as the user selects a day
               fetchEmptySlots(daySelected);
             },
@@ -110,20 +114,6 @@ class _DaySelectState extends State<DaySelect> {
         ),
         Container(
           child: ConfirmSlots(),
-          // decoration: BoxDecoration(
-          //     color: Colors.white, borderRadius: BorderRadius.circular(20)),
-          // child: ExpansionTile(
-          //   maintainState: true,
-          //   title: Text(
-          //     "Choose Slots",
-          //     style: GoogleFonts.aBeeZee(
-          //         textStyle:
-          //             TextStyle(color: Color(0xFF398AE5), fontSize: 15),
-          //         letterSpacing: 1,
-          //         fontWeight: FontWeight.bold),
-          //   ),
-          //   children: [ConfirmSlots()],
-          // )
         ),
         SizedBox(
           height: 10,
@@ -156,6 +146,7 @@ class _DaySelectState extends State<DaySelect> {
     );
   }
 
+  //Method to fetch common empty slots for the slected members of the meeting
   void fetchEmptySlots(String daySelected) async {
     if (daySelected != "" && daySelected != null) {
       //Code to show the progress bar
@@ -250,9 +241,38 @@ class _DaySelectState extends State<DaySelect> {
     }
   }
 
+  //Method to check if gaps exists in the selected slots, and confirm the meeting if not
   void confirmMeeting() async {
     //TODO: ALGORITHM TO DISALLOW DISCONTINOUS SLOT PICKING
+    print("Selected Slots: $slotSelected");
+    if (slotSelected.length == 0) {
+      Fluttertoast.showToast(msg: "PLease select a free time slot!");
+    } else {
+      if (!gapExists()) {
+        //Calling function to send notification and then make database entries
+        sendNotification();
+      } else {
+        Fluttertoast.showToast(
+            msg: "Please Select Slots that do not have gaps!");
+      }
+    }
+  }
 
+  //Method to check whether gap exists in between the slected slots
+  bool gapExists() {
+    slotSelected.sort();
+    print("Selected Slots sorted: $slotSelected");
+    int i;
+    for (i = 0; i < slotSelected.length - 1; i++) {
+      if (slotSelected[i + 1] - slotSelected[i] != 1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  //Method to send notification and then make the database entries
+  void sendNotification() async {
     //Declaring the list to save the devide token of the meeting members
     List<String> deviceTokens = new List<String>();
     //Declaring database reference to retrieve the device tokens of each users
@@ -304,8 +324,8 @@ class _DaySelectState extends State<DaySelect> {
       "setBy": uid,
       "subject": subject,
       "day": daySelected,
-      "starTime": 15,
-      "endTime": 17,
+      "starTime": slotSelected[0],
+      "endTime": slotSelected[slotSelected.length - 1],
     }).then((value) {
       Fluttertoast.showToast(msg: "Confirmed!");
     });

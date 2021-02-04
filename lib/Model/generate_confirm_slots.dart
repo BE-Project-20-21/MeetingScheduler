@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../UI/scheduling_interface.dart';
+import '../Model/dayselector.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class GCS extends StatefulWidget {
@@ -37,13 +38,26 @@ class _GCSState extends State<GCS> {
             counter = counter + 1;
           });
           if (counter % 2 != 0) {
+            removeSlot(commonslots[widget.index]);
             setState(() {
               pressed = false;
             });
+          } else {
+            addSlot(commonslots[widget.index]);
           }
         },
         color: pressed ? Color(0xffc3d166b) : Colors.white,
       ),
     ));
+  }
+
+  //Method to add slots to the list
+  void addSlot(int slot) {
+    slotSelected.add(slot);
+  }
+
+  //Method to remove slots from the list
+  void removeSlot(int slot) {
+    slotSelected.remove(slot);
   }
 }
