@@ -1,7 +1,5 @@
 import 'package:authentication_app/Model/dayselector.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../UI/scheduling_interface.dart';
 
 class DaySlotsPage extends StatefulWidget {
   DaySlotsPage({Key key}) : super(key: key);

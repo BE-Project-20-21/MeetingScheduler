@@ -12,6 +12,9 @@ import 'dart:convert';
 //Declaring global variables
 List<int> slotSelected = new List<int>();
 
+//Creating an object of ProgressDialog
+ProgressDialog progressDialogSchedule;
+
 class DaySelect extends StatefulWidget {
   DaySelect({Key key}) : super(key: key);
 
@@ -273,6 +276,29 @@ class _DaySelectState extends State<DaySelect> {
 
   //Method to send notification and then make the database entries
   void sendNotification() async {
+    //Code to show the progress bar
+    progressDialogSchedule = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialogSchedule.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF398AE5)),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Scheduling your Meeting!",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
+    );
+    progressDialogSchedule.show();
     //Declaring the list to save the devide token of the meeting members
     List<String> deviceTokens = new List<String>();
     //Declaring database reference to retrieve the device tokens of each users
@@ -295,7 +321,7 @@ class _DaySelectState extends State<DaySelect> {
     print(deviceTokens);
 
     //Requesting the server to send notification to the list of device tokens and then add entries to the database
-    final response = await http
+    await http
         .post(
       'https://meeting-scheduler-function.azurewebsites.net/api/HttpTrigger1',
       headers: <String, String>{
@@ -329,11 +355,34 @@ class _DaySelectState extends State<DaySelect> {
       "day": daySelected,
       "starTime": slotSelected[0],
       "endTime": slotSelected[slotSelected.length - 1] + 1,
-    }).then((value) {
-      Fluttertoast.showToast(msg: "Confirmed!");
+      "status": "pending-meeting",
+      "total-members": totalSelected
+    }).then((value) async {
+      //Saving the members of the meeting and setting their status to pending
+      int i;
+      for (i = 0; i < totalSelected; i++) {
+        await referenceMeetingEntries.update({
+          selectedNames.elementAt(i): "pending",
+        });
+      }
     });
+    int i;
     referenceMeetingEntries =
         databaseMeetingEntries.reference().child("meetings-list").child(uid);
     await referenceMeetingEntries.child(meetingID).set({"status": "confirmed"});
+    for (i = 0; i < totalSelected; i++) {
+      referenceMeetingEntries = databaseMeetingEntries
+          .reference()
+          .child("meetings-list")
+          .child(selectedNames.elementAt(i));
+      await referenceMeetingEntries
+          .child(meetingID)
+          .set({"status": "confirmed"});
+    }
+    progressDialogSchedule.hide();
+    Fluttertoast.showToast(
+        msg: "Meerting Confirmed!",
+        backgroundColor: Colors.white,
+        textColor: Colors.black);
   }
 }

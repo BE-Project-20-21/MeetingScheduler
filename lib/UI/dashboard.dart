@@ -2,7 +2,6 @@ import 'package:authentication_app/UI/scheduling_interface.dart';
 import 'package:authentication_app/UI/login.dart';
 import 'package:authentication_app/Model/upcoming.dart';
 import 'package:authentication_app/Model/pending.dart';
-import 'package:authentication_app/Model/dashboard_third.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/rendering.dart';

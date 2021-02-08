@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import '../UI/dashboard.dart';
-import '../UI/manage_schedule.dart';
 
 //Map to put the schedule of each day in one packet, ready to be pushed into the database
 var schedule = new Map<String, Map>();

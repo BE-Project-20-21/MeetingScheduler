@@ -1,6 +1,5 @@
 import 'package:authentication_app/Model/search.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SIInput extends StatelessWidget {
   final String route;

@@ -1,7 +1,5 @@
 import 'package:authentication_app/Model/upcoming_cards.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class DashboardFirst extends StatefulWidget {
   @override
@@ -11,8 +9,8 @@ class DashboardFirst extends StatefulWidget {
 class _DashboardFirstState extends State<DashboardFirst> {
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
+    // final width = MediaQuery.of(context).size.width;
+    // final height = MediaQuery.of(context).size.height;
     // TODO: implement build
     return ListView.builder(
       itemCount: 4,
