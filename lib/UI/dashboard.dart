@@ -13,6 +13,13 @@ import 'package:flutter/material.dart';
 import './manage_schedule.dart';
 import '../UI/myProfile.dart';
 
+//Variables required to store the meeting and their details respectively
+List<String> allMeetings = new List<String>();
+Map<String, Map<dynamic, dynamic>> pendingMeetings =
+    new Map<String, Map<dynamic, dynamic>>();
+Map<String, Map<dynamic, dynamic>> upcomingMeetings =
+    new Map<String, Map<dynamic, dynamic>>();
+
 //The map for each day containing the time slots, and boolean value for each slot; true: free, false: occupied.
 var sundayMap = new Map<int, bool>();
 var mondayMap = new Map<int, bool>();
@@ -40,8 +47,69 @@ class DashboardState extends State<Dashboard>
   @override
   void initState() {
     Firebase.initializeApp();
+    fetchMeetingsDetails();
     super.initState();
     tabController = new TabController(vsync: this, length: 3);
+  }
+
+  //Method to fetch the list of meetinhs the user is part of and later fetch the data for each meeting
+  void fetchMeetingsDetails() async {
+    //Code to show the progress bar
+    progressDialogSchedule = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialogSchedule.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF7B38C6)),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Gathering your Meetings!",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
+    );
+    progressDialogSchedule.show();
+
+    //Getting the authentication reference and getting the current user data
+    FirebaseAuth authFetchMeetings = FirebaseAuth.instance;
+    User userFetchMeetings = authFetchMeetings.currentUser;
+    String uidFetchMeetings = userFetchMeetings.uid.toString();
+    FirebaseDatabase databaseFetchMeetings = FirebaseDatabase.instance;
+    DatabaseReference referenceFetchMeetings = databaseFetchMeetings
+        .reference()
+        .child("meetings-list")
+        .child(uidFetchMeetings);
+    await referenceFetchMeetings.once().then((DataSnapshot dataSnapshot) {
+      dataSnapshot.value
+          .forEach((meetingID, irrelevant) => allMeetings.add(meetingID));
+    });
+    print("ALL MEETINGS: $allMeetings");
+
+    //Now we have a list of meetings, now we seperate pending and confirmed ones and save details about each in maps and pass them to respective dashboard tab
+    int i;
+    for (i = 0; i < allMeetings.length; i++) {
+      referenceFetchMeetings = databaseFetchMeetings
+          .reference()
+          .child("meetings")
+          .child(allMeetings[i]);
+      await referenceFetchMeetings.once().then((DataSnapshot dataSnapshot) {
+        if (dataSnapshot.value["status"] == "pending-meeting") {
+          pendingMeetings[allMeetings[i]] = dataSnapshot.value;
+        }
+      });
+    }
+    print("Pending Meetings: $pendingMeetings");
+    print("Upcoming Meetings: $upcomingMeetings");
+
+    progressDialogSchedule.hide();
   }
 
   @override
@@ -351,6 +419,7 @@ class PopupOptionMenu extends StatelessWidget {
     );
   }
 
+  //Method to logout the current loggedin user
   void logOut(BuildContext context) async {
     final FirebaseAuth authLogOut = FirebaseAuth.instance;
     final GoogleSignIn googleSignIn = new GoogleSignIn();
@@ -362,6 +431,7 @@ class PopupOptionMenu extends StatelessWidget {
   }
 }
 
+//Method to retrieve the schedule and have the maps ready to render the UI on manage schedule page
 void manageSchedule(BuildContext context) {
   //Code to retrieve the schedule if any and then move to manage schedule page
   //Here Goes the entire code to check if schedule already submitted
