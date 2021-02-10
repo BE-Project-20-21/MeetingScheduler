@@ -2,7 +2,6 @@ import 'package:authentication_app/Model/engine_response_bubble.dart';
 import 'package:authentication_app/UI/days_slots_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../Model/search.dart';
 import '../UI/days_slots_page.dart';
 
@@ -58,7 +57,7 @@ class _ScheduleInterfaceState extends State<ScheduleInterface> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    // double height = MediaQuery.of(context).size.height;
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: "Scheduling Interface",
@@ -207,7 +206,6 @@ class _ScheduleInterfaceState extends State<ScheduleInterface> {
                                     ),
                                     Container(
                                       margin: EdgeInsets.only(right: 30),
-
                                       child: RaisedButton(
                                         elevation: 5.0,
                                         onPressed: () {

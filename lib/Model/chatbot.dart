@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 class ChatBot extends StatefulWidget {
   ChatBot({Key key, this.title}) : super(key: key);

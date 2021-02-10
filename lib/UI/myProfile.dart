@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:clip_shadow/clip_shadow.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'dart:async';
 import '../Model/profiledata.dart';
 
 class MyProfile extends StatefulWidget {
@@ -32,12 +28,12 @@ class _MyProfileState extends State<MyProfile> {
     DatabaseReference dbRef =
         FirebaseDatabase.instance.reference().child("users");
     dbRef.once().then((DataSnapshot snapshot) {
-      var DATA = snapshot.value;
+      var data = snapshot.value;
 
       profilelist.clear();
 
       ProfileData userdata =
-          new ProfileData(DATA[_uidMain]['name'], DATA[_uidMain]['email']);
+          new ProfileData(data[_uidMain]['name'], data[_uidMain]['email']);
       profilelist.add(userdata);
       print(profilelist[0].name);
       setState(() {

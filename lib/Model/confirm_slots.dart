@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../UI/scheduling_interface.dart';
 import '../Model/generate_confirm_slots.dart';
 

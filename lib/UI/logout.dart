@@ -1,9 +1,7 @@
-import 'package:authentication_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class Logout extends StatelessWidget {
   @override
@@ -41,15 +39,16 @@ class Logout extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(30.0),
-                        boxShadow: [new BoxShadow(
-                          color: Colors.black,
-                          spreadRadius: 1.0,
-                          blurRadius: 2.0,
-                          offset: Offset(
-                            3.0,
-                            3.0,
+                        boxShadow: [
+                          new BoxShadow(
+                            color: Colors.black,
+                            spreadRadius: 1.0,
+                            blurRadius: 2.0,
+                            offset: Offset(
+                              3.0,
+                              3.0,
+                            ),
                           ),
-                        ),
                         ],
                       ),
                       width: double.infinity,
@@ -63,18 +62,19 @@ class Logout extends StatelessWidget {
                       ),
                     ),
                   ),
-                ],),
+                ],
+              ),
             ),
           ),
-          decoration: BoxDecoration(gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
                 Colors.lightBlue,
                 Colors.blue,
                 Colors.deepPurpleAccent,
-              ]
-          )),
+              ])),
         ),
       ),
     );
@@ -84,7 +84,6 @@ class Logout extends StatelessWidget {
     final FirebaseAuth authLogOut = FirebaseAuth.instance;
     await authLogOut.signOut();
     print(context);
-    Fluttertoast.showToast(msg: "Context: ${context}");
     Navigator.pop(context);
   }
 }

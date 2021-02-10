@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import '../UI/dashboard.dart';
-import '../UI/manage_schedule.dart';
 
 //Map to put the schedule of each day in one packet, ready to be pushed into the database
 var schedule = new Map<String, Map>();
@@ -125,35 +124,6 @@ class _TimeSlotsState extends State<TimeSlots> {
   //Variables required to handle the selected/un-selected state of each slot
   bool pressed = false;
   int counter = 1;
-
-  // @override
-  // void initState() async {
-  //   super.initState();
-  //   //Here Goes the entire code to check if schedule already submitted
-  //   // and if submitted read the schedule from the Database and reflect the schedule on the application
-  //   //Starting the progress bar for the period to gather the already submitted schedule
-
-  //   //Getting the authentication reference and getting the current user data
-  //   FirebaseAuth authSchedule = FirebaseAuth.instance;
-  //   User userSchedule = authSchedule.currentUser;
-  //   String uidSchedule = userSchedule.uid.toString();
-
-  //   //Code to check whether the schedule exists
-  //   FirebaseDatabase databaseSchedule = new FirebaseDatabase();
-  //   DatabaseReference referenceSchedule =
-  //       databaseSchedule.reference().child("schedule");
-  //   await referenceSchedule
-  //       .reference()
-  //       .child("schedule")
-  //       .child(uidSchedule)
-  //       .once()
-  //       .then((DataSnapshot dataSnapshot) {
-  //     if (dataSnapshot.value != null) {
-  //       //Code to load the existing schedule and populate the Maps
-  //       displaySchedule(uidSchedule);
-  //     }
-  //   });
-  // }
 
   @override
   void initState() {

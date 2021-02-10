@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../Model/confirm_slots.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -8,6 +9,12 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+//Declaring global variables
+List<int> slotSelected = new List<int>();
+
+//Creating an object of ProgressDialog
+ProgressDialog progressDialogSchedule;
+
 class DaySelect extends StatefulWidget {
   DaySelect({Key key}) : super(key: key);
 
@@ -16,11 +23,13 @@ class DaySelect extends StatefulWidget {
 }
 
 class _DaySelectState extends State<DaySelect> {
+  //Declaring the variables required
+  String daySelected = "";
+
   //Creating an object of ProgressDialog
   ProgressDialog progressDialogSlots;
   @override
   Widget build(BuildContext context) {
-    String daySelected = "";
     return Container(
       child: Column(children: [
         Container(
@@ -60,6 +69,8 @@ class _DaySelectState extends State<DaySelect> {
             popupBarrierColor: Colors.white,
             onChanged: (day) {
               daySelected = day;
+              //Clearing the selected slots if any
+              slotSelected.clear();
               //Method to fetch common empty slots for the day as soon as the user selects a day
               fetchEmptySlots(daySelected);
             },
@@ -106,20 +117,6 @@ class _DaySelectState extends State<DaySelect> {
         ),
         Container(
           child: ConfirmSlots(),
-          // decoration: BoxDecoration(
-          //     color: Colors.white, borderRadius: BorderRadius.circular(20)),
-          // child: ExpansionTile(
-          //   maintainState: true,
-          //   title: Text(
-          //     "Choose Slots",
-          //     style: GoogleFonts.aBeeZee(
-          //         textStyle:
-          //             TextStyle(color: Color(0xFF398AE5), fontSize: 15),
-          //         letterSpacing: 1,
-          //         fontWeight: FontWeight.bold),
-          //   ),
-          //   children: [ConfirmSlots()],
-          // )
         ),
         SizedBox(
           height: 10,
@@ -152,6 +149,7 @@ class _DaySelectState extends State<DaySelect> {
     );
   }
 
+  //Method to fetch common empty slots for the slected members of the meeting
   void fetchEmptySlots(String daySelected) async {
     if (daySelected != "" && daySelected != null) {
       //Code to show the progress bar
@@ -246,7 +244,61 @@ class _DaySelectState extends State<DaySelect> {
     }
   }
 
+  //Method to check if gaps exists in the selected slots, and confirm the meeting if not
   void confirmMeeting() async {
+    //TODO: ALGORITHM TO DISALLOW DISCONTINOUS SLOT PICKING
+    print("Selected Slots: $slotSelected");
+    if (slotSelected.length == 0) {
+      Fluttertoast.showToast(msg: "PLease select a free time slot!");
+    } else {
+      if (!gapExists()) {
+        //Calling function to send notification and then make database entries
+        sendNotification();
+      } else {
+        Fluttertoast.showToast(
+            msg: "Please Select Slots that do not have gaps!");
+      }
+    }
+  }
+
+  //Method to check whether gap exists in between the slected slots
+  bool gapExists() {
+    slotSelected.sort();
+    print("Selected Slots sorted: $slotSelected");
+    int i;
+    for (i = 0; i < slotSelected.length - 1; i++) {
+      if (slotSelected[i + 1] - slotSelected[i] != 1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  //Method to send notification and then make the database entries
+  void sendNotification() async {
+    //Code to show the progress bar
+    progressDialogSchedule = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialogSchedule.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF398AE5)),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Scheduling your Meeting!",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
+    );
+    progressDialogSchedule.show();
     //Declaring the list to save the devide token of the meeting members
     List<String> deviceTokens = new List<String>();
     //Declaring database reference to retrieve the device tokens of each users
@@ -268,8 +320,9 @@ class _DaySelectState extends State<DaySelect> {
     subjectList.add(membersNames.join(", "));
     print(deviceTokens);
 
-    //Requesting the server to send notification to the list of device tokens
-    final response = await http.post(
+    //Requesting the server to send notification to the list of device tokens and then add entries to the database
+    await http
+        .post(
       'https://meeting-scheduler-function.azurewebsites.net/api/HttpTrigger1',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -278,6 +331,58 @@ class _DaySelectState extends State<DaySelect> {
         'registrationTokens': deviceTokens,
         "subject": subjectList,
       }),
-    );
+    )
+        .then((value) {
+      addMeetingEntries();
+    });
+  }
+
+  //Method to add the meeting entries in the database
+  void addMeetingEntries() async {
+    //To get the UID of the newly added user
+    FirebaseAuth authMeetingEntries = FirebaseAuth.instance;
+    final User userMeetingEntries = authMeetingEntries.currentUser;
+    final String uid = userMeetingEntries.uid.toString();
+    FirebaseDatabase databaseMeetingEntries = FirebaseDatabase.instance;
+    DatabaseReference referenceMeetingEntries =
+        databaseMeetingEntries.reference().child("meetings").push();
+
+    //Fetching the newly created meeting ID
+    String meetingID = referenceMeetingEntries.key.toString();
+    await referenceMeetingEntries.set({
+      "setBy": uid,
+      "subject": subject,
+      "day": daySelected,
+      "starTime": slotSelected[0],
+      "endTime": slotSelected[slotSelected.length - 1] + 1,
+      "status": "pending-meeting",
+      "total-members": totalSelected
+    }).then((value) async {
+      //Saving the members of the meeting and setting their status to pending
+      int i;
+      for (i = 0; i < totalSelected; i++) {
+        await referenceMeetingEntries.update({
+          selectedNames.elementAt(i): "pending",
+        });
+      }
+    });
+    int i;
+    referenceMeetingEntries =
+        databaseMeetingEntries.reference().child("meetings-list").child(uid);
+    await referenceMeetingEntries.child(meetingID).set({"status": "confirmed"});
+    for (i = 0; i < totalSelected; i++) {
+      referenceMeetingEntries = databaseMeetingEntries
+          .reference()
+          .child("meetings-list")
+          .child(selectedNames.elementAt(i));
+      await referenceMeetingEntries
+          .child(meetingID)
+          .set({"status": "confirmed"});
+    }
+    progressDialogSchedule.hide();
+    Fluttertoast.showToast(
+        msg: "Meerting Confirmed!",
+        backgroundColor: Colors.white,
+        textColor: Colors.black);
   }
 }

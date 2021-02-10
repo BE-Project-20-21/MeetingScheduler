@@ -12,7 +12,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../Model/FadeAnimation.dart';
 import '../UI/signup.dart';
 import './verify_email.dart';
@@ -422,8 +421,7 @@ class Login extends StatelessWidget {
       AuthCredential authCredential = GoogleAuthProvider.credential(
           idToken: googleSignInAuthentication.idToken,
           accessToken: googleSignInAuthentication.accessToken);
-      UserCredential result =
-          await authLogIn.signInWithCredential(authCredential);
+      await authLogIn.signInWithCredential(authCredential);
 
       //Adding user to authentication is complete, now we need to handle the navigation based on whether the user has provided the personal details
       //Code to show the progres bar (UI BASED)

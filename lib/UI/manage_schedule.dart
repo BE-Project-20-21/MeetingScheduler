@@ -1,7 +1,6 @@
 import 'package:authentication_app/Model/time_slots.dart';
 import 'package:date_util/date_util.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:intl/intl.dart';
 import './timeSlotpicker.dart';

@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 class DashboardSecond extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
+    // final width = MediaQuery.of(context).size.width;
+    // final height = MediaQuery.of(context).size.height;
 
     return ListView.builder(
       itemCount: 4,
