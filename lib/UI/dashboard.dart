@@ -15,6 +15,9 @@ import '../UI/myProfile.dart';
 
 //Variables required to store the meeting and their details respectively
 List<String> allMeetings = new List<String>();
+List<String> pendingList = new List<String>();
+List<String> upcomingList = new List<String>();
+
 Map<String, Map<dynamic, dynamic>> pendingMeetings =
     new Map<String, Map<dynamic, dynamic>>();
 Map<String, Map<dynamic, dynamic>> upcomingMeetings =
@@ -103,6 +106,10 @@ class DashboardState extends State<Dashboard>
       await referenceFetchMeetings.once().then((DataSnapshot dataSnapshot) {
         if (dataSnapshot.value["status"] == "pending-meeting") {
           pendingMeetings[allMeetings[i]] = dataSnapshot.value;
+          pendingList.add(allMeetings[i]);
+        } else {
+          upcomingMeetings[allMeetings[i]] = dataSnapshot.value;
+          upcomingList.add(allMeetings[i]);
         }
       });
     }
