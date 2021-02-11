@@ -34,6 +34,7 @@ var saturdayMap = new Map<int, bool>();
 
 //Creating an object of ProgressDialog
 ProgressDialog progressDialogSchedule;
+ProgressDialog progressDialogMeeting;
 
 //To save the context of the entire Dashboard page (As there are popUp menus present)
 BuildContext globalContext;
@@ -58,9 +59,9 @@ class DashboardState extends State<Dashboard>
   //Method to fetch the list of meetinhs the user is part of and later fetch the data for each meeting
   void fetchMeetingsDetails() async {
     //Code to show the progress bar
-    progressDialogSchedule = new ProgressDialog(context,
+    progressDialogMeeting = new ProgressDialog(context,
         type: ProgressDialogType.Normal, isDismissible: false);
-    progressDialogSchedule.style(
+    progressDialogMeeting.style(
       child: Container(
         color: Colors.white,
         child: CircularProgressIndicator(
@@ -79,7 +80,7 @@ class DashboardState extends State<Dashboard>
       progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
       messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
     );
-    progressDialogSchedule.show();
+    progressDialogMeeting.show();
 
     //Getting the authentication reference and getting the current user data
     FirebaseAuth authFetchMeetings = FirebaseAuth.instance;
@@ -105,18 +106,22 @@ class DashboardState extends State<Dashboard>
           .child(allMeetings[i]);
       await referenceFetchMeetings.once().then((DataSnapshot dataSnapshot) {
         if (dataSnapshot.value["status"] == "pending-meeting") {
-          pendingMeetings[allMeetings[i]] = dataSnapshot.value;
-          pendingList.add(allMeetings[i]);
+          setState(() {
+            pendingMeetings[allMeetings[i]] = dataSnapshot.value;
+            pendingList.add(allMeetings[i]);
+          });
         } else {
-          upcomingMeetings[allMeetings[i]] = dataSnapshot.value;
-          upcomingList.add(allMeetings[i]);
+          setState(() {
+            upcomingMeetings[allMeetings[i]] = dataSnapshot.value;
+            upcomingList.add(allMeetings[i]);
+          });
         }
       });
     }
     print("Pending Meetings: $pendingMeetings");
     print("Upcoming Meetings: $upcomingMeetings");
 
-    progressDialogSchedule.hide();
+    progressDialogMeeting.hide();
   }
 
   @override
@@ -127,7 +132,6 @@ class DashboardState extends State<Dashboard>
 
   @override
   Widget build(BuildContext context) {
-    Firebase.initializeApp();
     globalContext = context;
     // TODO: implement build
     return MaterialApp(

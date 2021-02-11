@@ -1,4 +1,5 @@
 import 'package:authentication_app/Model/upcoming_cards.dart';
+import 'package:authentication_app/UI/dashboard.dart';
 import 'package:flutter/material.dart';
 
 class DashboardFirst extends StatefulWidget {
@@ -13,11 +14,11 @@ class _DashboardFirstState extends State<DashboardFirst> {
     // final height = MediaQuery.of(context).size.height;
     // TODO: implement build
     return ListView.builder(
-      itemCount: 4,
+      itemCount: upcomingList.length,
       itemBuilder: (BuildContext ctxt, int index) {
         return Padding(
             padding: EdgeInsets.only(right: 20, left: 20),
-            child: UpcomingCards());
+            child: UpcomingCards(upcomingList[index]));
       },
     );
   }
