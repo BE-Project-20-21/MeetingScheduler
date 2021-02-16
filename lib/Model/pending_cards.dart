@@ -1,4 +1,5 @@
 import 'package:authentication_app/UI/dashboard.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -12,14 +13,18 @@ class PendingCards extends StatelessWidget {
     this._meetingID = meetingID;
   }
 
+  //Variables required to show data on the cards
+  String setBy;
+  String members;
+  Map<dynamic, dynamic> temp = new Map<dynamic, dynamic>();
+
   @override
   Widget build(BuildContext context) {
-    Map<dynamic, dynamic> temp = new Map<dynamic, dynamic>();
     temp = pendingMeetings[_meetingID];
     return GestureDetector(
       onTap: () {
         //Code to show the Card that contains all the details about the meeting clicked
-        showCard(context, temp);
+        popUp(context);
       },
       child: Container(
         margin: EdgeInsets.only(top: 20),
@@ -78,33 +83,51 @@ class PendingCards extends StatelessWidget {
     );
   }
 
-  void showCard(BuildContext context, Map<dynamic, dynamic> temp) {
+  //Method to perform all background retrieving and then show the meeting details card
+  void popUp(BuildContext context) async {
     //Code to show the progress bar
-    // progressDialogMeetingCard = new ProgressDialog(context,
-    //     type: ProgressDialogType.Normal, isDismissible: false);
-    // progressDialogMeetingCard.style(
-    //   child: Container(
-    //     color: Colors.white,
-    //     child: CircularProgressIndicator(
-    //       valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF7B38C6)),
-    //     ),
-    //     margin: EdgeInsets.all(10.0),
-    //   ),
-    //   message: "Gathering your Meetings!",
-    //   borderRadius: 10.0,
-    //   backgroundColor: Colors.white,
-    //   elevation: 40.0,
-    //   progress: 0.0,
-    //   maxProgress: 100.0,
-    //   insetAnimCurve: Curves.easeInOut,
-    //   progressWidgetAlignment: Alignment.center,
-    //   progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
-    //   messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
-    // );
-    // progressDialogMeetingCard.show();
+    progressDialogMeetingCard = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialogMeetingCard.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF7B38C6)),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Fetching the details",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 10.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 15.0),
+    );
+    progressDialogMeetingCard.show();
 
-    // progressDialogMeetingCard.hide();
+    //Carrying the retrieving here
+    //Retrieving the name of the person who called the meeting
+    FirebaseDatabase databaseMeetingCard = FirebaseDatabase.instance;
+    DatabaseReference referenceMeetingCard = databaseMeetingCard
+        .reference()
+        .child("users")
+        .child(temp["setBy"])
+        .child("name");
+    await referenceMeetingCard.once().then((DataSnapshot dataSnapshot) {
+      setBy = dataSnapshot.value;
+    });
+    print("setBy: $setBy");
+    progressDialogMeetingCard.hide();
 
+    //Calling the method to show the cards
+    showCard(context);
+  }
+
+  void showCard(BuildContext context) {
     showAnimatedDialog(
       context: context,
       barrierDismissible: true,
@@ -116,7 +139,7 @@ class PendingCards extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(20.0)),
           ),
-          child: cardContent(context, temp),
+          child: cardContent(context),
         );
       },
       animationType: DialogTransitionType.slideFromBottom,
@@ -126,7 +149,7 @@ class PendingCards extends StatelessWidget {
   }
 
   //Widget used to display the details about the meeting on popup
-  Widget cardContent(BuildContext context, Map<dynamic, dynamic> temp) {
+  Widget cardContent(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Material(
@@ -146,13 +169,56 @@ class PendingCards extends StatelessWidget {
                   ),
                 ),
               ),
+              Container(
+                padding: EdgeInsets.all(10),
+                child: Text(
+                  "Day: ${temp["day"]}",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18.0,
+                    fontStyle: FontStyle.normal,
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(10),
+                child: Text(
+                  "Set by: $setBy",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18.0,
+                    fontStyle: FontStyle.normal,
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(10),
+                child: Text(
+                  "Start Time: ${temp["starTime"]}:00",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18.0,
+                    fontStyle: FontStyle.normal,
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(10),
+                child: Text(
+                  "End Time: ${temp["endTime"]}:00",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18.0,
+                    fontStyle: FontStyle.normal,
+                  ),
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Container(
                     child: Container(
-                      margin: EdgeInsets.only(right: 30),
                       child: RaisedButton(
                         elevation: 5.0,
                         onPressed: () {},
@@ -173,9 +239,11 @@ class PendingCards extends StatelessWidget {
                       ),
                     ),
                   ),
+                  SizedBox(
+                    width: 20.0,
+                  ),
                   Container(
                     child: Container(
-                      margin: EdgeInsets.only(right: 30),
                       child: RaisedButton(
                         elevation: 5.0,
                         onPressed: () {},

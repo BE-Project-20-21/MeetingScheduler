@@ -299,6 +299,7 @@ class _DaySelectState extends State<DaySelect> {
       messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
     );
     progressDialogSchedule.show();
+
     //Declaring the list to save the devide token of the meeting members
     List<String> deviceTokens = new List<String>();
     //Declaring database reference to retrieve the device tokens of each users
@@ -349,6 +350,7 @@ class _DaySelectState extends State<DaySelect> {
 
     //Fetching the newly created meeting ID
     String meetingID = referenceMeetingEntries.key.toString();
+    selectedNames.add(uid);
     await referenceMeetingEntries.set({
       "setBy": uid,
       "subject": subject,
@@ -356,7 +358,10 @@ class _DaySelectState extends State<DaySelect> {
       "starTime": slotSelected[0],
       "endTime": slotSelected[slotSelected.length - 1] + 1,
       "status": "pending-meeting",
-      "total-members": totalSelected
+      "total-members": totalSelected,
+      "Accepted:": 0,
+      "Rejected": 0,
+      "Members": selectedNames.toString(),
     }).then((value) async {
       //Saving the members of the meeting and setting their status to pending
       int i;
