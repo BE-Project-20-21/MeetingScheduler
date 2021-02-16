@@ -155,10 +155,7 @@ class DashboardState extends State<Dashboard>
                   membersNames.clear();
                   commonslots.clear();
                   totalSelected = 0;
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ScheduleInterface(false)));
+                  ScheduleMeeting();
                 },
                 child: Icon(
                   Icons.add,
@@ -282,6 +279,53 @@ class DashboardState extends State<Dashboard>
         ),
       ),
     );
+  }
+
+  //Method to check if user has provided his/her schedule, if yes proceed to scheduling interface
+  void ScheduleMeeting() async {
+    ProgressDialog progressDialog;
+    //Code to show the progress bar
+    progressDialog = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialog.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF7B38C6)),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Gathering the information",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
+    );
+    progressDialog.show();
+
+    //Checking if the user has submitted the schedule
+    FirebaseAuth authCheck = FirebaseAuth.instance;
+    User userCheck = authCheck.currentUser;
+    String uidCheck = userCheck.uid.toString();
+    FirebaseDatabase databaseCheck = FirebaseDatabase.instance;
+    DatabaseReference referenceCheck =
+        databaseCheck.reference().child("schedule").child(uidCheck);
+    await referenceCheck.once().then((DataSnapshot dataSnapshot) {
+      if (dataSnapshot.value == null) {
+        Fluttertoast.showToast(
+            msg:
+                "Please provide your schedule, and then you can schedule meeting with others!");
+      } else {
+        progressDialog.hide();
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ScheduleInterface(false)));
+      }
+    });
   }
 }
 

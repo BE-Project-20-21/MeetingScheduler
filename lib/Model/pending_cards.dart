@@ -221,7 +221,9 @@ class PendingCards extends StatelessWidget {
                     child: Container(
                       child: RaisedButton(
                         elevation: 5.0,
-                        onPressed: () {},
+                        onPressed: () {
+                          //Call the Method to handle all the workings on pressing the accept button
+                        },
                         padding: EdgeInsets.all(10.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
@@ -246,7 +248,9 @@ class PendingCards extends StatelessWidget {
                     child: Container(
                       child: RaisedButton(
                         elevation: 5.0,
-                        onPressed: () {},
+                        onPressed: () {
+                          //Call the Method to handle all the workings on pressing the accept button
+                        },
                         padding: EdgeInsets.all(10.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
