@@ -1,26 +1,52 @@
 import 'package:authentication_app/UI/dashboard.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mailer/smtp_server/gmail.dart';
+import 'package:mailer/mailer.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import '../Credentials/mailing_facility.dart';
 
 //Creating an object of ProgressDialog
 ProgressDialog progressDialogMeetingCard;
 
-class PendingCards extends StatelessWidget {
+class PendingCards extends StatefulWidget {
   String _meetingID;
   PendingCards(String meetingID) {
     this._meetingID = meetingID;
   }
 
-  //Variables required to show data on the cards
+  @override
+  _PendingCardsState createState() => _PendingCardsState();
+}
+
+class _PendingCardsState extends State<PendingCards> {
+  //Vartiables required to show data on the popup card
   String setBy;
   String members;
   Map<dynamic, dynamic> temp = new Map<dynamic, dynamic>();
+  List<String> emailIds = new List<String>();
+
+  //Variable to control the visiblity of the "accept" and "reject" button
+  bool isDecided;
+
+  @override
+  void initState() {
+    setState(() {
+      isDecided = false;
+    });
+    temp = pendingMeetings[widget._meetingID];
+    String memberList =
+        temp["Members"].substring(1, temp["Members"].length - 1);
+    print("emailList: $memberList");
+    emailIds = memberList.split(", ");
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    temp = pendingMeetings[_meetingID];
     return GestureDetector(
       onTap: () {
         //Code to show the Card that contains all the details about the meeting clicked
@@ -83,7 +109,6 @@ class PendingCards extends StatelessWidget {
     );
   }
 
-  //Method to perform all background retrieving and then show the meeting details card
   void popUp(BuildContext context) async {
     //Code to show the progress bar
     progressDialogMeetingCard = new ProgressDialog(context,
@@ -148,7 +173,6 @@ class PendingCards extends StatelessWidget {
     );
   }
 
-  //Widget used to display the details about the meeting on popup
   Widget cardContent(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -223,6 +247,7 @@ class PendingCards extends StatelessWidget {
                         elevation: 5.0,
                         onPressed: () {
                           //Call the Method to handle all the workings on pressing the accept button
+                          meetingAccepted();
                         },
                         padding: EdgeInsets.all(10.0),
                         shape: RoundedRectangleBorder(
@@ -275,5 +300,164 @@ class PendingCards extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  //Method to carry the changes in database when the user accepts the meeting
+  void meetingAccepted() async {
+    //Code to show the progress bar
+    ProgressDialog progressDialogMeetingAccepted;
+    progressDialogMeetingAccepted = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialogMeetingAccepted.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF7B38C6)),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Fetching the details",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 10.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 15.0),
+    );
+    progressDialogMeetingAccepted.show();
+
+    //Changing the status of the user in database
+    //Fetching the uid of the user
+    FirebaseAuth authMeetingAccepted = FirebaseAuth.instance;
+    User userMeetingAccepted = authMeetingAccepted.currentUser;
+    String uidMeetingAccepted = userMeetingAccepted.uid.toString();
+    //Code to make changes on database
+    FirebaseDatabase databaseMeetingAccepted = FirebaseDatabase.instance;
+    DatabaseReference referenceMeetingAccepted = databaseMeetingAccepted
+        .reference()
+        .child("meetings")
+        .child(widget._meetingID);
+
+    //Altering the varibles which are needed to be updated
+    int acceptance;
+    int rejects;
+    await referenceMeetingAccepted
+        .child("Accepted")
+        .once()
+        .then((DataSnapshot dataSnapshot) {
+      acceptance = dataSnapshot.value;
+      acceptance = acceptance + 1;
+    });
+    await referenceMeetingAccepted
+        .child("Rejected")
+        .once()
+        .then((DataSnapshot dataSnapshot) {
+      rejects = dataSnapshot.value;
+    });
+
+    //Code to make changes on database
+    referenceMeetingAccepted = databaseMeetingAccepted
+        .reference()
+        .child("meetings")
+        .child(widget._meetingID);
+    await referenceMeetingAccepted.update({
+      uidMeetingAccepted: "accepted",
+      "Accepted": acceptance,
+    }).then((value) {
+      //Hiding the accpet, reject button
+      setState(() {
+        isDecided = true;
+      });
+    }).then((value) async {
+      //Checking whether this accpetance changes the status of the meeting
+      progressDialogMeetingAccepted.hide();
+      Fluttertoast.showToast(msg: "You have successfully accpeted the Meeting");
+      int l = temp["total-members"] + 1;
+      print('TM: $l');
+      print("CTM: ${acceptance + rejects}");
+      if ((acceptance + rejects).toString() ==
+          temp["total-members"].toString()) {
+        if (rejects == 0) {
+          //Here goes the code to change the meeting status and to send automated email to the members
+          await referenceMeetingAccepted
+              .update({"status": "confirmed-meeting"});
+          //IMPLEMENT AUTOMATED EMAIL TO ALL THE MEMBERS AND THEN CREATE A CHAT GROUP
+          sendConfirmationEmail();
+        } else {
+          //Here goes the code to send a mail saying the meet cannot be performed due to rejects and delete the meeting entry from the databse (TODO)
+          await referenceMeetingAccepted
+              .update({"status": "confirmed-meeting"});
+          //IMPLEMENT AUTOMATED EMAIL TO ALL THE MEMBERS
+        }
+      }
+    });
+  }
+
+  //Method to send confirmation email to all the members os the meeting
+  sendConfirmationEmail() async {
+    //Code to show the progress bar
+    ProgressDialog progressDialogMeetingConfirmed;
+    progressDialogMeetingConfirmed = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialogMeetingConfirmed.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF7B38C6)),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Meeting has been confirmed!",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 10.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 15.0),
+    );
+    progressDialogMeetingConfirmed.show();
+
+    //Fetching the emailID of all the members
+    List emailList = new List();
+    FirebaseDatabase databaseEmail = FirebaseDatabase.instance;
+    DatabaseReference referenceEmail = databaseEmail.reference().child("users");
+    int i;
+    for (i = 0; i < emailIds.length; i++) {
+      await referenceEmail
+          .child(emailIds[i])
+          .child("email")
+          .once()
+          .then((DataSnapshot dataSnapshot) {
+        emailList.add(dataSnapshot.value);
+      });
+    }
+
+    final smtpServer = gmail(mailingEmail, mailingPassword);
+    final message = Message()
+      ..from = Address(mailingEmail)
+      ..recipients.addAll(emailList)
+      ..subject = "Meeting Confirmartion!"
+      ..html =
+          "<h1>Hi, This is your Meeting Scheduler App</h1>\n<p>Your Meeting has been approved and scheduled!</p>";
+
+    try {
+      final sendReport = await send(message, smtpServer);
+      print('Message sent: ' + sendReport.toString());
+      Fluttertoast.showToast(
+          msg: "You will recieve a confirmation email shortly");
+    } on MailerException catch (e) {
+      print('Message not sent.');
+      print("error: $e");
+      for (var p in e.problems) {
+        print('Problem: ${p.code}: ${p.msg}');
+      }
+    }
+    progressDialogMeetingConfirmed.hide();
   }
 }

@@ -359,7 +359,7 @@ class _DaySelectState extends State<DaySelect> {
       "endTime": slotSelected[slotSelected.length - 1] + 1,
       "status": "pending-meeting",
       "total-members": totalSelected,
-      "Accepted:": 0,
+      "Accepted": 0,
       "Rejected": 0,
       "Members": selectedNames.toString(),
     }).then((value) async {

@@ -110,7 +110,7 @@ class DashboardState extends State<Dashboard>
             pendingMeetings[allMeetings[i]] = dataSnapshot.value;
             pendingList.add(allMeetings[i]);
           });
-        } else {
+        } else if (dataSnapshot.value["status"] == "confirmed-meeting") {
           setState(() {
             upcomingMeetings[allMeetings[i]] = dataSnapshot.value;
             upcomingList.add(allMeetings[i]);
