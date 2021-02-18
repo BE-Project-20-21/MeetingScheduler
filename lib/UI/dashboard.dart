@@ -51,6 +51,11 @@ class DashboardState extends State<Dashboard>
   @override
   void initState() {
     Firebase.initializeApp();
+    allMeetings.clear();
+    pendingList.clear();
+    upcomingList.clear();
+    pendingMeetings.clear();
+    upcomingMeetings.clear();
     fetchMeetingsDetails();
     super.initState();
     tabController = new TabController(vsync: this, length: 3);

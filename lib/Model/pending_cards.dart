@@ -155,7 +155,7 @@ class _PendingCardsState extends State<PendingCards> {
   void showCard(BuildContext context) {
     showAnimatedDialog(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return Container(
           padding: EdgeInsets.all(10.0),
@@ -247,7 +247,7 @@ class _PendingCardsState extends State<PendingCards> {
                         elevation: 5.0,
                         onPressed: () {
                           //Call the Method to handle all the workings on pressing the accept button
-                          meetingAccepted();
+                          meetingAccepted(context);
                         },
                         padding: EdgeInsets.all(10.0),
                         shape: RoundedRectangleBorder(
@@ -303,7 +303,7 @@ class _PendingCardsState extends State<PendingCards> {
   }
 
   //Method to carry the changes in database when the user accepts the meeting
-  void meetingAccepted() async {
+  void meetingAccepted(BuildContext context) async {
     //Code to show the progress bar
     ProgressDialog progressDialogMeetingAccepted;
     progressDialogMeetingAccepted = new ProgressDialog(context,
@@ -385,19 +385,19 @@ class _PendingCardsState extends State<PendingCards> {
           await referenceMeetingAccepted
               .update({"status": "confirmed-meeting"});
           //IMPLEMENT AUTOMATED EMAIL TO ALL THE MEMBERS AND THEN CREATE A CHAT GROUP
-          sendConfirmationEmail();
+          sendConfirmationEmail(context);
         } else {
           //Here goes the code to send a mail saying the meet cannot be performed due to rejects and delete the meeting entry from the databse (TODO)
-          await referenceMeetingAccepted
-              .update({"status": "confirmed-meeting"});
+          await referenceMeetingAccepted.update({"status": "canceled-meeting"});
           //IMPLEMENT AUTOMATED EMAIL TO ALL THE MEMBERS
+          sendCancellationEmail(context);
         }
       }
     });
   }
 
   //Method to send confirmation email to all the members os the meeting
-  sendConfirmationEmail() async {
+  sendConfirmationEmail(BuildContext context) async {
     //Code to show the progress bar
     ProgressDialog progressDialogMeetingConfirmed;
     progressDialogMeetingConfirmed = new ProgressDialog(context,
@@ -459,5 +459,87 @@ class _PendingCardsState extends State<PendingCards> {
       }
     }
     progressDialogMeetingConfirmed.hide();
+
+    //Code to navigate back to dashboard and apply the changes there
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => Dashboard(),
+      ),
+      (route) => false,
+    );
+  }
+
+  //Method to send cancelation email to all the members
+  void sendCancellationEmail(BuildContext context) async {
+    //Code to show the progress bar
+    ProgressDialog progressDialogMeetingCancelled;
+    progressDialogMeetingCancelled = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialogMeetingCancelled.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF7B38C6)),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Sending your response",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 10.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 15.0),
+    );
+    progressDialogMeetingCancelled.show();
+
+    //Fetching the emailID of all the members
+    List emailList = new List();
+    FirebaseDatabase databaseEmail = FirebaseDatabase.instance;
+    DatabaseReference referenceEmail = databaseEmail.reference().child("users");
+    int i;
+    for (i = 0; i < emailIds.length; i++) {
+      await referenceEmail
+          .child(emailIds[i])
+          .child("email")
+          .once()
+          .then((DataSnapshot dataSnapshot) {
+        emailList.add(dataSnapshot.value);
+      });
+    }
+
+    final smtpServer = gmail(mailingEmail, mailingPassword);
+    final message = Message()
+      ..from = Address(mailingEmail)
+      ..recipients.addAll(emailList)
+      ..subject = "Meeting request Denied/"
+      ..html =
+          "<h1>Hi, This is your Meeting Scheduler App</h1>\n<p>Your Meeting request has been denied. Please check back later with alternate time-slots</p>";
+
+    try {
+      final sendReport = await send(message, smtpServer);
+      print('Message sent: ' + sendReport.toString());
+      Fluttertoast.showToast(msg: "Thwe Meeting has been cancelled!");
+    } on MailerException catch (e) {
+      print('Message not sent.');
+      print("error: $e");
+      for (var p in e.problems) {
+        print('Problem: ${p.code}: ${p.msg}');
+      }
+    }
+    progressDialogMeetingCancelled.hide();
+
+    //Code to navigate back to dashboard and apply the changes there
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => Dashboard(),
+      ),
+      (route) => false,
+    );
   }
 }
