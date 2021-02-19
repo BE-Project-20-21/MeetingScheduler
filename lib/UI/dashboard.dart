@@ -97,8 +97,12 @@ class DashboardState extends State<Dashboard>
         .child("meetings-list")
         .child(uidFetchMeetings);
     await referenceFetchMeetings.once().then((DataSnapshot dataSnapshot) {
-      dataSnapshot.value
-          .forEach((meetingID, irrelevant) => allMeetings.add(meetingID));
+      if (dataSnapshot.value != null) {
+        dataSnapshot.value
+            .forEach((meetingID, irrelevant) => allMeetings.add(meetingID));
+      } else {
+        Fluttertoast.showToast(msg: "No meetings to show!");
+      }
     });
     print("ALL MEETINGS: $allMeetings");
 
@@ -325,6 +329,7 @@ class DashboardState extends State<Dashboard>
         Fluttertoast.showToast(
             msg:
                 "Please provide your schedule, and then you can schedule meeting with others!");
+        progressDialog.hide();
       } else {
         progressDialog.hide();
         Navigator.push(context,

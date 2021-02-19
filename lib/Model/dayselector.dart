@@ -1,3 +1,4 @@
+import 'package:authentication_app/UI/dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../Model/confirm_slots.dart';
@@ -389,5 +390,14 @@ class _DaySelectState extends State<DaySelect> {
         msg: "Meerting Confirmed!",
         backgroundColor: Colors.white,
         textColor: Colors.black);
+
+    //Navigate back to Dashboard
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => Dashboard(),
+      ),
+      (route) => false,
+    );
   }
 }

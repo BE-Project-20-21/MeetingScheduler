@@ -28,15 +28,13 @@ class _PendingCardsState extends State<PendingCards> {
   String members;
   Map<dynamic, dynamic> temp = new Map<dynamic, dynamic>();
   List<String> emailIds = new List<String>();
+  String uidFinal;
 
   //Variable to control the visiblity of the "accept" and "reject" button
-  bool isDecided;
+  bool showButtons = true;
 
   @override
   void initState() {
-    setState(() {
-      isDecided = false;
-    });
     temp = pendingMeetings[widget._meetingID];
     String memberList =
         temp["Members"].substring(1, temp["Members"].length - 1);
@@ -146,6 +144,22 @@ class _PendingCardsState extends State<PendingCards> {
       setBy = dataSnapshot.value;
     });
     print("setBy: $setBy");
+
+    //Code to decide if to show the buttons on the meeting card
+    //Fetching the uid of the current user
+    FirebaseAuth authUidFinal = FirebaseAuth.instance;
+    User userUIDFinal = authUidFinal.currentUser;
+    uidFinal = userUIDFinal.uid.toString();
+    //checking if the meeting is set by the current user
+    if (setBy != uidFinal) {
+      if (temp[uidFinal] == "pending") {
+        showButtons = true;
+      } else {
+        showButtons = false;
+      }
+    } else {
+      showButtons = false;
+    }
     progressDialogMeetingCard.hide();
 
     //Calling the method to show the cards
@@ -237,63 +251,69 @@ class _PendingCardsState extends State<PendingCards> {
                   ),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    child: Container(
-                      child: RaisedButton(
-                        elevation: 5.0,
-                        onPressed: () {
-                          //Call the Method to handle all the workings on pressing the accept button
-                          meetingAccepted(context);
-                        },
-                        padding: EdgeInsets.all(10.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        color: Colors.white,
-                        child: Text(
-                          "Accept",
-                          style: TextStyle(
-                              color: Colors.green[900],
-                              letterSpacing: 1,
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Metropolis'),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 20.0,
-                  ),
-                  Container(
-                    child: Container(
-                      child: RaisedButton(
-                        elevation: 5.0,
-                        onPressed: () {
-                          //Call the Method to handle all the workings on pressing the accept button
-                        },
-                        padding: EdgeInsets.all(10.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        color: Colors.white,
-                        child: Text(
-                          "Reject",
-                          style: TextStyle(
-                              color: Colors.red[900],
-                              letterSpacing: 1,
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Metropolis'),
+              Visibility(
+                visible: showButtons ? true : false,
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        child: Container(
+                          child: RaisedButton(
+                            elevation: 5.0,
+                            onPressed: () {
+                              //Call the Method to handle all the workings on pressing the accept button
+                              meetingAccepted(context);
+                            },
+                            padding: EdgeInsets.all(10.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            color: Colors.white,
+                            child: Text(
+                              "Accept",
+                              style: TextStyle(
+                                  color: Colors.green[900],
+                                  letterSpacing: 1,
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Metropolis'),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      SizedBox(
+                        width: 20.0,
+                      ),
+                      Container(
+                        child: Container(
+                          child: RaisedButton(
+                            elevation: 5.0,
+                            onPressed: () {
+                              //Call the Method to handle all the workings on pressing the reject button
+                              meetingRejected(context);
+                            },
+                            padding: EdgeInsets.all(10.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            color: Colors.white,
+                            child: Text(
+                              "Reject",
+                              style: TextStyle(
+                                  color: Colors.red[900],
+                                  letterSpacing: 1,
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Metropolis'),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ],
           ),
@@ -330,10 +350,6 @@ class _PendingCardsState extends State<PendingCards> {
     progressDialogMeetingAccepted.show();
 
     //Changing the status of the user in database
-    //Fetching the uid of the user
-    FirebaseAuth authMeetingAccepted = FirebaseAuth.instance;
-    User userMeetingAccepted = authMeetingAccepted.currentUser;
-    String uidMeetingAccepted = userMeetingAccepted.uid.toString();
     //Code to make changes on database
     FirebaseDatabase databaseMeetingAccepted = FirebaseDatabase.instance;
     DatabaseReference referenceMeetingAccepted = databaseMeetingAccepted
@@ -364,20 +380,17 @@ class _PendingCardsState extends State<PendingCards> {
         .child("meetings")
         .child(widget._meetingID);
     await referenceMeetingAccepted.update({
-      uidMeetingAccepted: "accepted",
+      uidFinal: "accepted",
       "Accepted": acceptance,
     }).then((value) {
-      //Hiding the accpet, reject button
       setState(() {
-        isDecided = true;
+        showButtons = false;
       });
     }).then((value) async {
       //Checking whether this accpetance changes the status of the meeting
       progressDialogMeetingAccepted.hide();
       Fluttertoast.showToast(msg: "You have successfully accpeted the Meeting");
-      int l = temp["total-members"] + 1;
-      print('TM: $l');
-      print("CTM: ${acceptance + rejects}");
+      //If the decision is the (meeting-status) deciding factor
       if ((acceptance + rejects).toString() ==
           temp["total-members"].toString()) {
         if (rejects == 0) {
@@ -392,6 +405,17 @@ class _PendingCardsState extends State<PendingCards> {
           //IMPLEMENT AUTOMATED EMAIL TO ALL THE MEMBERS
           sendCancellationEmail(context);
         }
+      }
+      //If the decision is not the (meeting-status) deciding factor
+      else {
+        //Code to navigate back to dashboard and apply the changes there
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => Dashboard(),
+          ),
+          (route) => false,
+        );
       }
     });
   }
@@ -541,5 +565,104 @@ class _PendingCardsState extends State<PendingCards> {
       ),
       (route) => false,
     );
+  }
+
+  //Method to implement what happens when the user clicks on the reject button
+  void meetingRejected(BuildContext context) async {
+    //Code to show the progress bar
+    ProgressDialog progressDialogMeetingRejected;
+    progressDialogMeetingRejected = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialogMeetingRejected.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF7B38C6)),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Fetching the details",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 10.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 15.0),
+    );
+    progressDialogMeetingRejected.show();
+
+    //Changing the status of the user in database
+    //Code to make changes on database
+    FirebaseDatabase databaseMeetingAccepted = FirebaseDatabase.instance;
+    DatabaseReference referenceMeetingAccepted = databaseMeetingAccepted
+        .reference()
+        .child("meetings")
+        .child(widget._meetingID);
+
+    //Altering the varibles which are needed to be updated
+    int acceptance;
+    int rejects;
+    await referenceMeetingAccepted
+        .child("Accepted")
+        .once()
+        .then((DataSnapshot dataSnapshot) {
+      acceptance = dataSnapshot.value;
+    });
+    await referenceMeetingAccepted
+        .child("Rejected")
+        .once()
+        .then((DataSnapshot dataSnapshot) {
+      rejects = dataSnapshot.value;
+      rejects = rejects + 1;
+    });
+
+    //Code to make changes on database
+    referenceMeetingAccepted = databaseMeetingAccepted
+        .reference()
+        .child("meetings")
+        .child(widget._meetingID);
+    await referenceMeetingAccepted.update({
+      uidFinal: "rejected",
+      "Rejected": rejects,
+    }).then((value) {
+      setState(() {
+        showButtons = false;
+      });
+    }).then((value) async {
+      //Checking whether this accpetance changes the status of the meeting
+      progressDialogMeetingRejected.hide();
+      Fluttertoast.showToast(
+          msg: "You have successfully rejected forthe Meeting");
+      //If the decision is the (meeting-status) deciding factor
+      if ((acceptance + rejects).toString() ==
+          temp["total-members"].toString()) {
+        if (rejects == 0) {
+          //Here goes the code to change the meeting status and to send automated email to the members
+          await referenceMeetingAccepted
+              .update({"status": "confirmed-meeting"});
+          //IMPLEMENT AUTOMATED EMAIL TO ALL THE MEMBERS AND THEN CREATE A CHAT GROUP
+          sendConfirmationEmail(context);
+        } else {
+          //Here goes the code to send a mail saying the meet cannot be performed due to rejects and delete the meeting entry from the databse (TODO)
+          await referenceMeetingAccepted.update({"status": "canceled-meeting"});
+          //IMPLEMENT AUTOMATED EMAIL TO ALL THE MEMBERS
+          sendCancellationEmail(context);
+        }
+      }
+      //If the decision is not the (meeting-status) deciding factor
+      else {
+        //Code to navigate back to dashboard and apply the changes there
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => Dashboard(),
+          ),
+          (route) => false,
+        );
+      }
+    });
   }
 }
