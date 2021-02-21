@@ -12,6 +12,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:flutter/material.dart';
 import './manage_schedule.dart';
 import '../UI/myProfile.dart';
+import '../GroupChat/groupchat.dart';
 
 //Variables required to store the meeting and their details respectively
 List<String> allMeetings = new List<String>();
@@ -164,7 +165,7 @@ class DashboardState extends State<Dashboard>
                   membersNames.clear();
                   commonslots.clear();
                   totalSelected = 0;
-                  ScheduleMeeting();
+                  scheduleMeeting();
                 },
                 child: Icon(
                   Icons.add,
@@ -280,7 +281,7 @@ class DashboardState extends State<Dashboard>
                 children: <Widget>[
                   DashboardFirst(),
                   DashboardSecond(),
-                  Text("Chats")
+                  GroupChat(),
                 ],
               ),
             ),
@@ -291,7 +292,7 @@ class DashboardState extends State<Dashboard>
   }
 
   //Method to check if user has provided his/her schedule, if yes proceed to scheduling interface
-  void ScheduleMeeting() async {
+  void scheduleMeeting() async {
     ProgressDialog progressDialog;
     //Code to show the progress bar
     progressDialog = new ProgressDialog(context,
