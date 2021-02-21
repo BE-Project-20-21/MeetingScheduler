@@ -361,7 +361,7 @@ class _ScheduleInterfaceState extends State<ScheduleInterface> {
                                     if (subjectGiven) {
                                       //clearing the slots list
                                       commonslots.clear();
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>

@@ -15,6 +15,9 @@ import '../UI/myProfile.dart';
 
 //Variables required to store the meeting and their details respectively
 List<String> allMeetings = new List<String>();
+List<String> pendingList = new List<String>();
+List<String> upcomingList = new List<String>();
+
 Map<String, Map<dynamic, dynamic>> pendingMeetings =
     new Map<String, Map<dynamic, dynamic>>();
 Map<String, Map<dynamic, dynamic>> upcomingMeetings =
@@ -31,6 +34,7 @@ var saturdayMap = new Map<int, bool>();
 
 //Creating an object of ProgressDialog
 ProgressDialog progressDialogSchedule;
+ProgressDialog progressDialogMeeting;
 
 //To save the context of the entire Dashboard page (As there are popUp menus present)
 BuildContext globalContext;
@@ -47,6 +51,11 @@ class DashboardState extends State<Dashboard>
   @override
   void initState() {
     Firebase.initializeApp();
+    allMeetings.clear();
+    pendingList.clear();
+    upcomingList.clear();
+    pendingMeetings.clear();
+    upcomingMeetings.clear();
     fetchMeetingsDetails();
     super.initState();
     tabController = new TabController(vsync: this, length: 3);
@@ -55,9 +64,9 @@ class DashboardState extends State<Dashboard>
   //Method to fetch the list of meetinhs the user is part of and later fetch the data for each meeting
   void fetchMeetingsDetails() async {
     //Code to show the progress bar
-    progressDialogSchedule = new ProgressDialog(context,
+    progressDialogMeeting = new ProgressDialog(context,
         type: ProgressDialogType.Normal, isDismissible: false);
-    progressDialogSchedule.style(
+    progressDialogMeeting.style(
       child: Container(
         color: Colors.white,
         child: CircularProgressIndicator(
@@ -76,7 +85,7 @@ class DashboardState extends State<Dashboard>
       progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
       messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
     );
-    progressDialogSchedule.show();
+    progressDialogMeeting.show();
 
     //Getting the authentication reference and getting the current user data
     FirebaseAuth authFetchMeetings = FirebaseAuth.instance;
@@ -88,8 +97,12 @@ class DashboardState extends State<Dashboard>
         .child("meetings-list")
         .child(uidFetchMeetings);
     await referenceFetchMeetings.once().then((DataSnapshot dataSnapshot) {
-      dataSnapshot.value
-          .forEach((meetingID, irrelevant) => allMeetings.add(meetingID));
+      if (dataSnapshot.value != null) {
+        dataSnapshot.value
+            .forEach((meetingID, irrelevant) => allMeetings.add(meetingID));
+      } else {
+        Fluttertoast.showToast(msg: "No meetings to show!");
+      }
     });
     print("ALL MEETINGS: $allMeetings");
 
@@ -102,14 +115,22 @@ class DashboardState extends State<Dashboard>
           .child(allMeetings[i]);
       await referenceFetchMeetings.once().then((DataSnapshot dataSnapshot) {
         if (dataSnapshot.value["status"] == "pending-meeting") {
-          pendingMeetings[allMeetings[i]] = dataSnapshot.value;
+          setState(() {
+            pendingMeetings[allMeetings[i]] = dataSnapshot.value;
+            pendingList.add(allMeetings[i]);
+          });
+        } else if (dataSnapshot.value["status"] == "confirmed-meeting") {
+          setState(() {
+            upcomingMeetings[allMeetings[i]] = dataSnapshot.value;
+            upcomingList.add(allMeetings[i]);
+          });
         }
       });
     }
     print("Pending Meetings: $pendingMeetings");
     print("Upcoming Meetings: $upcomingMeetings");
 
-    progressDialogSchedule.hide();
+    progressDialogMeeting.hide();
   }
 
   @override
@@ -120,7 +141,6 @@ class DashboardState extends State<Dashboard>
 
   @override
   Widget build(BuildContext context) {
-    Firebase.initializeApp();
     globalContext = context;
     // TODO: implement build
     return MaterialApp(
@@ -144,10 +164,7 @@ class DashboardState extends State<Dashboard>
                   membersNames.clear();
                   commonslots.clear();
                   totalSelected = 0;
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ScheduleInterface(false)));
+                  ScheduleMeeting();
                 },
                 child: Icon(
                   Icons.add,
@@ -271,6 +288,54 @@ class DashboardState extends State<Dashboard>
         ),
       ),
     );
+  }
+
+  //Method to check if user has provided his/her schedule, if yes proceed to scheduling interface
+  void ScheduleMeeting() async {
+    ProgressDialog progressDialog;
+    //Code to show the progress bar
+    progressDialog = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialog.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF7B38C6)),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Gathering the information",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
+    );
+    progressDialog.show();
+
+    //Checking if the user has submitted the schedule
+    FirebaseAuth authCheck = FirebaseAuth.instance;
+    User userCheck = authCheck.currentUser;
+    String uidCheck = userCheck.uid.toString();
+    FirebaseDatabase databaseCheck = FirebaseDatabase.instance;
+    DatabaseReference referenceCheck =
+        databaseCheck.reference().child("schedule").child(uidCheck);
+    await referenceCheck.once().then((DataSnapshot dataSnapshot) {
+      if (dataSnapshot.value == null) {
+        Fluttertoast.showToast(
+            msg:
+                "Please provide your schedule, and then you can schedule meeting with others!");
+        progressDialog.hide();
+      } else {
+        progressDialog.hide();
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ScheduleInterface(false)));
+      }
+    });
   }
 }
 

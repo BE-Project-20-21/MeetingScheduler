@@ -1,5 +1,6 @@
 import 'package:authentication_app/Model/pending_cards.dart';
 import 'package:flutter/material.dart';
+import '../UI/dashboard.dart';
 
 class DashboardSecond extends StatelessWidget {
   @override
@@ -8,11 +9,11 @@ class DashboardSecond extends StatelessWidget {
     // final height = MediaQuery.of(context).size.height;
 
     return ListView.builder(
-      itemCount: 4,
+      itemCount: pendingList.length,
       itemBuilder: (BuildContext ctxt, int index) {
         return Padding(
             padding: EdgeInsets.only(right: 20, left: 20),
-            child: PendingCards());
+            child: PendingCards(pendingList[index]));
       },
     );
   }
