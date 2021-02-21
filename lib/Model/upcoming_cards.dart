@@ -26,43 +26,49 @@ class UpcomingCards extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           )),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            child: Text(
-              temp["subject"],
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20.0,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              child: Text(
+                temp["day"],
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1),
               ),
             ),
-          ),
-          SizedBox(
-            height: 10.0,
-          ),
-          Container(
-            child: Text(
-              temp["day"],
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20.0,
+            SizedBox(
+              height: 10.0,
+            ),
+            Container(
+              child: Text(
+                "Meeting Timings: ${temp["starTime"]}:00 - ${temp["endTime"]}:00",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1),
               ),
             ),
-          ),
-          SizedBox(
-            height: 10.0,
-          ),
-          Container(
-            child: Text(
-              "Meeting Timings: ${temp["starTime"]} : 00 - ${temp["endTime"]} : 00",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20.0,
+            Divider(
+              color: Colors.white,
+              thickness: 2,
+            ),
+            Container(
+              child: Text(
+                temp["subject"],
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15.0,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

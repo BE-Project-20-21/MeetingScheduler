@@ -57,6 +57,17 @@ class _PendingCardsState extends State<PendingCards> {
         padding: EdgeInsets.all(10.0),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0xff464646).withOpacity(0.5),
+                blurRadius: 2, // soften the shadow
+                spreadRadius: 0.0, //extend the shadow
+                offset: Offset(
+                  1.0, // Move horizontally
+                  1.0, // Move Vertically
+                ),
+              )
+            ],
             gradient: LinearGradient(
               colors: [
                 Color(0xFF7B38C6),
@@ -65,43 +76,49 @@ class _PendingCardsState extends State<PendingCards> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             )),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              child: Text(
-                temp["subject"],
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                child: Text(
+                  temp["day"],
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            Container(
-              child: Text(
-                temp["day"],
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0,
+              SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                child: Text(
+                  "Meeting Timings: ${temp["starTime"]}:00 - ${temp["endTime"]}:00",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            Container(
-              child: Text(
-                "Meeting Timings: ${temp["starTime"]} : 00 - ${temp["endTime"]} : 00",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0,
+              Divider(
+                color: Colors.white,
+                thickness: 2,
+              ),
+              Container(
+                child: Text(
+                  temp["subject"],
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15.0,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -172,8 +189,8 @@ class _PendingCardsState extends State<PendingCards> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return Container(
-          padding: EdgeInsets.all(10.0),
-          margin: EdgeInsets.all(40.0),
+          padding: EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 20),
+          margin: EdgeInsets.only(left: 40, right: 40, top: 150, bottom: 220),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(20.0)),
@@ -192,18 +209,18 @@ class _PendingCardsState extends State<PendingCards> {
       debugShowCheckedModeBanner: false,
       home: Material(
         child: Container(
+          color: Colors.white,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
                 padding: EdgeInsets.all(10),
                 child: Text(
                   "Meeting Subject: ${temp["subject"]}",
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18.0,
-                    fontStyle: FontStyle.normal,
+                    color: Color(0xFF614385),
+                    fontSize: 15.0,
+                    fontFamily: 'Metropolis',
                   ),
                 ),
               ),
@@ -212,9 +229,9 @@ class _PendingCardsState extends State<PendingCards> {
                 child: Text(
                   "Day: ${temp["day"]}",
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18.0,
-                    fontStyle: FontStyle.normal,
+                    color: Color(0xFF614385),
+                    fontSize: 15.0,
+                    fontFamily: 'Metropolis',
                   ),
                 ),
               ),
@@ -223,9 +240,9 @@ class _PendingCardsState extends State<PendingCards> {
                 child: Text(
                   "Set by: $setBy",
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18.0,
-                    fontStyle: FontStyle.normal,
+                    color: Color(0xFF614385),
+                    fontSize: 15.0,
+                    fontFamily: 'Metropolis',
                   ),
                 ),
               ),
@@ -234,9 +251,9 @@ class _PendingCardsState extends State<PendingCards> {
                 child: Text(
                   "Start Time: ${temp["starTime"]}:00",
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18.0,
-                    fontStyle: FontStyle.normal,
+                    color: Color(0xFF614385),
+                    fontSize: 15.0,
+                    fontFamily: 'Metropolis',
                   ),
                 ),
               ),
@@ -245,9 +262,9 @@ class _PendingCardsState extends State<PendingCards> {
                 child: Text(
                   "End Time: ${temp["endTime"]}:00",
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18.0,
-                    fontStyle: FontStyle.normal,
+                    color: Color(0xFF614385),
+                    fontSize: 15.0,
+                    fontFamily: 'Metropolis',
                   ),
                 ),
               ),
@@ -547,7 +564,7 @@ class _PendingCardsState extends State<PendingCards> {
     try {
       final sendReport = await send(message, smtpServer);
       print('Message sent: ' + sendReport.toString());
-      Fluttertoast.showToast(msg: "Thwe Meeting has been cancelled!");
+      Fluttertoast.showToast(msg: "The Meeting has been cancelled!");
     } on MailerException catch (e) {
       print('Message not sent.');
       print("error: $e");
