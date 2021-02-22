@@ -12,7 +12,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:flutter/material.dart';
 import './manage_schedule.dart';
 import '../UI/myProfile.dart';
-import '../Model/chats.dart';
+import '../GroupChat/groupchat.dart';
 
 //Variables required to store the meeting and their details respectively
 List<String> allMeetings = new List<String>();
@@ -281,9 +281,7 @@ class DashboardState extends State<Dashboard>
                 children: <Widget>[
                   DashboardFirst(),
                   DashboardSecond(),
-
-                  Chats(),
-
+                  GroupChat(),
                 ],
               ),
             ),
