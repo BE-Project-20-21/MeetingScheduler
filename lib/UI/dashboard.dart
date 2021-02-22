@@ -165,7 +165,7 @@ class DashboardState extends State<Dashboard>
                   membersNames.clear();
                   commonslots.clear();
                   totalSelected = 0;
-                  ScheduleMeeting();
+                  scheduleMeeting();
                 },
                 child: Icon(
                   Icons.add,
@@ -281,7 +281,9 @@ class DashboardState extends State<Dashboard>
                 children: <Widget>[
                   DashboardFirst(),
                   DashboardSecond(),
+
                   Chats(),
+
                 ],
               ),
             ),
@@ -292,7 +294,7 @@ class DashboardState extends State<Dashboard>
   }
 
   //Method to check if user has provided his/her schedule, if yes proceed to scheduling interface
-  void ScheduleMeeting() async {
+  void scheduleMeeting() async {
     ProgressDialog progressDialog;
     //Code to show the progress bar
     progressDialog = new ProgressDialog(context,
