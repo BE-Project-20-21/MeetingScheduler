@@ -4,7 +4,9 @@ import 'package:authentication_app/Model/upcoming.dart';
 import 'package:authentication_app/Model/pending.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -49,6 +51,8 @@ class DashboardState extends State<Dashboard>
     with SingleTickerProviderStateMixin {
   TabController tabController;
 
+  FirebaseMessaging _fcm = FirebaseMessaging();
+
   @override
   void initState() {
     Firebase.initializeApp();
@@ -58,8 +62,150 @@ class DashboardState extends State<Dashboard>
     pendingMeetings.clear();
     upcomingMeetings.clear();
     fetchMeetingsDetails();
+    _fcm.configure(onMessage: (msg) {
+      print("Onmessage: $msg");
+      notificationSnackbar(msg);
+      return;
+    }, onLaunch: (msg) {
+      print("Onlaunch: $msg");
+      return;
+    }, onResume: (msg) {
+      print("Onresume: $msg");
+      return;
+    });
     super.initState();
     tabController = new TabController(vsync: this, length: 3);
+  }
+
+  //Method to show data as snackbar when notifications arrive when app is running
+  void notificationSnackbar(dynamic msg) {
+    Map<dynamic, dynamic> notification = new Map<dynamic, dynamic>();
+    notification = msg["notification"];
+    displayNotificationSnackbar(notification["title"]);
+  }
+
+  //Method to show notification as a popup
+  void displayNotificationSnackbar(String title) {
+    showAnimatedDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 20),
+          margin: EdgeInsets.only(left: 40, right: 40, top: 150, bottom: 220),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+          ),
+          child: notificationContent(title),
+        );
+      },
+      animationType: DialogTransitionType.slideFromBottom,
+      curve: Curves.fastOutSlowIn,
+      duration: Duration(milliseconds: 1000),
+    );
+    print("printed");
+  }
+
+  //Method to return the wodgertr for the popup of the notification
+  Widget notificationContent(dynamic subject) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Material(
+        child: Container(
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.info_outline_rounded,
+                color: Colors.red[900],
+                size: 40.0,
+              ),
+              Text(
+                "You have a new meeting scheduled, please check the dashboard to view the newly scheduled meeting.",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 15.0,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Text(
+                "Subject: $subject",
+                style: TextStyle(
+                  color: Color(0xFF7B38C6),
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(
+                      child: Container(
+                        child: RaisedButton(
+                          elevation: 5.0,
+                          onPressed: () {},
+                          padding: EdgeInsets.all(10.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          color: Colors.white,
+                          child: Text(
+                            "Goto Meeting",
+                            style: TextStyle(
+                                color: Colors.green[900],
+                                letterSpacing: 1,
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Metropolis'),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20.0,
+                    ),
+                    Container(
+                      child: Container(
+                        child: RaisedButton(
+                          elevation: 5.0,
+                          onPressed: () {},
+                          padding: EdgeInsets.all(10.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          color: Colors.white,
+                          child: Text(
+                            "Dismiss popup",
+                            style: TextStyle(
+                                color: Colors.red[900],
+                                letterSpacing: 1,
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Metropolis'),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   //Method to fetch the list of meetinhs the user is part of and later fetch the data for each meeting
