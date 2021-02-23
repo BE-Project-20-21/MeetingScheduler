@@ -3,7 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class NewMessage extends StatefulWidget {
-  NewMessage({Key key}) : super(key: key);
+  String _meetingID;
+
+  NewMessage(String meetingID) {
+    this._meetingID = meetingID;
+  }
 
   @override
   _NewMessageState createState() => _NewMessageState();
@@ -20,7 +24,7 @@ class _NewMessageState extends State<NewMessage> {
         .collection('names')
         .doc(user.uid)
         .get();
-    FirebaseFirestore.instance.collection('chat').add({
+    FirebaseFirestore.instance.collection(widget._meetingID).add({
       'text': _enteredMessage,
       'sentAt': Timestamp.now(),
       'userid': user.uid,
