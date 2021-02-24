@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../GroupChat/groupchat_list.dart';
 import "../UI/dashboard.dart";
-import '../GroupChat/chat_screen.dart';
 
 class GroupChat extends StatefulWidget {
   @override
