@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../Model/ocr.dart';
 
 class NewMessage extends StatefulWidget {
   String _meetingID;
@@ -74,7 +75,13 @@ class _NewMessageState extends State<NewMessage> {
               disabledColor: Color(0xff3D2F4F),
               icon: Icon(Icons.scanner_rounded),
               color: Color(0xff3D2F4F),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OCR(),
+                    ));
+              },
             ),
           ),
           Container(
