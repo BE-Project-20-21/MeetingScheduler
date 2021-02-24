@@ -4,14 +4,38 @@ import 'package:flutter/material.dart';
 
 class ChatScreen extends StatelessWidget {
   String _meetingID;
-
-  ChatScreen(String meetingID) {
+  String subject;
+  ChatScreen(String meetingID, String subject) {
     this._meetingID = meetingID;
+    this.subject = subject;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      backgroundColor: Color(0xff3D2F4F),
+      appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60.0),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 5,
+            title: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    subject,
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+            ),
+          )),
       body: Container(
         child: Column(
           children: <Widget>[

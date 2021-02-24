@@ -28,26 +28,34 @@ class GroupChatListState extends State<GroupChatList> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ChatScreen(widget._meetingId)));
+                builder: (context) =>
+                    ChatScreen(widget._meetingId, temp1['subject'])));
       },
       child: Opacity(
         opacity: 1.0,
         child: Container(
-          margin: EdgeInsets.only(top: 5.0),
+          margin: EdgeInsets.only(top: 20.0),
           child: Container(
-            height: 50.0,
+            height: 80.0,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Color(0xff3d2f4f).withOpacity(.8),
               borderRadius: BorderRadius.circular(10.0),
             ),
             child: Opacity(
                 opacity: 1.0,
-                child: Text(
-                  temp1["subject"],
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20.0,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Text(
+                      temp1["subject"],
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0,
+                          fontFamily: 'Metropolis',
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 )),
           ),
