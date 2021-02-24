@@ -29,10 +29,11 @@ class Messages extends StatelessWidget {
               reverse: true,
               itemCount: chatDocs.length,
               itemBuilder: (ctx, index) => MessageBubble(
-                  chatDocs[index]['text'],
-                  chatDocs[index]['userid'] == userid,
-                  ValueKey(chatDocs[index].documentID),
-                  chatDocs[index]['username']));
+                    chatDocs[index]['text'],
+                    chatDocs[index]['userid'] == userid,
+                    ValueKey(chatDocs[index].documentID),
+                    chatDocs[index]['username'],
+                  ));
         });
   }
 }

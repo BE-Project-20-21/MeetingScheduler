@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../Model/ocr.dart';
 
 class NewMessage extends StatefulWidget {
   String _meetingID;
@@ -36,14 +37,25 @@ class _NewMessageState extends State<NewMessage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 8),
       padding: EdgeInsets.all(8),
+      color: Colors.transparent,
       child: Row(
         children: <Widget>[
           Expanded(
             child: TextField(
               controller: _controller,
-              decoration: InputDecoration(labelText: 'Send a message...'),
+              cursorColor: Color(0xff3D2F4F),
+              decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xff3D2F4F)),
+                      borderRadius: BorderRadius.circular(12)),
+                  hintText: 'Send a message...',
+                  filled: true,
+                  fillColor: Colors.white,
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xff3D2F4F)),
+                      borderRadius: BorderRadius.circular(20)),
+                  hintStyle: TextStyle(color: Color(0xff3D2F4F))),
               onChanged: (value) {
                 setState(() {
                   _enteredMessage = value;
@@ -51,10 +63,51 @@ class _NewMessageState extends State<NewMessage> {
               },
             ),
           ),
-          IconButton(
-            icon: Icon(Icons.send),
-            color: Color(0xff3d2f4f),
-            onPressed: _enteredMessage.trim().isEmpty ? null : _sendMessage,
+          Container(
+            width: 40,
+            margin: EdgeInsets.only(left: 10),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Color(0xff2A2136),
+            ),
+            child: IconButton(
+              disabledColor: Colors.white,
+              icon: Icon(Icons.scanner_rounded),
+              color: Colors.white,
+              onPressed: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OCR(),
+                    ));
+              },
+            ),
+          ),
+          Container(
+            width: 40,
+            margin: EdgeInsets.only(left: 10),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Color(0xff2A2136),
+            ),
+            child: IconButton(
+              disabledColor: Colors.white,
+              icon: Icon(Icons.attach_file_rounded),
+              color: Colors.white,
+              onPressed: () {},
+            ),
+          ),
+          Container(
+            width: 40,
+            margin: EdgeInsets.only(left: 10),
+            decoration:
+                BoxDecoration(shape: BoxShape.circle, color: Color(0xff2A2136)),
+            child: IconButton(
+              disabledColor: Colors.white,
+              icon: Icon(Icons.send_rounded),
+              color: Colors.white,
+              onPressed: _enteredMessage.trim().isEmpty ? null : _sendMessage,
+            ),
           )
         ],
       ),

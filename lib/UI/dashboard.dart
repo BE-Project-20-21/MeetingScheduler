@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import './manage_schedule.dart';
 import '../UI/myProfile.dart';
 import '../GroupChat/groupchat.dart';
+import '../UI/settings.dart';
 
 //Variables required to store the meeting and their details respectively
 List<String> allMeetings = new List<String>();
@@ -626,6 +627,10 @@ class PopupOptionMenu extends StatelessWidget {
         }
         if (selection == MenuOption.my_profile) {
           myProfile(globalContext);
+        }
+        if (selection == MenuOption.settings) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Settings()));
         }
       },
     );

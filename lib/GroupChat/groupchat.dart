@@ -20,7 +20,7 @@ class GroupChatState extends State<GroupChat> {
       itemCount: upcomingList.length,
       itemBuilder: (BuildContext ctxt, int index) {
         return Padding(
-          padding: EdgeInsets.only(right: 10, left: 10),
+          padding: EdgeInsets.only(right: 20, left: 20),
           child: GroupChatList(upcomingList[index]),
         );
       },

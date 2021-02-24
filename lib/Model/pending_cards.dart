@@ -190,7 +190,7 @@ class _PendingCardsState extends State<PendingCards> {
       builder: (BuildContext context) {
         return Container(
           padding: EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 20),
-          margin: EdgeInsets.only(left: 40, right: 40, top: 150, bottom: 220),
+          margin: EdgeInsets.only(left: 40, right: 40, top: 150, bottom: 400),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(20.0)),
