@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:authentication_app/UI/biometrics_setup.dart';
 import 'package:authentication_app/UI/dashboard.dart';
 import 'package:authentication_app/UI/forgot_pasword.dart';
 import 'package:authentication_app/UI/userinfo_google_signin.dart';
@@ -15,6 +16,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../Model/FadeAnimation.dart';
 import '../UI/signup.dart';
 import './verify_email.dart';
+import '../UI/settings.dart';
+import 'biometrics_setup.dart';
 
 class Login extends StatelessWidget {
   //Declaring Database references

@@ -14,11 +14,11 @@ class ChatScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: Color(0xff3D2F4F),
+      backgroundColor: Color(0xff2A2136),
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(60.0),
           child: AppBar(
-            backgroundColor: Colors.transparent,
+            backgroundColor: Color(0xff2A2136),
             elevation: 5,
             title: Container(
               width: MediaQuery.of(context).size.width,
@@ -37,6 +37,7 @@ class ChatScreen extends StatelessWidget {
             ),
           )),
       body: Container(
+        color: Colors.white,
         child: Column(
           children: <Widget>[
             Expanded(child: Messages(_meetingID)),

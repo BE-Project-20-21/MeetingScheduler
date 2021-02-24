@@ -22,7 +22,7 @@ class MessageBubble extends StatelessWidget {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: isMe ? Color(0xff614385) : Colors.white,
+                  color: isMe ? Color(0xffD3D3D3) : Color(0xff614385),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
@@ -38,7 +38,7 @@ class MessageBubble extends StatelessWidget {
                       style: TextStyle(
                           fontFamily: 'Metropolis',
                           fontSize: 15,
-                          color: isMe ? Colors.white : Color(0xff3D2F4F),
+                          color: isMe ? Color(0xff696969) : Colors.white,
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
@@ -47,7 +47,7 @@ class MessageBubble extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                           fontFamily: 'Metropolis',
-                          color: isMe ? Colors.white : Color(0xff3D2F4F),
+                          color: isMe ? Color(0xff696969) : Colors.white,
                           fontSize: 15,
                           height: 1.2),
                     ),

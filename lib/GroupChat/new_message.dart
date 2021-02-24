@@ -37,7 +37,6 @@ class _NewMessageState extends State<NewMessage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 8),
       padding: EdgeInsets.all(8),
       color: Colors.transparent,
       child: Row(
@@ -55,7 +54,7 @@ class _NewMessageState extends State<NewMessage> {
                   fillColor: Colors.white,
                   enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Color(0xff3D2F4F)),
-                      borderRadius: BorderRadius.circular(12)),
+                      borderRadius: BorderRadius.circular(20)),
                   hintStyle: TextStyle(color: Color(0xff3D2F4F))),
               onChanged: (value) {
                 setState(() {
@@ -69,12 +68,12 @@ class _NewMessageState extends State<NewMessage> {
             margin: EdgeInsets.only(left: 10),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white,
+              color: Color(0xff2A2136),
             ),
             child: IconButton(
-              disabledColor: Color(0xff3D2F4F),
+              disabledColor: Colors.white,
               icon: Icon(Icons.scanner_rounded),
-              color: Color(0xff3D2F4F),
+              color: Colors.white,
               onPressed: () {
                 Navigator.pushReplacement(
                     context,
@@ -89,12 +88,12 @@ class _NewMessageState extends State<NewMessage> {
             margin: EdgeInsets.only(left: 10),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white,
+              color: Color(0xff2A2136),
             ),
             child: IconButton(
-              disabledColor: Color(0xff3D2F4F),
+              disabledColor: Colors.white,
               icon: Icon(Icons.attach_file_rounded),
-              color: Color(0xff3D2F4F),
+              color: Colors.white,
               onPressed: () {},
             ),
           ),
@@ -102,11 +101,11 @@ class _NewMessageState extends State<NewMessage> {
             width: 40,
             margin: EdgeInsets.only(left: 10),
             decoration:
-                BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+                BoxDecoration(shape: BoxShape.circle, color: Color(0xff2A2136)),
             child: IconButton(
-              disabledColor: Color(0xff3D2F4F),
+              disabledColor: Colors.white,
               icon: Icon(Icons.send_rounded),
-              color: Color(0xff3D2F4F),
+              color: Colors.white,
               onPressed: _enteredMessage.trim().isEmpty ? null : _sendMessage,
             ),
           )
