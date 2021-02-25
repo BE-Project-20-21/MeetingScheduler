@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:authentication_app/UI/biometrics_setup.dart';
+import 'package:authentication_app/UI/biometrics_page.dart';
 import 'package:authentication_app/UI/dashboard.dart';
 import 'package:authentication_app/UI/forgot_pasword.dart';
 import 'package:authentication_app/UI/userinfo_google_signin.dart';
@@ -17,17 +17,43 @@ import '../Model/FadeAnimation.dart';
 import '../UI/signup.dart';
 import './verify_email.dart';
 import '../UI/settings.dart';
-import 'biometrics_setup.dart';
+import 'biometrics_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
   //Declaring Database references
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
   final FirebaseAuth authLogIn = FirebaseAuth.instance;
 
-  //Creating an object of ProgressDialog
+  @override
+  void initState() {
+    super.initState();
+    _getFingerAuthValue();
+  }
+
+  bool fingerAuthValue;
+  Future<bool> getBoolFromSharedPref() async {
+    final prefs = await SharedPreferences.getInstance();
+    final fA = prefs.getBool("fA");
+    return fA;
+  }
+
+  Future<bool> _getFingerAuthValue() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool fingerAuth = await getBoolFromSharedPref();
+    setState(() {
+      fingerAuthValue = fingerAuth;
+    });
+  }
+
   ProgressDialog progressDialog;
 
-  //To declare the variables required for the inputs
   String email = "";
+
   String password = "";
 
   @override
@@ -341,7 +367,6 @@ class Login extends StatelessWidget {
     );
   }
 
-  //Method to validate the inputs
   void validateAndLogin(String email, String password, BuildContext context) {
     if (email.isNotEmpty && password.isNotEmpty) {
       //Pattern matching for the email
@@ -380,7 +405,6 @@ class Login extends StatelessWidget {
     }
   }
 
-  //Method to check if user email is verified and navigate accordingly
   void checkEmailVerification(BuildContext context) async {
     User userLogin = authLogIn.currentUser;
     if (userLogin.emailVerified) {
@@ -401,8 +425,11 @@ class Login extends StatelessWidget {
       await referenceToken
           .child(uidToken)
           .set({"tokenId": tokenID, "platform": platform}).then((value) =>
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => Dashboard())));
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          fingerAuthValue ? BiometricSetup() : Dashboard())));
     } else {
       //Navigate to the page which shows up if email is not verified
       Navigator.pushReplacement(
@@ -411,7 +438,6 @@ class Login extends StatelessWidget {
     }
   }
 
-  //Method to implement Google Signin
   void signInWithGoogle(BuildContext context) async {
     //Code to implement google signin
     final googleSignIn = GoogleSignIn();
@@ -460,7 +486,6 @@ class Login extends StatelessWidget {
     }
   }
 
-  //Method to handle navigation for google Signin
   void navigateSignUp(String uid, BuildContext context) async {
     //Declaring the database reference to the node in "users" node
     FirebaseDatabase databaseLookUp = new FirebaseDatabase();
@@ -496,6 +521,9 @@ class Login extends StatelessWidget {
         .update({"tokenId": tokenID, "platform": platform})
         .then((value) => progressDialog.hide())
         .then((value) => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Dashboard())));
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    fingerAuthValue ? BiometricSetup() : Dashboard())));
   }
 }
