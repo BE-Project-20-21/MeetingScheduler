@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'package:authentication_app/UI/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:authentication_app/UI/userinfo_google_signin.dart';
-import 'UI/login.dart';
-import 'UI/dashboard.dart';
-import 'UI/verify_email.dart';
+import './Components/Authentication/userinfo_google_signin.dart';
+import './Components/Authentication/login.dart';
+import './Components/Authentication/verify_email.dart';
+import './Components/Dashboard/dashboard.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
