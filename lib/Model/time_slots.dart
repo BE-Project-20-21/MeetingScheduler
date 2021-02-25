@@ -3,15 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-
-//The map for each day containing the time slots, and boolean value for each slot; true: free, false: occupied.
-var sundayMap = new Map<int, bool>();
-var mondayMap = new Map<int, bool>();
-var tuesdayMap = new Map<int, bool>();
-var wednesdayMap = new Map<int, bool>();
-var thursdayMap = new Map<int, bool>();
-var fridayMap = new Map<int, bool>();
-var saturdayMap = new Map<int, bool>();
+import '../UI/dashboard.dart';
 
 //Map to put the schedule of each day in one packet, ready to be pushed into the database
 var schedule = new Map<String, Map>();
@@ -32,16 +24,6 @@ class TimeSlots extends StatefulWidget {
     //Triggered on clicking the Submit button on the manage_schedule page
     if (trigger) {
       createMap();
-    }
-    //To clear the map everytime the user leaves the manage_schedule page and gets back to dashboard
-    else {
-      sundayMap.clear();
-      mondayMap.clear();
-      tuesdayMap.clear();
-      wednesdayMap.clear();
-      thursdayMap.clear();
-      fridayMap.clear();
-      saturdayMap.clear();
     }
   }
 
@@ -101,7 +83,6 @@ class TimeSlots extends StatefulWidget {
   void submitSchedule(Map schedule) {
     //To get the UID of the current User
     final String currentUserId = FirebaseAuth.instance.currentUser.uid;
-
     //Declaring Database references and setting th ereference to the target node
     FirebaseDatabase databaseManageSchedule = new FirebaseDatabase();
     DatabaseReference referenceManageSchedule =
@@ -129,17 +110,17 @@ class TimeSlots extends StatefulWidget {
 
   closeActivity() {
     //Code to hide the progress bar
-    Future.delayed(const Duration(seconds: 4), () {
+    Future.delayed(const Duration(seconds: 2), () {
       progressDialog.hide();
     });
-
-    //Code to navigate back to the dashboard
-    // Navigator.popUntil(
-    //     globalContextTimeSlots, ModalRoute.withName('./UI/dashboard.dart'));
+    //Code to implement the navigation right after submitting the schedule
   }
 }
 
 class _TimeSlotsState extends State<TimeSlots> {
+  //Creating an object of ProgressDialog
+  ProgressDialog progressDialogSchedule;
+
   //Variables required to handle the selected/un-selected state of each slot
   bool pressed = false;
   int counter = 1;
@@ -147,6 +128,87 @@ class _TimeSlotsState extends State<TimeSlots> {
   @override
   void initState() {
     super.initState();
+    //Setting the UI rendering parameters to not normal (pressed)
+    if (widget.day == "Sunday") {
+      if (sundayMap[widget.time] == true) {
+        setState(() {
+          pressed = true;
+          counter = counter + 1;
+        });
+      }
+    } else if (widget.day == "Monday") {
+      if (mondayMap[widget.time] == true) {
+        setState(() {
+          pressed = true;
+          counter = counter + 1;
+        });
+      }
+    } else if (widget.day == "Tuesday") {
+      if (tuesdayMap[widget.time] == true) {
+        setState(() {
+          pressed = true;
+          counter = counter + 1;
+        });
+      }
+    } else if (widget.day == "Wednesday") {
+      if (wednesdayMap[widget.time] == true) {
+        setState(() {
+          pressed = true;
+          counter = counter + 1;
+        });
+      }
+    } else if (widget.day == "Thursday") {
+      if (thursdayMap[widget.time] == true) {
+        setState(() {
+          pressed = true;
+          counter = counter + 1;
+        });
+      }
+    } else if (widget.day == "Friday") {
+      if (fridayMap[widget.time] == true) {
+        setState(() {
+          pressed = true;
+          counter = counter + 1;
+        });
+      }
+    } else if (widget.day == "Saturday") {
+      if (saturdayMap[widget.time] == true) {
+        setState(() {
+          pressed = true;
+          counter = counter + 1;
+        });
+      }
+    }
+  }
+
+  //Method to display the pre-submitted schedule
+  void displaySchedule(String uidSchedule) {
+    //Code to show the progress bar
+    progressDialogSchedule = new ProgressDialog(globalContextTimeSlots,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialogSchedule.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor:
+              new AlwaysStoppedAnimation<Color>(Colors.deepOrangeAccent),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Submitting your Schedule....",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
+    );
+    progressDialogSchedule.show();
+
+    //Retrieving schedule from the database and populating the maps
   }
 
   @override
@@ -157,12 +219,14 @@ class _TimeSlotsState extends State<TimeSlots> {
         child: Padding(
           padding: const EdgeInsets.only(left: 2.0),
           child: FlatButton(
-            child: Text(
-              "${widget.time.toString()}" + ":00",
-              style: GoogleFonts.sourceSansPro(
-                  textStyle: TextStyle(
-                      color: pressed ? Colors.white : Colors.deepOrangeAccent)),
-              overflow: TextOverflow.clip,
+            child: FittedBox(
+              child: Text(
+                "${widget.time.toString()}" + ":00",
+                style: GoogleFonts.sourceSansPro(
+                    textStyle: TextStyle(
+                        color: pressed ? Colors.white : Color(0xFF614385))),
+                overflow: TextOverflow.clip,
+              ),
             ),
             onHighlightChanged: (value) => {},
             shape:
@@ -182,7 +246,7 @@ class _TimeSlotsState extends State<TimeSlots> {
                 addToSchedule(widget.day, widget.time);
               }
             },
-            color: pressed ? Colors.deepOrange : Colors.white,
+            color: pressed ? Color(0xffc3d166b) : Colors.white,
           ),
         ),
       ),

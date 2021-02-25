@@ -1,28 +1,59 @@
+import 'dart:io';
+
+import 'package:authentication_app/UI/biometrics_page.dart';
 import 'package:authentication_app/UI/dashboard.dart';
 import 'package:authentication_app/UI/forgot_pasword.dart';
 import 'package:authentication_app/UI/userinfo_google_signin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../Model/FadeAnimation.dart';
 import '../UI/signup.dart';
 import './verify_email.dart';
+import '../UI/settings.dart';
+import 'biometrics_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
   //Declaring Database references
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
   final FirebaseAuth authLogIn = FirebaseAuth.instance;
 
-  //Creating an object of ProgressDialog
+  @override
+  void initState() {
+    super.initState();
+    _getFingerAuthValue();
+  }
+
+  bool fingerAuthValue;
+  Future<bool> getBoolFromSharedPref() async {
+    final prefs = await SharedPreferences.getInstance();
+    final fA = prefs.getBool("fA");
+    return fA;
+  }
+
+  Future<bool> _getFingerAuthValue() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool fingerAuth = await getBoolFromSharedPref();
+    setState(() {
+      fingerAuthValue = fingerAuth;
+    });
+  }
+
   ProgressDialog progressDialog;
 
-  //To declare the variables required for the inputs
   String email = "";
+
   String password = "";
 
   @override
@@ -34,27 +65,19 @@ class Login extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Login",
-      theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          textTheme: GoogleFonts.hammersmithOneTextTheme(
-            Theme.of(context).textTheme,
-          )),
+      theme:
+          ThemeData(fontFamily: 'Metropolis', dividerColor: Colors.transparent),
       home: Material(
         child: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFF73AEF5),
-                Color(0xFF61A4F1),
-                Color(0xFF478DE0),
-                Color(0xFF398AE5),
-              ],
-              stops: [0.1, 0.4, 0.7, 0.9],
-            ),
-          ),
+              gradient: LinearGradient(
+                  colors: [
+                    Color(0xFF614385),
+                    Color(0xFF516395),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.2, 0.8])),
           child: SafeArea(
             child: Container(
               child: Stack(
@@ -80,7 +103,7 @@ class Login extends StatelessWidget {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            "MS",
+                            "Meeting Scheduler",
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -105,6 +128,7 @@ class Login extends StatelessWidget {
                         height: height / 13,
                         alignment: Alignment.centerLeft,
                         child: TextField(
+                          cursorColor: Colors.white,
                           onChanged: (emailInput) {
                             email = emailInput;
                           },
@@ -122,16 +146,23 @@ class Login extends StatelessWidget {
                           ),
                         ),
                         decoration: BoxDecoration(
-                          color: Color(0xFF6CA8F1),
-                          borderRadius: BorderRadius.circular(10.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 6.0,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color(0xFF614385),
+                            // gradient: LinearGradient(
+                            //   begin: Alignment.topCenter,
+                            //   end: Alignment.bottomCenter,
+                            //   colors: [
+                            //     Color(0xff5F0A87),
+                            //     Color(0xff7a3c68),
+                            //   ],
+                            // ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 6.0,
+                                offset: Offset(0, 2),
+                              )
+                            ]),
                       ),
                       SizedBox(
                         height: height / 50,
@@ -148,6 +179,7 @@ class Login extends StatelessWidget {
                         height: height / 13,
                         alignment: Alignment.centerLeft,
                         child: TextField(
+                          cursorColor: Colors.white,
                           onChanged: (passwordInput) {
                             password = passwordInput;
                           },
@@ -165,16 +197,23 @@ class Login extends StatelessWidget {
                           ),
                         ),
                         decoration: BoxDecoration(
-                          color: Color(0xFF6CA8F1),
-                          borderRadius: BorderRadius.circular(10.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 6.0,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color(0xFF614385),
+                            // gradient: LinearGradient(
+                            //   begin: Alignment.topCenter,
+                            //   end: Alignment.bottomCenter,
+                            //   colors: [
+                            //     Color(0xff5F0A87),
+                            //     Color(0xff7a3c68),
+                            //   ],
+                            // ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 6.0,
+                                offset: Offset(0, 2),
+                              )
+                            ]),
                       ),
                       SizedBox(
                         height: height / 60,
@@ -192,8 +231,8 @@ class Login extends StatelessWidget {
                             child: Text(
                               "Forgot Password?",
                               style: TextStyle(
-                                color: Colors.white,
-                              ),
+                                  color: Colors.white,
+                                  fontFamily: 'Metropolis'),
                             ),
                             margin: EdgeInsets.all(10.0),
                             padding: EdgeInsets.symmetric(
@@ -224,11 +263,11 @@ class Login extends StatelessWidget {
                             child: Text(
                               'LOG IN',
                               style: TextStyle(
-                                color: Color(0xFF527DAA),
-                                letterSpacing: 1,
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                  color: Color(0xFF614385),
+                                  letterSpacing: 1,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Metropolis'),
                             ),
                           ),
                         ),
@@ -258,16 +297,16 @@ class Login extends StatelessWidget {
                               children: [
                                 Image(
                                   image: AssetImage("assets/images/google.png"),
-                                  height: 25,
+                                  height: 18,
                                 ),
                                 Text(
                                   'SIGN IN',
                                   style: TextStyle(
-                                    color: Color(0xFF527DAA),
-                                    letterSpacing: 1,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                      color: Color(0xFF614385),
+                                      letterSpacing: 1,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Metropolis'),
                                 ),
                               ],
                             ),
@@ -292,23 +331,20 @@ class Login extends StatelessWidget {
                               text: TextSpan(
                                 children: [
                                   TextSpan(
-                                      text: 'Don\'t have an Account? ',
-                                      style: GoogleFonts.hammersmithOne(
-                                        textStyle: TextStyle(
+                                    text: 'Don\'t have an Account? ',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15.0,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'Metropolis'),
+                                  ),
+                                  TextSpan(
+                                      text: 'Sign Up',
+                                      style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 15.0,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      )),
-                                  TextSpan(
-                                    text: 'Sign Up',
-                                    style: GoogleFonts.hammersmithOne(
-                                        textStyle: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15.0,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                                  ),
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Metropolis')),
                                 ],
                               ),
                             ),
@@ -331,7 +367,6 @@ class Login extends StatelessWidget {
     );
   }
 
-  //Method to validate the inputs
   void validateAndLogin(String email, String password, BuildContext context) {
     if (email.isNotEmpty && password.isNotEmpty) {
       //Pattern matching for the email
@@ -370,12 +405,31 @@ class Login extends StatelessWidget {
     }
   }
 
-  //Method to check if user email is verified and navigate accordingly
-  void checkEmailVerification(BuildContext context) {
+  void checkEmailVerification(BuildContext context) async {
     User userLogin = authLogIn.currentUser;
     if (userLogin.emailVerified) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Dashboard()));
+      //Code to Enter the device token into the firebase database
+      //Code to get the uid of the current user
+      String uidToken = authLogIn.currentUser.uid.toString();
+      FirebaseMessaging fcmToken = new FirebaseMessaging();
+      String tokenID = await fcmToken.getToken();
+      String platform;
+      if (Platform.isAndroid) {
+        platform = "Android";
+      } else {
+        platform = "IOS";
+      }
+      FirebaseDatabase databaseToken = new FirebaseDatabase();
+      DatabaseReference referenceToken =
+          databaseToken.reference().child("token");
+      await referenceToken
+          .child(uidToken)
+          .set({"tokenId": tokenID, "platform": platform}).then((value) =>
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          fingerAuthValue ? BiometricSetup() : Dashboard())));
     } else {
       //Navigate to the page which shows up if email is not verified
       Navigator.pushReplacement(
@@ -384,7 +438,6 @@ class Login extends StatelessWidget {
     }
   }
 
-  //Method to implement Google Signin
   void signInWithGoogle(BuildContext context) async {
     //Code to implement google signin
     final googleSignIn = GoogleSignIn();
@@ -397,8 +450,7 @@ class Login extends StatelessWidget {
       AuthCredential authCredential = GoogleAuthProvider.credential(
           idToken: googleSignInAuthentication.idToken,
           accessToken: googleSignInAuthentication.accessToken);
-      UserCredential result =
-          await authLogIn.signInWithCredential(authCredential);
+      await authLogIn.signInWithCredential(authCredential);
 
       //Adding user to authentication is complete, now we need to handle the navigation based on whether the user has provided the personal details
       //Code to show the progres bar (UI BASED)
@@ -434,7 +486,6 @@ class Login extends StatelessWidget {
     }
   }
 
-  //Method to handle navigation for google Signin
   void navigateSignUp(String uid, BuildContext context) async {
     //Declaring the database reference to the node in "users" node
     FirebaseDatabase databaseLookUp = new FirebaseDatabase();
@@ -446,10 +497,33 @@ class Login extends StatelessWidget {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => UserInfoGoogleSignIn()));
       } else {
-        progressDialog.hide();
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Dashboard()));
+        navigateToDashboard(context);
       }
     });
+  }
+
+  navigateToDashboard(BuildContext context) async {
+    //Code to Enter the device token into the firebase database
+    //Code to get the uid of the current user
+    String uidToken = authLogIn.currentUser.uid.toString();
+    FirebaseMessaging fcmToken = new FirebaseMessaging();
+    String tokenID = await fcmToken.getToken();
+    String platform;
+    if (Platform.isAndroid) {
+      platform = "Android";
+    } else {
+      platform = "IOS";
+    }
+    FirebaseDatabase databaseToken = new FirebaseDatabase();
+    DatabaseReference referenceToken = databaseToken.reference().child("token");
+    await referenceToken
+        .child(uidToken)
+        .update({"tokenId": tokenID, "platform": platform})
+        .then((value) => progressDialog.hide())
+        .then((value) => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    fingerAuthValue ? BiometricSetup() : Dashboard())));
   }
 }

@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:authentication_app/UI/userinfo_google_signin.dart';
 import 'UI/login.dart';
 import 'UI/dashboard.dart';
@@ -44,7 +43,7 @@ class _FirstPageState extends State<FirstPage> {
 
   startTimer() async {
     //Complete navigation handling from Main.dart
-    var duration = Duration(seconds: 3);
+    var duration = Duration(seconds: 0);
     //In case no one is logged in
     if (FirebaseAuth.instance.currentUser == null) {
       return Timer(duration, route1);
@@ -125,13 +124,8 @@ class _FirstPageState extends State<FirstPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Authentication App",
-      theme: ThemeData(
-          primarySwatch: Colors.orange,
-          accentColor: Colors.orangeAccent,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          textTheme: GoogleFonts.aBeeZeeTextTheme(
-            Theme.of(context).textTheme,
-          )),
+      theme:
+          ThemeData(fontFamily: 'Metropolis', dividerColor: Colors.transparent),
       home: Material(
         child: Container(
           child: SafeArea(
