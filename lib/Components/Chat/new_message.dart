@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../OCR/ocr.dart';
+import '../File-Attachment/attachments_screen.dart';
 
 class NewMessage extends StatefulWidget {
   String _meetingID;
@@ -29,7 +30,7 @@ class _NewMessageState extends State<NewMessage> {
           .doc(user.uid)
           .get();
       FirebaseFirestore.instance.collection(widget._meetingID).add({
-        'text': _enteredMessage,
+        'text': _enteredMessage.trim(),
         'sentAt': Timestamp.now(),
         'userid': user.uid,
         'username': userData['name'],
@@ -101,7 +102,13 @@ class _NewMessageState extends State<NewMessage> {
               disabledColor: Colors.white,
               icon: Icon(Icons.attach_file_rounded),
               color: Colors.white,
-              onPressed: () {},
+              onPressed: () {
+                //Navigate the user to the page where the user can attach and view the list of the attached files
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AttachmentScreen()));
+              },
             ),
           ),
           Container(
@@ -113,7 +120,7 @@ class _NewMessageState extends State<NewMessage> {
               disabledColor: Colors.white,
               icon: Icon(Icons.send_rounded),
               color: Colors.white,
-              onPressed: _enteredMessage.trim().isEmpty ? null : _sendMessage,
+              onPressed: _enteredMessage.isEmpty ? null : _sendMessage,
             ),
           )
         ],
