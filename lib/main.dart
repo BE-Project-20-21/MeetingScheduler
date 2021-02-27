@@ -7,6 +7,10 @@ import './Components/Authentication/userinfo_google_signin.dart';
 import './Components/Authentication/login.dart';
 import './Components/Authentication/verify_email.dart';
 import './Components/Dashboard/dashboard.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import './Components/Authentication/biometrics_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,11 +37,45 @@ class FirstPage extends StatefulWidget {
 class _FirstPageState extends State<FirstPage> {
   //Declaring database references
   FirebaseAuth authMain = FirebaseAuth.instance;
+  LocalAuthentication auth = LocalAuthentication();
+  final FirebaseAuth authLogIn = FirebaseAuth.instance;
+  bool _isBiometrics;
+  Future<void> _checkBiometrics() async {
+    bool checkBiometrics;
+    try {
+      checkBiometrics = await auth.canCheckBiometrics;
+    } on PlatformException catch (e) {
+      print(e);
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _isBiometrics = checkBiometrics;
+    });
+  }
+
+  bool fingerAuthValue;
+  Future<bool> getBoolFromSharedPref() async {
+    final prefs = await SharedPreferences.getInstance();
+    final fA = prefs.getBool("fA");
+    return fA;
+  }
+
+  Future<bool> _getFingerAuthValue() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool fingerAuth = await getBoolFromSharedPref();
+    setState(() {
+      fingerAuthValue = fingerAuth;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     startTimer();
+    _getFingerAuthValue();
+    _checkBiometrics();
   }
 
   startTimer() async {
@@ -97,7 +135,9 @@ class _FirstPageState extends State<FirstPage> {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Dashboard(),
+          builder: (context) => (fingerAuthValue & _isBiometrics)
+              ? BiometricSetup()
+              : Dashboard(),
         ));
   }
 
