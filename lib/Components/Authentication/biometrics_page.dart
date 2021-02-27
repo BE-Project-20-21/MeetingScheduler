@@ -11,6 +11,12 @@ class BiometricSetup extends StatefulWidget {
 }
 
 class _BiometricSetupState extends State<BiometricSetup> {
+  @override
+  void initState() {
+    super.initState();
+    _authenticate();
+  }
+
   bool _authorized = false;
   LocalAuthentication auth = LocalAuthentication();
   Future<void> _authenticate() async {
@@ -97,31 +103,29 @@ class _BiometricSetupState extends State<BiometricSetup> {
                     "Use Fingerprint",
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.fingerprint_rounded),
-                    onPressed: () {
-                      _authenticate();
-                    },
-                    iconSize: 60,
-                  ),
-                  SizedBox(
-                    height: 60,
-                  ),
+                  // IconButton(
+                  //   icon: Icon(Icons.fingerprint_rounded),
+                  //   onPressed: () {},
+                  //   iconSize: 60,
+                  // ),
+                  // SizedBox(
+                  //   height: 60,
+                  // ),
                   // Text(
                   //   "Use Facial Recognition",
                   //   style: TextStyle(color: Colors.white, fontSize: 18),
                   // ),
                   // IconButton(
                   //     icon: Icon(Icons.fingerprint_rounded), onPressed: () {}),
-                  RaisedButton(
-                    color: Colors.white,
-                    disabledColor: Colors.white,
-                    child: Text("Skip"),
-                    onPressed: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => Dashboard()));
-                    },
-                  )
+                  // RaisedButton(
+                  //   color: Colors.white,
+                  //   disabledColor: Colors.white,
+                  //   child: Text("Skip"),
+                  //   onPressed: () {
+                  //     Navigator.pushReplacement(context,
+                  //         MaterialPageRoute(builder: (context) => Dashboard()));
+                  //   },
+                  // )
                 ],
               )),
             ),
