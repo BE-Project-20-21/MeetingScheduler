@@ -100,14 +100,16 @@ class _BiometricSetupState extends State<BiometricSetup> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "Use Fingerprint",
+                    "Press Icon below to scan Fingerprint",
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
-                  // IconButton(
-                  //   icon: Icon(Icons.fingerprint_rounded),
-                  //   onPressed: () {},
-                  //   iconSize: 60,
-                  // ),
+                  IconButton(
+                    icon: Icon(Icons.fingerprint_rounded),
+                    onPressed: () {
+                      _authenticate();
+                    },
+                    iconSize: 60,
+                  ),
                   // SizedBox(
                   //   height: 60,
                   // ),
