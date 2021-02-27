@@ -25,11 +25,6 @@ class Settings extends StatefulWidget {
     print(sharedPrefvariable);
   }
 
-  Future<bool> _setBoolinSharedPref(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool("fA", value);
-  }
-
   @override
   _SettingsState createState() => _SettingsState();
 }
