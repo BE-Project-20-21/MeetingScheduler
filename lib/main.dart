@@ -53,12 +53,16 @@ class _FirstPageState extends State<FirstPage> {
     setState(() {
       _isBiometrics = checkBiometrics;
     });
+    print("Is biometrics : $_isBiometrics");
   }
 
   bool fingerAuthValue;
   Future<bool> getBoolFromSharedPref() async {
     final prefs = await SharedPreferences.getInstance();
     final fA = prefs.getBool("fA");
+    if (fA == null) {
+      await prefs.setBool("fA", false);
+    }
     return fA;
   }
 
@@ -68,6 +72,7 @@ class _FirstPageState extends State<FirstPage> {
     setState(() {
       fingerAuthValue = fingerAuth;
     });
+    print("favalue  : $fingerAuthValue");
   }
 
   @override
