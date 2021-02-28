@@ -89,7 +89,7 @@ class _SettingsState extends State<Settings> {
                 children: <Widget>[
                   Expanded(
                     child: Text(
-                      "Fingerprint Authentication",
+                      "Biometric Authentication",
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 18.0,
