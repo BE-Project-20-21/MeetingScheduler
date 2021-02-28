@@ -41,11 +41,6 @@ class _SettingsState extends State<Settings> {
     print(sharedPrefvariable);
   }
 
-  Future<bool> _setBoolinSharedPref(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool("fA", value);
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

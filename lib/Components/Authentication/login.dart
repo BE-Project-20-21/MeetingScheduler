@@ -16,6 +16,8 @@ import './forgot_password.dart';
 import './userinfo_google_signin.dart';
 import '../Dashboard/dashboard.dart';
 import '../../View/Animation/fade_animation.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 
 class Login extends StatefulWidget {
   //Declaring Database references
@@ -24,12 +26,29 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  LocalAuthentication auth = LocalAuthentication();
   final FirebaseAuth authLogIn = FirebaseAuth.instance;
+  bool _isBiometrics;
+  Future<void> _checkBiometrics() async {
+    bool checkBiometrics;
+    try {
+      checkBiometrics = await auth.canCheckBiometrics;
+    } on PlatformException catch (e) {
+      print(e);
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _isBiometrics = checkBiometrics;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _getFingerAuthValue();
+    _checkBiometrics();
   }
 
   bool fingerAuthValue;
@@ -425,8 +444,9 @@ class _LoginState extends State<Login> {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          fingerAuthValue ? BiometricSetup() : Dashboard())));
+                      builder: (context) => (fingerAuthValue & _isBiometrics)
+                          ? BiometricSetup()
+                          : Dashboard())));
     } else {
       //Navigate to the page which shows up if email is not verified
       Navigator.pushReplacement(
@@ -520,7 +540,8 @@ class _LoginState extends State<Login> {
         .then((value) => Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    fingerAuthValue ? BiometricSetup() : Dashboard())));
+                builder: (context) => (fingerAuthValue & _isBiometrics)
+                    ? BiometricSetup()
+                    : Dashboard())));
   }
 }
