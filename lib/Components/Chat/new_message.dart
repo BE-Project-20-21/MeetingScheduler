@@ -104,7 +104,7 @@ class _NewMessageState extends State<NewMessage> {
               color: Colors.white,
               onPressed: () {
                 //Navigate the user to the page where the user can attach and view the list of the attached files
-                Navigator.push(
+                Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>

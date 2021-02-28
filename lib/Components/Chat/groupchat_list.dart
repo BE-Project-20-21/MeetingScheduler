@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import "../Dashboard/dashboard.dart";
 import '../Chat/chat_screen.dart';
 
+//Variables required to save data about the meeting
+Map<dynamic, dynamic> temp1 = new Map<dynamic, dynamic>();
+
 class GroupChatList extends StatefulWidget {
   String _meetingId;
   GroupChatList(String meetingId) {
@@ -11,8 +14,6 @@ class GroupChatList extends StatefulWidget {
 }
 
 class GroupChatListState extends State<GroupChatList> {
-  //Variables required to save data about the meeting
-  Map<dynamic, dynamic> temp1 = new Map<dynamic, dynamic>();
   @override
   void initState() {
     temp1 = upcomingMeetings[widget._meetingId];
