@@ -107,7 +107,8 @@ class _NewMessageState extends State<NewMessage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AttachmentScreen()));
+                        builder: (context) =>
+                            AttachmentScreen(widget._meetingID)));
               },
             ),
           ),
