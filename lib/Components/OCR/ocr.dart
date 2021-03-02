@@ -1,13 +1,22 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_mobile_vision/flutter_mobile_vision.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import '../Chat/groupchat_list.dart';
+import '../Chat/chat_screen.dart';
 
 class OCR extends StatefulWidget {
-  OCR({Key key}) : super(key: key);
+  String _meetingID;
+  OCR(String meetingID) {
+    this._meetingID = meetingID;
+  }
 
   @override
   _OCRState createState() => _OCRState();
@@ -17,9 +26,12 @@ class _OCRState extends State<OCR> {
   bool isInitialized = false;
 
   //Variables required to store the file content
+  String appDocPath;
+  List<dynamic> urlList = new List<dynamic>();
   List<OcrText> scannedContent = new List<OcrText>();
   String fileContent;
   String fileName;
+  String downloadURL;
 
   //Variables required to render the UI
   bool documentScanned;
@@ -121,6 +133,7 @@ class _OCRState extends State<OCR> {
                       elevation: 5.0,
                       onPressed: () {
                         //Implement method to save the files in storage bucket
+                        addFilestoStorageBucket(context);
                       },
                       padding: EdgeInsets.all(15.0),
                       shape: RoundedRectangleBorder(
@@ -172,10 +185,10 @@ class _OCRState extends State<OCR> {
       documentScanned = true;
     });
     Directory appDocDir = await getExternalStorageDirectory();
-    String appDocPath = appDocDir.path;
+    appDocPath = appDocDir.path;
     print("default: $appDocPath");
     new File('$appDocPath/$fileName.doc')
-        .writeAsStringSync('myVar: $fileContent');
+        .writeAsStringSync('Scanned Text:\n$fileContent');
 
     Navigator.pop(context);
   }
@@ -200,6 +213,103 @@ class _OCRState extends State<OCR> {
       curve: Curves.fastOutSlowIn,
       duration: Duration(milliseconds: 500),
     );
+  }
+
+  //Method to save the scanned document into firebase storage bucket
+  void addFilestoStorageBucket(BuildContext context) async {
+    //Code to show the progress bar
+    progressDialogFileAttachment = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialogFileAttachment.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF7B38C6)),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Attaching the file(s)!",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
+    );
+    progressDialogFileAttachment.show();
+    //Loading the file from local storage
+    File scannedDocument = new File('$appDocPath/$fileName.doc');
+    FirebaseStorage firebaseStorageFileUpload = FirebaseStorage.instance;
+    Reference referenceFileUpload = firebaseStorageFileUpload
+        .ref()
+        .child("Attachments/${widget._meetingID}")
+        .child(fileName);
+    UploadTask uploadTask = referenceFileUpload.putFile(scannedDocument);
+    await uploadTask.whenComplete(() async {
+      await referenceFileUpload.getDownloadURL().then((fileUrl) {
+        downloadURL = fileUrl;
+      });
+    }).then((value) {
+      //Here comes the code to insert the url into realtime database
+      addUrlToDatabase();
+    });
+  }
+
+  //Method to add URL list to the database
+  void addUrlToDatabase() async {
+    FirebaseDatabase databaseFileAttachments = FirebaseDatabase.instance;
+    DatabaseReference referenceFileAttachments = databaseFileAttachments
+        .reference()
+        .child("attachments")
+        .child(widget._meetingID);
+    await referenceFileAttachments
+        .once()
+        .then((DataSnapshot dataSnapshot) async {
+      if (dataSnapshot.value == null) {
+        await referenceFileAttachments.set({
+          "filesURL": urlList,
+        });
+      } else {
+        //Saving previous list into a variable and then adding new list to the existing list
+        await referenceFileAttachments
+            .child("filesURL")
+            .once()
+            .then((DataSnapshot dataSnapshot1) async {
+          List<dynamic> previousList = dataSnapshot1.value;
+          List<dynamic> newList = urlList + previousList;
+          await referenceFileAttachments.set({
+            "filesURL": newList,
+          });
+        });
+      }
+    }).then((value) {
+      //TODO: Call the function to take the user back to the chat screen
+      showAttachmentsOnChat();
+    });
+  }
+
+  //Method to naviagte back to chatscreen with all the changes
+  void showAttachmentsOnChat() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final userData = await FirebaseFirestore.instance
+        .collection('names')
+        .doc(user.uid)
+        .get();
+    FirebaseFirestore.instance.collection(widget._meetingID).add({
+      'text': "Attached a file: $fileName",
+      'sentAt': Timestamp.now(),
+      'userid': user.uid,
+      'username': userData['name'],
+    });
+    progressDialogFileAttachment.hide();
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                ChatScreen(widget._meetingID, temp1["subject"])));
   }
 
   //Widget to show the text field to name the text file

@@ -36,7 +36,7 @@ class _NewMessageState extends State<NewMessage> {
         'username': userData['name'],
       });
       _controller.clear();
-      _enteredMessage = null;
+      _enteredMessage = "";
     } else {
       Fluttertoast.showToast(msg: "Please enter a message to deliver.");
     }
@@ -86,7 +86,7 @@ class _NewMessageState extends State<NewMessage> {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => OCR(),
+                      builder: (context) => OCR(widget._meetingID),
                     ));
               },
             ),
