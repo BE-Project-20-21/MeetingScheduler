@@ -35,6 +35,12 @@ class ChatScreen extends StatelessWidget {
                 ],
               ),
             ),
+            actions: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 0),
+                child: PopupOptionMenuChat(),
+              ),
+            ],
           )),
       body: Container(
         color: Colors.white,
@@ -45,6 +51,49 @@ class ChatScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+//Menu facilitator
+enum MenuOption { documents }
+
+// Class to build the menu
+class PopupOptionMenuChat extends StatelessWidget {
+  const PopupOptionMenuChat({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return PopupMenuButton<MenuOption>(
+      color: Color(0xff2A2136),
+      icon: Icon(Icons.menu, color: Colors.white),
+      itemBuilder: (BuildContext context1) {
+        return <PopupMenuEntry<MenuOption>>[
+          PopupMenuItem(
+            child: Row(
+              children: <Widget>[
+                Container(
+                  child: Icon(
+                    Icons.file_present,
+                    color: Colors.white,
+                  ),
+                  padding: EdgeInsets.all(5),
+                ),
+                Container(
+                  child: Text(
+                    "Documents",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                  padding: EdgeInsets.all(0),
+                )
+              ],
+            ),
+            value: MenuOption.documents,
+          ),
+        ];
+      },
+      onSelected: (selection) {},
     );
   }
 }
