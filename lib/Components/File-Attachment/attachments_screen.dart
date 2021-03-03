@@ -7,13 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gx_file_picker/gx_file_picker.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import '../Chat/groupchat_list.dart';
 import '../Chat/chat_screen.dart';
 
 class AttachmentScreen extends StatefulWidget {
   String _meetingID;
-  AttachmentScreen(String meetingID) {
+  String subject;
+  AttachmentScreen(String meetingID, String subject) {
     this._meetingID = meetingID;
+    this.subject = subject;
   }
   AttachmentScreenState createState() => AttachmentScreenState();
 }
@@ -21,7 +22,7 @@ class AttachmentScreen extends StatefulWidget {
 class AttachmentScreenState extends State<AttachmentScreen> {
   int totalFilesSelected;
   List<File> files = new List<File>();
-  List<dynamic> urlList = new List<dynamic>();
+  Map<String, dynamic> urlMap = new Map<String, dynamic>();
 
   //Creating an object of ProgressDialog
   ProgressDialog progressDialogFileAttachment;
@@ -182,7 +183,9 @@ class AttachmentScreenState extends State<AttachmentScreen> {
       UploadTask uploadTask = referenceFileUpload.putFile(files[i]);
       await uploadTask.whenComplete(() async {
         await referenceFileUpload.getDownloadURL().then((fileUrl) {
-          urlList.add(fileUrl);
+          urlMap[((files[i].path).toString().split("/").last)
+              .split(".")
+              .first] = fileUrl;
         });
       });
     }
@@ -197,28 +200,9 @@ class AttachmentScreenState extends State<AttachmentScreen> {
         .reference()
         .child("attachments")
         .child(widget._meetingID);
-    await referenceFileAttachments
-        .once()
-        .then((DataSnapshot dataSnapshot) async {
-      if (dataSnapshot.value == null) {
-        await referenceFileAttachments.set({
-          "filesURL": urlList,
-        });
-      } else {
-        //Saving previous list into a variable and then adding new list to the existing list
-        await referenceFileAttachments
-            .child("filesURL")
-            .once()
-            .then((DataSnapshot dataSnapshot1) async {
-          List<dynamic> previousList = dataSnapshot1.value;
-          List<dynamic> newList = urlList + previousList;
-          await referenceFileAttachments.set({
-            "filesURL": newList,
-          });
-        });
-      }
+    await referenceFileAttachments.update({
+      "fileUrl": urlMap,
     }).then((value) {
-      //TODO: Call the function to take the user back to the chat screen
       showAttachmentsOnChat();
     });
   }
@@ -245,7 +229,7 @@ class AttachmentScreenState extends State<AttachmentScreen> {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                ChatScreen(widget._meetingID, temp1["subject"])));
+                ChatScreen(widget._meetingID, widget.subject)));
   }
 
   //Widget to desplay each File name

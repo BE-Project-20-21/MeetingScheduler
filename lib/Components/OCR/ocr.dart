@@ -9,13 +9,14 @@ import 'package:flutter_mobile_vision/flutter_mobile_vision.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import '../Chat/groupchat_list.dart';
 import '../Chat/chat_screen.dart';
 
 class OCR extends StatefulWidget {
   String _meetingID;
-  OCR(String meetingID) {
+  String subject;
+  OCR(String meetingID, String subject) {
     this._meetingID = meetingID;
+    this.subject = subject;
   }
 
   @override
@@ -27,7 +28,7 @@ class _OCRState extends State<OCR> {
 
   //Variables required to store the file content
   String appDocPath;
-  List<dynamic> urlList = new List<dynamic>();
+  Map<String, dynamic> urlMap = new Map<String, dynamic>();
   List<OcrText> scannedContent = new List<OcrText>();
   String fileContent;
   String fileName;
@@ -251,6 +252,7 @@ class _OCRState extends State<OCR> {
     await uploadTask.whenComplete(() async {
       await referenceFileUpload.getDownloadURL().then((fileUrl) {
         downloadURL = fileUrl;
+        urlMap[fileName] = downloadURL;
       });
     }).then((value) {
       //Here comes the code to insert the url into realtime database
@@ -265,28 +267,9 @@ class _OCRState extends State<OCR> {
         .reference()
         .child("attachments")
         .child(widget._meetingID);
-    await referenceFileAttachments
-        .once()
-        .then((DataSnapshot dataSnapshot) async {
-      if (dataSnapshot.value == null) {
-        await referenceFileAttachments.set({
-          "filesURL": urlList,
-        });
-      } else {
-        //Saving previous list into a variable and then adding new list to the existing list
-        await referenceFileAttachments
-            .child("filesURL")
-            .once()
-            .then((DataSnapshot dataSnapshot1) async {
-          List<dynamic> previousList = dataSnapshot1.value;
-          List<dynamic> newList = urlList + previousList;
-          await referenceFileAttachments.set({
-            "filesURL": newList,
-          });
-        });
-      }
+    await referenceFileAttachments.update({
+      "fileUrl": urlMap,
     }).then((value) {
-      //TODO: Call the function to take the user back to the chat screen
       showAttachmentsOnChat();
     });
   }
@@ -309,7 +292,7 @@ class _OCRState extends State<OCR> {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                ChatScreen(widget._meetingID, temp1["subject"])));
+                ChatScreen(widget._meetingID, widget.subject)));
   }
 
   //Widget to show the text field to name the text file

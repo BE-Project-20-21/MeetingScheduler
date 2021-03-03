@@ -7,9 +7,10 @@ import '../File-Attachment/attachments_screen.dart';
 
 class NewMessage extends StatefulWidget {
   String _meetingID;
-
-  NewMessage(String meetingID) {
+  String subject;
+  NewMessage(String meetingID, String subject) {
     this._meetingID = meetingID;
+    this.subject = subject;
   }
 
   @override
@@ -86,7 +87,8 @@ class _NewMessageState extends State<NewMessage> {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => OCR(widget._meetingID),
+                      builder: (context) =>
+                          OCR(widget._meetingID, widget.subject),
                     ));
               },
             ),
@@ -107,8 +109,8 @@ class _NewMessageState extends State<NewMessage> {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            AttachmentScreen(widget._meetingID)));
+                        builder: (context) => AttachmentScreen(
+                            widget._meetingID, widget.subject)));
               },
             ),
           ),

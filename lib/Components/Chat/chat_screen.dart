@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../Chat/new_message.dart';
 import '../Chat/messages.dart';
+import '../../Components/Chat/documents.dart';
 
 class ChatScreen extends StatelessWidget {
   String _meetingID;
@@ -47,7 +48,7 @@ class ChatScreen extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Expanded(child: Messages(_meetingID)),
-            NewMessage(_meetingID)
+            NewMessage(_meetingID, subject)
           ],
         ),
       ),
@@ -93,7 +94,18 @@ class PopupOptionMenuChat extends StatelessWidget {
           ),
         ];
       },
-      onSelected: (selection) {},
+      onSelected: (selection) {
+        if (selection == MenuOption.documents) {
+          fetchDocuments(context);
+        }
+      },
     );
+  }
+
+  //Method to fetch all the documents related to the meeting before navigating to the page
+  void fetchDocuments(BuildContext context) {
+    //TODO: FETCH ALL DOCUMENTS RELATED TO THE GROUP ALONG WITH THEIR DOWNLOADABLE LINKS
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => Documents()));
   }
 }
