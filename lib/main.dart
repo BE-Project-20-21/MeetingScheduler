@@ -1,14 +1,16 @@
 import 'dart:async';
-import 'package:authentication_app/UI/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:authentication_app/UI/userinfo_google_signin.dart';
-import 'UI/login.dart';
-import 'UI/dashboard.dart';
-import 'UI/verify_email.dart';
+import './Components/Authentication/userinfo_google_signin.dart';
+import './Components/Authentication/login.dart';
+import './Components/Authentication/verify_email.dart';
+import './Components/Dashboard/dashboard.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import './Components/Authentication/biometrics_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,16 +37,55 @@ class FirstPage extends StatefulWidget {
 class _FirstPageState extends State<FirstPage> {
   //Declaring database references
   FirebaseAuth authMain = FirebaseAuth.instance;
+  LocalAuthentication auth = LocalAuthentication();
+  final FirebaseAuth authLogIn = FirebaseAuth.instance;
+  bool _isBiometrics;
+  Future<void> _checkBiometrics() async {
+    bool checkBiometrics;
+    try {
+      checkBiometrics = await auth.canCheckBiometrics;
+    } on PlatformException catch (e) {
+      print(e);
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _isBiometrics = checkBiometrics;
+    });
+    print("Is biometrics : $_isBiometrics");
+  }
+
+  bool fingerAuthValue;
+  Future<bool> getBoolFromSharedPref() async {
+    final prefs = await SharedPreferences.getInstance();
+    final fA = prefs.getBool("fA");
+    if (fA == null) {
+      await prefs.setBool("fA", false);
+    }
+    return fA;
+  }
+
+  Future<bool> _getFingerAuthValue() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool fingerAuth = await getBoolFromSharedPref();
+    setState(() {
+      fingerAuthValue = fingerAuth;
+    });
+    print("favalue  : $fingerAuthValue");
+  }
 
   @override
   void initState() {
     super.initState();
     startTimer();
+    _getFingerAuthValue();
+    _checkBiometrics();
   }
 
   startTimer() async {
     //Complete navigation handling from Main.dart
-    var duration = Duration(seconds: 3);
+    var duration = Duration(seconds: 0);
     //In case no one is logged in
     if (FirebaseAuth.instance.currentUser == null) {
       return Timer(duration, route1);
@@ -99,7 +140,9 @@ class _FirstPageState extends State<FirstPage> {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Dashboard(),
+          builder: (context) => (fingerAuthValue & _isBiometrics)
+              ? BiometricSetup()
+              : Dashboard(),
         ));
   }
 
@@ -125,13 +168,8 @@ class _FirstPageState extends State<FirstPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Authentication App",
-      theme: ThemeData(
-          primarySwatch: Colors.orange,
-          accentColor: Colors.orangeAccent,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          textTheme: GoogleFonts.aBeeZeeTextTheme(
-            Theme.of(context).textTheme,
-          )),
+      theme:
+          ThemeData(fontFamily: 'Metropolis', dividerColor: Colors.transparent),
       home: Material(
         child: Container(
           child: SafeArea(
