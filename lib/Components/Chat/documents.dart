@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class Documents extends StatefulWidget {
+  Map<dynamic, dynamic> _documents = new Map<dynamic, dynamic>();
+  Documents(Map<dynamic, dynamic> documents) {
+    this._documents = documents;
+  }
   DocumentState createState() => DocumentState();
 }
 
@@ -22,7 +26,7 @@ class DocumentState extends State<Documents> {
                 Container(
                     height: 400,
                     child: ListView.builder(
-                      itemCount: 4,
+                      itemCount: widget._documents.length,
                       itemBuilder: (BuildContext ctxt, int index) {
                         return Padding(
                           padding: EdgeInsets.only(right: 10, left: 10),
@@ -41,12 +45,12 @@ class DocumentState extends State<Documents> {
   //Widget to show each document tab
   Widget eachDocument(int index) {
     return Container(
-      margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+      margin: EdgeInsets.only(bottom: 5),
       child: Card(
         child: Container(
           padding: EdgeInsets.all(15.0),
           child: Text(
-            "Docs",
+            widget._documents.keys.elementAt(index),
             style: TextStyle(
               color: Colors.black,
               fontSize: 20.0,

@@ -1,4 +1,6 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import '../Chat/new_message.dart';
 import '../Chat/messages.dart';
 import '../../Components/Chat/documents.dart';
@@ -39,7 +41,7 @@ class ChatScreen extends StatelessWidget {
             actions: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(top: 0),
-                child: PopupOptionMenuChat(),
+                child: PopupOptionMenuChat(_meetingID),
               ),
             ],
           )),
@@ -61,7 +63,17 @@ enum MenuOption { documents }
 
 // Class to build the menu
 class PopupOptionMenuChat extends StatelessWidget {
-  const PopupOptionMenuChat({Key key}) : super(key: key);
+  String _meetingID;
+  PopupOptionMenuChat(String meetingID) {
+    this._meetingID = meetingID;
+  }
+
+  //Variable required to store the document list
+  Map<dynamic, dynamic> documents = new Map<dynamic, dynamic>();
+
+  //Creating an object of ProgressDialog
+  ProgressDialog progressDialogDocuments;
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -103,9 +115,45 @@ class PopupOptionMenuChat extends StatelessWidget {
   }
 
   //Method to fetch all the documents related to the meeting before navigating to the page
-  void fetchDocuments(BuildContext context) {
+  void fetchDocuments(BuildContext context) async {
+    //Code to show the progress bar
+    progressDialogDocuments = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialogDocuments.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF7B38C6)),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Fetching the Documents",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 10.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 15.0),
+    );
+    progressDialogDocuments.show();
+
     //TODO: FETCH ALL DOCUMENTS RELATED TO THE GROUP ALONG WITH THEIR DOWNLOADABLE LINKS
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Documents()));
+    FirebaseDatabase databaseDocuments = FirebaseDatabase.instance;
+    DatabaseReference referenceDocuments = databaseDocuments
+        .reference()
+        .child("attachments")
+        .child(_meetingID)
+        .child("fileUrl");
+    await referenceDocuments.once().then((DataSnapshot dataSnapshot) {
+      documents = dataSnapshot.value;
+      print("documentList: $documents");
+    }).then((value) {
+      progressDialogDocuments.hide();
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => Documents(documents)));
+    });
   }
 }
