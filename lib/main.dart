@@ -3,14 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './Components/Authentication/userinfo_google_signin.dart';
 import './Components/Authentication/login.dart';
 import './Components/Authentication/verify_email.dart';
 import './Components/Dashboard/dashboard.dart';
-import 'package:flutter/services.dart';
-import 'package:local_auth/local_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import './Components/Authentication/biometrics_page.dart';
+import './View/no_internet.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -84,6 +85,9 @@ class _FirstPageState extends State<FirstPage> {
   }
 
   startTimer() async {
+    //Check further navigations only if internet connection is available
+    //TODO: CODE TO CHECK IF ACTIVE INTERNET IS PRESENT
+
     //Complete navigation handling from Main.dart
     var duration = Duration(seconds: 0);
     //In case no one is logged in
@@ -159,6 +163,14 @@ class _FirstPageState extends State<FirstPage> {
         context,
         MaterialPageRoute(
           builder: (context) => VerifyEmail(),
+        ));
+  }
+
+  route5() {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Internet(),
         ));
   }
 

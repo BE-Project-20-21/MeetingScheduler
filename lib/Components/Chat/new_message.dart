@@ -7,9 +7,10 @@ import '../File-Attachment/attachments_screen.dart';
 
 class NewMessage extends StatefulWidget {
   String _meetingID;
-
-  NewMessage(String meetingID) {
+  String subject;
+  NewMessage(String meetingID, String subject) {
     this._meetingID = meetingID;
+    this.subject = subject;
   }
 
   @override
@@ -36,7 +37,7 @@ class _NewMessageState extends State<NewMessage> {
         'username': userData['name'],
       });
       _controller.clear();
-      _enteredMessage = null;
+      _enteredMessage = "";
     } else {
       Fluttertoast.showToast(msg: "Please enter a message to deliver.");
     }
@@ -86,7 +87,8 @@ class _NewMessageState extends State<NewMessage> {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => OCR(),
+                      builder: (context) =>
+                          OCR(widget._meetingID, widget.subject),
                     ));
               },
             ),
@@ -104,11 +106,11 @@ class _NewMessageState extends State<NewMessage> {
               color: Colors.white,
               onPressed: () {
                 //Navigate the user to the page where the user can attach and view the list of the attached files
-                Navigator.push(
+                Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            AttachmentScreen(widget._meetingID)));
+                        builder: (context) => AttachmentScreen(
+                            widget._meetingID, widget.subject)));
               },
             ),
           ),

@@ -211,6 +211,7 @@ class _PendingCardsState extends State<PendingCards> {
           color: Colors.white,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
                 padding: EdgeInsets.all(10),

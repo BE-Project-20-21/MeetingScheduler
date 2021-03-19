@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import "../Dashboard/dashboard.dart";
 import '../Chat/chat_screen.dart';
 
+//Variables required to save data about the meeting
+Map<dynamic, dynamic> temp1 = new Map<dynamic, dynamic>();
+
 class GroupChatList extends StatefulWidget {
   String _meetingId;
   GroupChatList(String meetingId) {
@@ -11,11 +14,8 @@ class GroupChatList extends StatefulWidget {
 }
 
 class GroupChatListState extends State<GroupChatList> {
-  //Variables required to save data about the meeting
-  Map<dynamic, dynamic> temp1 = new Map<dynamic, dynamic>();
   @override
   void initState() {
-    temp1 = upcomingMeetings[widget._meetingId];
     super.initState();
   }
 
@@ -25,11 +25,12 @@ class GroupChatListState extends State<GroupChatList> {
     return GestureDetector(
       onTap: () {
         //Navigating to the Groupchat
+        String meetSubject = (upcomingMeetings[widget._meetingId])["subject"];
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    ChatScreen(widget._meetingId, temp1['subject'])));
+                    ChatScreen(widget._meetingId, meetSubject)));
       },
       child: Opacity(
         opacity: 1.0,
@@ -49,7 +50,7 @@ class GroupChatListState extends State<GroupChatList> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8),
                     child: Text(
-                      temp1["subject"],
+                      (upcomingMeetings[widget._meetingId])["subject"],
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 18.0,
