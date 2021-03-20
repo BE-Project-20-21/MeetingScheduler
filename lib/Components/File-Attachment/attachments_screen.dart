@@ -222,6 +222,7 @@ class AttachmentScreenState extends State<AttachmentScreen> {
         'sentAt': Timestamp.now(),
         'userid': user.uid,
         'username': userData['name'],
+        'doc': true,
       });
     }
     progressDialogFileAttachment.hide();

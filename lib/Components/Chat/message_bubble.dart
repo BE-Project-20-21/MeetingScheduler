@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 
 class MessageBubble extends StatelessWidget {
-  MessageBubble(
-    this.message,
-    this.isMe,
-    this.key,
-    this.username,
-  );
+  MessageBubble(this.message, this.isMe, this.key, this.username, this.doc);
   final String message;
   final bool isMe;
   final String username;
   final Key key;
+  final bool doc;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +47,11 @@ class MessageBubble extends StatelessWidget {
                           fontSize: 15,
                           height: 1.2),
                     ),
+                    doc
+                        ? IconButton(
+                            icon: Icon(Icons.download_rounded),
+                          )
+                        : SizedBox(height: 0, width: 0)
                   ],
                 ),
               ),

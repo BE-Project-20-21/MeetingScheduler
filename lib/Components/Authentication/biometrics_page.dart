@@ -21,9 +21,12 @@ class _BiometricSetupState extends State<BiometricSetup> {
   LocalAuthentication auth = LocalAuthentication();
   Future<void> _authenticate() async {
     bool authenticated = false;
+    List<BiometricType> list = List();
     try {
+      list = await auth.getAvailableBiometrics();
+
       authenticated = await auth.authenticateWithBiometrics(
-          localizedReason: "Place you finger on the fingerprint scanner",
+          localizedReason: "Use Biometrics to Authenticate",
           useErrorDialogs: true,
           stickyAuth: true);
     } on PlatformException catch (e) {
@@ -100,7 +103,7 @@ class _BiometricSetupState extends State<BiometricSetup> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "Press Icon below to scan Fingerprint",
+                    "Use Biometrics to Authenticate",
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                   IconButton(

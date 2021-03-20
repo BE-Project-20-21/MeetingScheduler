@@ -35,6 +35,7 @@ class _NewMessageState extends State<NewMessage> {
         'sentAt': Timestamp.now(),
         'userid': user.uid,
         'username': userData['name'],
+        'doc': false,
       });
       _controller.clear();
       _enteredMessage = "";
