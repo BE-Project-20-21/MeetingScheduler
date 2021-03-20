@@ -22,7 +22,7 @@ class AttachmentScreen extends StatefulWidget {
 class AttachmentScreenState extends State<AttachmentScreen> {
   int totalFilesSelected;
   List<File> files = new List<File>();
-  Map<String, dynamic> urlMap = new Map<String, dynamic>();
+  Map<dynamic, dynamic> urlMap = new Map<dynamic, dynamic>();
 
   //Creating an object of ProgressDialog
   ProgressDialog progressDialogFileAttachment;
@@ -195,13 +195,29 @@ class AttachmentScreenState extends State<AttachmentScreen> {
 
   //Method to add URL list to the database
   void addUrlToDatabase() async {
+    //Code to fetch the list which already exists in the database
     FirebaseDatabase databaseFileAttachments = FirebaseDatabase.instance;
     DatabaseReference referenceFileAttachments = databaseFileAttachments
         .reference()
         .child("attachments")
         .child(widget._meetingID);
-    await referenceFileAttachments.update({
-      "fileUrl": urlMap,
+    await referenceFileAttachments
+        .child("fileUrl")
+        .once()
+        .then((DataSnapshot dataSnapshot) async {
+      if (dataSnapshot.value != null) {
+        Map<dynamic, dynamic> temp = new Map<dynamic, dynamic>();
+        temp = dataSnapshot.value;
+        print("Retrieved: $temp");
+        urlMap.addAll(temp);
+        await referenceFileAttachments.update({
+          "fileUrl": urlMap,
+        });
+      } else {
+        await referenceFileAttachments.update({
+          "fileUrl": urlMap,
+        });
+      }
     }).then((value) {
       showAttachmentsOnChat();
     });

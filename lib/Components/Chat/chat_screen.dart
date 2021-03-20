@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import '../Chat/new_message.dart';
 import '../Chat/messages.dart';
@@ -148,12 +149,19 @@ class PopupOptionMenuChat extends StatelessWidget {
         .child(_meetingID)
         .child("fileUrl");
     await referenceDocuments.once().then((DataSnapshot dataSnapshot) {
-      documents = dataSnapshot.value;
-      print("documentList: $documents");
-    }).then((value) {
-      progressDialogDocuments.hide();
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => Documents(documents)));
+      if (dataSnapshot.value != null) {
+        documents = dataSnapshot.value;
+        print("documentList: $documents");
+        progressDialogDocuments.hide();
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => Documents(documents)));
+      } else {
+        progressDialogDocuments.hide();
+        Fluttertoast.showToast(
+            msg: "No documents attached yet!",
+            backgroundColor: Color(0xff2A2136),
+            textColor: Colors.white);
+      }
     });
   }
 }
