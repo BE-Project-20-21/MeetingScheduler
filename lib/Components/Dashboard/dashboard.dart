@@ -17,6 +17,8 @@ import '../Chat/groupchat.dart';
 import '../Settings/settings.dart';
 import '../Scheduling-Interface/scheduling_interface.dart';
 
+import 'package:jiffy/jiffy.dart';
+
 //Variables required to store the meeting and their details respectively
 List<String> allMeetings = new List<String>();
 List<String> pendingList = new List<String>();
@@ -343,18 +345,41 @@ class DashboardState extends State<Dashboard>
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 50.0, bottom: 30),
-                      child: Text(
-                        'Dashboard',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            color: Colors.white,
-                            letterSpacing: 1,
-                            fontSize: 33,
-                            fontFamily: 'Metropolis',
-                            fontWeight: FontWeight.bold),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(top: 50.0, bottom: 30),
+                            child: Text(
+                              'Dashboard',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  letterSpacing: 1,
+                                  fontSize: 33,
+                                  fontFamily: 'Metropolis',
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 50.0, bottom: 30),
+                          child: Text(
+                            Jiffy(DateTime.now()).yMMMMd +
+                                "\n" +
+                                Jiffy(DateTime.now()).format("EEEE"),
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                color: Colors.white,
+                                letterSpacing: 1,
+                                fontSize: 15,
+                                fontFamily: 'Metropolis',
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

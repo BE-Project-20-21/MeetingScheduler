@@ -87,7 +87,7 @@ flutter:
     - assets/images/clock.png
     - assets/images/light-1.png
     - assets/images/default.jpg
-    - assets/credentials.json
+
     - assets/images/robot.png
     - assets/images/robot.gif
 

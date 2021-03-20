@@ -34,6 +34,7 @@ class Messages extends StatelessWidget {
                     ValueKey(chatDocs[index].documentID),
                     chatDocs[index]['username'],
                     chatDocs[index]['doc'],
+                    chatDocs[index]['sentAt'],
                   ));
         });
   }
