@@ -1,16 +1,19 @@
 import 'dart:async';
+// import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
+// import 'package:connectivity/connectivity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './Components/Authentication/userinfo_google_signin.dart';
 import './Components/Authentication/login.dart';
 import './Components/Authentication/verify_email.dart';
 import './Components/Dashboard/dashboard.dart';
 import './Components/Authentication/biometrics_page.dart';
+import './Model/connectivity_status.dart';
 import './View/no_internet.dart';
 
 void main() async {
@@ -86,49 +89,53 @@ class _FirstPageState extends State<FirstPage> {
 
   startTimer() async {
     //Check further navigations only if internet connection is available
-    //TODO: CODE TO CHECK IF ACTIVE INTERNET IS PRESENT
-
-    //Complete navigation handling from Main.dart
     var duration = Duration(seconds: 0);
-    //In case no one is logged in
-    if (FirebaseAuth.instance.currentUser == null) {
-      return Timer(duration, route1);
-    } else {
-      //Code to get the UID of the current user
-      print("ERROR 1");
-      final User userMain = authMain.currentUser;
-      await userMain.reload();
-      String _uidMain = userMain.uid.toString();
-      print("UID: $_uidMain");
-      String l = userMain.providerData[0].providerId;
-      print("Provider: $l");
-      if (l == "password") {
-        //Check if user email address is verifiied\
-        print("status $userMain.emailVerified");
-        if (userMain.emailVerified) {
-          //Navigate to dashboard
-          return Timer(duration, route2);
-        } else {
-          //Navigate to the email verification page
-          return Timer(duration, route4);
-        }
+    //TODO: CODE TO CHECK IF ACTIVE INTERNET IS PRESENT
+    if (await ConnectivityStatus().isConnectedToInternet()) {
+      //Complete navigation handling from Main.dart
+      //In case no one is logged in
+      if (FirebaseAuth.instance.currentUser == null) {
+        return Timer(duration, route1);
       } else {
-        //Declaring Database Reference
-        FirebaseDatabase databaseMain = new FirebaseDatabase();
-        //Checking if user has provided his information
-        DatabaseReference referenceMain =
-            databaseMain.reference().child("users");
-        await referenceMain
-            .child(_uidMain)
-            .once()
-            .then((DataSnapshot datasnapshot) {
-          if (datasnapshot.value == null) {
-            return Timer(duration, route3);
-          } else {
+        //Code to get the UID of the current user
+        print("ERROR 1");
+        final User userMain = authMain.currentUser;
+        await userMain.reload();
+        String _uidMain = userMain.uid.toString();
+        print("UID: $_uidMain");
+        String l = userMain.providerData[0].providerId;
+        print("Provider: $l");
+        if (l == "password") {
+          //Check if user email address is verifiied\
+          print("status $userMain.emailVerified");
+          if (userMain.emailVerified) {
+            //Navigate to dashboard
             return Timer(duration, route2);
+          } else {
+            //Navigate to the email verification page
+            return Timer(duration, route4);
           }
-        });
+        } else {
+          //Declaring Database Reference
+          FirebaseDatabase databaseMain = new FirebaseDatabase();
+          //Checking if user has provided his information
+          DatabaseReference referenceMain =
+              databaseMain.reference().child("users");
+          await referenceMain
+              .child(_uidMain)
+              .once()
+              .then((DataSnapshot datasnapshot) {
+            if (datasnapshot.value == null) {
+              return Timer(duration, route3);
+            } else {
+              return Timer(duration, route2);
+            }
+          });
+        }
       }
+    } else {
+      //Navigate to the no interenet page
+      return Timer(duration, route5);
     }
   }
 
