@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:jiffy/jiffy.dart';
 
 class MessageBubble extends StatelessWidget {
-  MessageBubble(this.message, this.isMe, this.key, this.username, this.doc);
+  MessageBubble(
+      this.message, this.isMe, this.key, this.username, this.doc, this.sentAt);
   final String message;
   final bool isMe;
   final String username;
   final Key key;
   final bool doc;
+  final Timestamp sentAt;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +56,22 @@ class MessageBubble extends StatelessWidget {
                             onPressed: () {},
                             icon: Icon(Icons.download_rounded),
                           )
-                        : SizedBox(height: 0, width: 0)
+                        : SizedBox(height: 0, width: 0),
+                    SizedBox(height: 10),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                          Jiffy(sentAt.toDate())
+                                  .format("dd-MM-yyyy")
+                                  .toString() +
+                              "\n" +
+                              Jiffy(sentAt.toDate())
+                                  .format("h:mm a")
+                                  .toString(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: isMe ? Colors.black : Colors.white)),
+                    ),
                   ],
                 ),
               ),
