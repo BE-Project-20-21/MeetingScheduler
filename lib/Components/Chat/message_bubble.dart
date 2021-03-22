@@ -53,6 +53,7 @@ class MessageBubble extends StatelessWidget {
                     ),
                     doc
                         ? IconButton(
+                            onPressed: () {},
                             icon: Icon(Icons.download_rounded),
                           )
                         : SizedBox(height: 0, width: 0),
