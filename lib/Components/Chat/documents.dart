@@ -1,4 +1,8 @@
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Documents extends StatefulWidget {
   Map<dynamic, dynamic> _documents = new Map<dynamic, dynamic>();
@@ -11,6 +15,7 @@ class Documents extends StatefulWidget {
 class DocumentState extends State<Documents> {
   @override
   Widget build(BuildContext context) {
+    print("Map: ${widget._documents}");
     // final height = MediaQuery.of(context).size.height;
     // TODO: implement build
     return MaterialApp(
@@ -49,13 +54,30 @@ class DocumentState extends State<Documents> {
       child: Card(
         child: Container(
           padding: EdgeInsets.all(15.0),
-          child: Text(
-            widget._documents.keys.elementAt(index),
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 20.0,
-            ),
-            textAlign: TextAlign.center,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                widget._documents.keys.elementAt(index),
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.0,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              IconButton(
+                onPressed: () {
+                  //Call the method to download the respective file
+                  downloadFile(
+                      widget._documents.keys.elementAt(index), context);
+                },
+                icon: Icon(
+                  Icons.download_rounded,
+                  color: Color(0xff2A2136),
+                ),
+              ),
+            ],
           ),
         ),
         shape:
@@ -65,5 +87,34 @@ class DocumentState extends State<Documents> {
         elevation: 6.0,
       ),
     );
+  }
+
+  //Method to download the file
+  void downloadFile(String fileName, BuildContext context) async {
+    print("filename: $fileName");
+    String downloadUrl = widget._documents[fileName];
+    print("url: $downloadUrl");
+    //Creating a file to store the document in
+    Directory appDocDirDownload;
+    appDocDirDownload = await getExternalStorageDirectory();
+    FirebaseStorage storageDownloadFile = FirebaseStorage.instance;
+    Reference referenceDownloadFile =
+        storageDownloadFile.refFromURL(downloadUrl);
+    print("reference: ${referenceDownloadFile.fullPath}");
+    int length = appDocDirDownload.toString().length;
+    File tempFile =
+        new File("${appDocDirDownload.path}/${referenceDownloadFile.name}");
+    DownloadTask downloadTask = referenceDownloadFile.writeToFile(tempFile);
+    downloadTask.whenComplete(() {
+      print("download complete!");
+      Fluttertoast.showToast(
+          msg: "Download Complete",
+          backgroundColor: Color(0xff2A2136),
+          textColor: Colors.white);
+      // Scaffold.of(context).showSnackBar(SnackBar(
+      //   content: Text('Show Snackbar'),
+      //   duration: Duration(seconds: 3),
+      // ));
+    });
   }
 }

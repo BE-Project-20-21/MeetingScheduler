@@ -28,7 +28,7 @@ class _OCRState extends State<OCR> {
 
   //Variables required to store the file content
   String appDocPath;
-  Map<String, dynamic> urlMap = new Map<String, dynamic>();
+  Map<dynamic, dynamic> urlMap = new Map<dynamic, dynamic>();
   List<OcrText> scannedContent = new List<OcrText>();
   String fileContent;
   String fileName;
@@ -262,17 +262,47 @@ class _OCRState extends State<OCR> {
 
   //Method to add URL list to the database
   void addUrlToDatabase() async {
+    //Code to fetch the list which already exists in the database
     FirebaseDatabase databaseFileAttachments = FirebaseDatabase.instance;
     DatabaseReference referenceFileAttachments = databaseFileAttachments
         .reference()
         .child("attachments")
         .child(widget._meetingID);
-    await referenceFileAttachments.update({
-      "fileUrl": urlMap,
+    await referenceFileAttachments
+        .child("fileUrl")
+        .once()
+        .then((DataSnapshot dataSnapshot) async {
+      if (dataSnapshot.value != null) {
+        Map<dynamic, dynamic> temp = new Map<dynamic, dynamic>();
+        temp = dataSnapshot.value;
+        print("Retrieved: $temp");
+        urlMap.addAll(temp);
+        await referenceFileAttachments.update({
+          "fileUrl": urlMap,
+        });
+      } else {
+        await referenceFileAttachments.update({
+          "fileUrl": urlMap,
+        });
+      }
     }).then((value) {
       showAttachmentsOnChat();
     });
   }
+
+  //Method to add URL list to the database
+  // void addUrlToDatabase() async {
+  //   FirebaseDatabase databaseFileAttachments = FirebaseDatabase.instance;
+  //   DatabaseReference referenceFileAttachments = databaseFileAttachments
+  //       .reference()
+  //       .child("attachments")
+  //       .child(widget._meetingID);
+  //   await referenceFileAttachments.update({
+  //     "fileUrl": urlMap,
+  //   }).then((value) {
+  //     showAttachmentsOnChat();
+  //   });
+  // }
 
   //Method to naviagte back to chatscreen with all the changes
   void showAttachmentsOnChat() async {
@@ -282,7 +312,7 @@ class _OCRState extends State<OCR> {
         .doc(user.uid)
         .get();
     FirebaseFirestore.instance.collection(widget._meetingID).add({
-      'text': "Attached a file: $fileName",
+      'text': "Attached a file: $fileName.doc",
       'sentAt': Timestamp.now(),
       'userid': user.uid,
       'username': userData['name'],
