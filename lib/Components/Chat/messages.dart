@@ -35,6 +35,7 @@ class Messages extends StatelessWidget {
                     chatDocs[index]['username'],
                     chatDocs[index]['doc'],
                     chatDocs[index]['sentAt'],
+                    chatDocs[index]['ocr'],
                   ));
         });
   }

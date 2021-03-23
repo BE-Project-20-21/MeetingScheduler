@@ -4,13 +4,14 @@ import 'package:jiffy/jiffy.dart';
 
 class MessageBubble extends StatelessWidget {
   MessageBubble(
-      this.message, this.isMe, this.key, this.username, this.doc, this.sentAt);
+      this.message, this.isMe, this.key, this.username, this.doc, this.sentAt, this.ocr);
   final String message;
   final bool isMe;
   final String username;
   final Key key;
   final bool doc;
   final Timestamp sentAt;
+  final bool ocr;
 
   @override
   Widget build(BuildContext context) {

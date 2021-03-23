@@ -36,6 +36,7 @@ class _NewMessageState extends State<NewMessage> {
         'userid': user.uid,
         'username': userData['name'],
         'doc': false,
+        'ocr': false,
       });
       _controller.clear();
       _enteredMessage = "";
