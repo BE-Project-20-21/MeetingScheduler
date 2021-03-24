@@ -316,6 +316,7 @@ class _OCRState extends State<OCR> {
       'sentAt': Timestamp.now(),
       'userid': user.uid,
       'username': userData['name'],
+      'doc': true,
     });
     progressDialogFileAttachment.hide();
     Navigator.pushReplacement(

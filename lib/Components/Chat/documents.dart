@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:slide_popup_dialog/slide_popup_dialog.dart' as slideDialog;
 import 'package:fluttertoast/fluttertoast.dart';
 
 class Documents extends StatefulWidget {
@@ -101,9 +103,8 @@ class DocumentState extends State<Documents> {
     Reference referenceDownloadFile =
         storageDownloadFile.refFromURL(downloadUrl);
     print("reference: ${referenceDownloadFile.fullPath}");
-    int length = appDocDirDownload.toString().length;
-    File tempFile =
-        new File("${appDocDirDownload.path}/${referenceDownloadFile.name}");
+    String fileURL = "${appDocDirDownload.path}/${referenceDownloadFile.name}";
+    File tempFile = new File(fileURL);
     DownloadTask downloadTask = referenceDownloadFile.writeToFile(tempFile);
     downloadTask.whenComplete(() {
       print("download complete!");
@@ -111,10 +112,67 @@ class DocumentState extends State<Documents> {
           msg: "Download Complete",
           backgroundColor: Color(0xff2A2136),
           textColor: Colors.white);
-      // Scaffold.of(context).showSnackBar(SnackBar(
-      //   content: Text('Show Snackbar'),
-      //   duration: Duration(seconds: 3),
-      // ));
+    }).then((value) {
+      showDownloadDialog(fileURL);
     });
+  }
+
+  //Method to show download dialog
+  void showDownloadDialog(String fileURL) {
+    slideDialog.showSlideDialog(
+      context: context,
+      child: Container(
+        margin: EdgeInsets.only(top: 50),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              "Your File has been downloaded!",
+              style: TextStyle(
+                  fontSize: 18.0,
+                  color: Color(0xff2A2136),
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Metropolis'),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              child: Container(
+                child: RaisedButton(
+                  elevation: 15.0,
+                  onPressed: () {
+                    //Code to open the file
+                    openDocument(fileURL);
+                  },
+                  padding: EdgeInsets.all(10.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  color: Color(0xff2A2136),
+                  child: Text(
+                    "Open Document",
+                    style: TextStyle(
+                        color: Colors.white,
+                        letterSpacing: 1,
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Metropolis'),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+      barrierColor: Color(0xff2A2136).withOpacity(1),
+      pillColor: Color(0xff2A2136),
+      backgroundColor: Colors.white,
+    );
+  }
+
+  void openDocument(String fileURL) {
+    OpenFile.open(fileURL);
   }
 }
