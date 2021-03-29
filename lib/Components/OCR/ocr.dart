@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_mobile_vision/flutter_mobile_vision.dart';
 import 'package:path_provider/path_provider.dart';
@@ -351,6 +352,10 @@ class _OCRState extends State<OCR> {
                       Container(
                         padding: EdgeInsets.all(10),
                         child: TextField(
+                          keyboardType: TextInputType.name,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.deny(new RegExp('[ -]'))
+                          ],
                           cursorColor: Color(0xff3D2F4F),
                           decoration: InputDecoration(
                               focusedBorder: OutlineInputBorder(
