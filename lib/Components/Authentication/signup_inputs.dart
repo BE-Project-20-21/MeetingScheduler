@@ -433,21 +433,37 @@ class SignupInputs extends StatelessWidget {
           RegExp regex = new RegExp(pattern);
           if (regex.hasMatch(email)) {
             if (password == confirmPassword) {
-              signUpWithEmailandPassword(fullname, username, contact, email,
-                  password, confirmPassword, context);
+              if (contact.length == 10){
+                if (password.length >= 6){
+                  signUpWithEmailandPassword(fullname, username, contact, email,  password, confirmPassword, context);
+                }
+                else{
+                  progressDialog.hide();
+                  Fluttertoast.showToast(
+                  msg: "Please enter a password with length greater than 6");    
+                }
+              }
+              else{
+                progressDialog.hide();
+                Fluttertoast.showToast(
+                  msg: "Please enter a valid contact number");  
+              }
             } else {
-              //Handle error for non matching passwords
+              //Handle error for non matching password
+              progressDialog.hide();
               Fluttertoast.showToast(
                   msg: "The passwords you have entered do not match!");
             }
           } else {
             //Handle error for incorrect email format
+            progressDialog.hide();
             Fluttertoast.showToast(msg: "Please enter a valid email address!");
           }
         }
       });
     } else {
       //Handle error if any field is empty
+      progressDialog.hide();
       Fluttertoast.showToast(msg: "Please fill all the fields!");
     }
   }
@@ -506,12 +522,12 @@ class SignupInputs extends StatelessWidget {
       await referenceUsername.child(username).set({"name": fullname});
 
       //Code to add name to firestore to perform searching
-      String searchKey = fullname.substring(0, 1);
+      String searchKey = fullname.substring(0, 1).toUpperCase();
       final firestoreInstance = FirebaseFirestore.instance;
       await firestoreInstance
           .collection("names")
           .doc(uid)
-          .set({"name": fullname, "searchKey": searchKey, "uid": uid});
+          .set({"name": fullname, "searchKey": searchKey, "uid": uid, "username" : username});
 
       Fluttertoast.showToast(
           msg:

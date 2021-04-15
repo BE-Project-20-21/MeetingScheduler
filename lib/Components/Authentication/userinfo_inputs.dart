@@ -395,7 +395,7 @@ class UserInfoInputs extends StatelessWidget {
     await firestoreInstance
         .collection("names")
         .doc(_uidUserInfo)
-        .set({"name": gfullname, "searchKey": searchKey, "uid": _uidUserInfo});
+        .set({"name": gfullname, "searchKey": searchKey, "uid": _uidUserInfo, "username" : gusername});
 
     //Code to Enter the device token into the firebase database
     //Code to get the uid of the current user
