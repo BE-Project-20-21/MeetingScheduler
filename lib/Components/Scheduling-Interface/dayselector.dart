@@ -224,12 +224,33 @@ class _DaySelectState extends State<DaySelect> {
           }
         }
         print("Commom FreeSlots: $recurringSet");
+        //Code to intersect the final set with the schedule set of meeting setter
+        //Fetching the uid of current user
+        FirebaseAuth authFreeSlots = FirebaseAuth.instance;
+        User userMeetingSetter = authFreeSlots.currentUser;
+        String uidMeetingSetter = userMeetingSetter.uid;
+        //Fetching the schedule of the meeting setter
+        FirebaseDatabase databaseFreeSlots = FirebaseDatabase.instance;
+        DatabaseReference referenceFreeSlots = databaseFreeSlots
+            .reference()
+            .child("schedule")
+            .child(uidMeetingSetter)
+            .child(daySelected);
+        await referenceFreeSlots.once().then((DataSnapshot dataSnapshot) {
+          var meetingSetterSchedule = dataSnapshot.value;
+          var meetingSetterSet = <int>{};
+          for (int i = 0; i < meetingSetterSchedule.length; i++) {
+            if (meetingSetterSchedule.elementAt(i) == "true") {
+              meetingSetterSet.add(i);
+            }
+          }
+          recurringSet = meetingSetterSet.intersection(recurringSet);
+        });
       } else {
         Fluttertoast.showToast(
             msg: "Please select atleast one member for the meeting");
       }
       progressDialogSlots.hide();
-
       //Setting the state once the free slots is calculates
       setState(() {
         commonslots = recurringSet.toList();
@@ -247,7 +268,7 @@ class _DaySelectState extends State<DaySelect> {
 
   //Method to check if gaps exists in the selected slots, and confirm the meeting if not
   void confirmMeeting() async {
-    //TODO: ALGORITHM TO DISALLOW DISCONTINOUS SLOT PICKING
+    //algorithm to disallow gaps within selected slots
     print("Selected Slots: $slotSelected");
     if (slotSelected.length == 0) {
       Fluttertoast.showToast(msg: "PLease select a free time slot!");

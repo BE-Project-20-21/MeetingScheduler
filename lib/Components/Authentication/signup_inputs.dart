@@ -472,7 +472,7 @@ class SignupInputs extends StatelessWidget {
           addDataToDatabase(fullname, username, contact, email, context);
         });
       } catch (e1) {
-        Fluttertoast.showToast(msg: "Some unknown error has occured");
+        Fluttertoast.showToast(msg: "Enter Valid Mobile Number");
       }
       // //To add the User information to the databse and then navigate
       // addDataToDatabase(fullname, email, context);
