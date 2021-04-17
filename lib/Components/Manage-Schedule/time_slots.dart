@@ -51,7 +51,7 @@ class TimeSlots extends StatefulWidget {
         color: Colors.white,
         child: CircularProgressIndicator(
           valueColor:
-              new AlwaysStoppedAnimation<Color>(Colors.deepOrangeAccent),
+              new AlwaysStoppedAnimation<Color>(Color(0xFF7B38C6)),
         ),
         margin: EdgeInsets.all(10.0),
       ),
@@ -191,7 +191,7 @@ class _TimeSlotsState extends State<TimeSlots> {
         color: Colors.white,
         child: CircularProgressIndicator(
           valueColor:
-              new AlwaysStoppedAnimation<Color>(Colors.deepOrangeAccent),
+              new AlwaysStoppedAnimation<Color>(Color(0xFF7B38C6)),
         ),
         margin: EdgeInsets.all(10.0),
       ),
