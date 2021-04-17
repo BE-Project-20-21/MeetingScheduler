@@ -383,28 +383,6 @@ class SignupInputs extends StatelessWidget {
       String password,
       String confirmPassword,
       BuildContext context) {
-    //Code to show the progres bar (UI BASED)
-    progressDialog = new ProgressDialog(context,
-        type: ProgressDialogType.Normal, isDismissible: false);
-    progressDialog.style(
-      child: Container(
-        color: Colors.white,
-        child: CircularProgressIndicator(
-          valueColor: new AlwaysStoppedAnimation<Color>(Colors.lightBlue),
-        ),
-        margin: EdgeInsets.all(10.0),
-      ),
-      message: "Checking Information..",
-      borderRadius: 10.0,
-      backgroundColor: Colors.white,
-      elevation: 40.0,
-      progress: 0.0,
-      maxProgress: 100.0,
-      insetAnimCurve: Curves.easeInOut,
-      progressWidgetAlignment: Alignment.center,
-      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
-      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
-    );
 
     //Handling the inputs
     //To check that no field is empty
@@ -425,18 +403,27 @@ class SignupInputs extends StatelessWidget {
         if (datasnapshot.value != null) {
           Fluttertoast.showToast(msg: "The username is not available.");
         } else {
-          //Show progress bar only if username is available
-          progressDialog.show();
           //Pattern matching for the email
           Pattern pattern =
               r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
           RegExp regex = new RegExp(pattern);
           if (regex.hasMatch(email)) {
             if (password == confirmPassword) {
-              signUpWithEmailandPassword(fullname, username, contact, email,
-                  password, confirmPassword, context);
+              if (contact.length == 10){
+                if (password.length >= 6){
+                  signUpWithEmailandPassword(fullname, username, contact, email,  password, confirmPassword, context);
+                }
+                else{
+                  Fluttertoast.showToast(
+                  msg: "Please enter a password with length greater than 6");    
+                }
+              }
+              else{
+                Fluttertoast.showToast(
+                  msg: "Please enter a valid contact number");  
+              }
             } else {
-              //Handle error for non matching passwords
+              //Handle error for non matching password
               Fluttertoast.showToast(
                   msg: "The passwords you have entered do not match!");
             }
@@ -462,6 +449,29 @@ class SignupInputs extends StatelessWidget {
       String confirmPassword,
       BuildContext context) async {
     //Creating account using inbuilt function
+        //Code to show the progres bar (UI BASED)
+    progressDialog = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialog.style(
+      child: Container(
+        color: Colors.white,
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF7B38C6)),
+        ),
+        margin: EdgeInsets.all(10.0),
+      ),
+      message: "Checking Information..",
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 40.0,
+      progress: 0.0,
+      maxProgress: 100.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressWidgetAlignment: Alignment.center,
+      progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0),
+      messageTextStyle: TextStyle(color: Colors.black, fontSize: 19.0),
+    );
+    progressDialog.show();
     try {
       await authSignUp.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -472,12 +482,14 @@ class SignupInputs extends StatelessWidget {
           addDataToDatabase(fullname, username, contact, email, context);
         });
       } catch (e1) {
-        Fluttertoast.showToast(msg: "Some unknown error has occured");
+        progressDialog.hide();
+        Fluttertoast.showToast(msg: "Enter Valid Mobile Number");
       }
       // //To add the User information to the databse and then navigate
       // addDataToDatabase(fullname, email, context);
     } catch (e) {
       //Handle Exceptions
+      progressDialog.hide();
       Fluttertoast.showToast(msg: "Some unknown error has occured");
     }
   }
@@ -506,12 +518,12 @@ class SignupInputs extends StatelessWidget {
       await referenceUsername.child(username).set({"name": fullname});
 
       //Code to add name to firestore to perform searching
-      String searchKey = fullname.substring(0, 1);
+      String searchKey = fullname.substring(0, 1).toUpperCase();
       final firestoreInstance = FirebaseFirestore.instance;
       await firestoreInstance
           .collection("names")
           .doc(uid)
-          .set({"name": fullname, "searchKey": searchKey, "uid": uid});
+          .set({"name": fullname, "searchKey": searchKey, "uid": uid, "username" : username});
 
       Fluttertoast.showToast(
           msg:

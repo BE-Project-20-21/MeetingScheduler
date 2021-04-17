@@ -477,7 +477,7 @@ class _LoginState extends State<Login> {
         child: Container(
           color: Colors.white,
           child: CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(Colors.lightBlue),
+            valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF7B38C6)),
           ),
           margin: EdgeInsets.all(10.0),
         ),

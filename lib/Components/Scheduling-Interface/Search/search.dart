@@ -158,7 +158,8 @@ class SearchState extends State<Search> {
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
                               return nameCard(tempSearchStore[index]["name"],
-                                  tempSearchStore[index]["uid"]);
+                                  tempSearchStore[index]["uid"],
+                                  tempSearchStore[index]["username"]);
                             },
                           ),
                         ),
@@ -280,7 +281,7 @@ class SearchState extends State<Search> {
   }
 
 //Widget to render each name slots which appears on entering a particular search query
-  Widget nameCard(String name, String uid) {
+  Widget nameCard(String name, String uid, String username) {
     bool selected = false;
     int keepCount = 0;
     return Material(
@@ -304,15 +305,32 @@ class SearchState extends State<Search> {
                   addMember(name, uid);
                 }
               },
-              child: Container(
-                color: selected ? Colors.grey : Colors.white,
-                child: Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 22.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    color: selected ? Colors.grey : Colors.white,
+                    child: Text(
+                      name,
+                      style: TextStyle(
+                        fontSize: 22.0,
+                      ),
+                    ),
+                    padding: EdgeInsets.all(10.0),
                   ),
-                ),
-                padding: EdgeInsets.all(10.0),
+                  Container(
+                    color: selected ? Colors.grey : Colors.white,
+                    child: Text(
+                      username,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                    padding: EdgeInsets.only(
+                      left: 10.0,
+                    )
+                  ),
+                ],
               ),
             ),
             Container(

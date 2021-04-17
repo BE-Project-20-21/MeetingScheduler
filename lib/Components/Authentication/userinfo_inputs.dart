@@ -351,7 +351,7 @@ class UserInfoInputs extends StatelessWidget {
       child: Container(
         color: Colors.white,
         child: CircularProgressIndicator(
-          valueColor: new AlwaysStoppedAnimation<Color>(Colors.lightBlue),
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF7B38C6)),
         ),
         margin: EdgeInsets.all(10.0),
       ),
@@ -395,7 +395,7 @@ class UserInfoInputs extends StatelessWidget {
     await firestoreInstance
         .collection("names")
         .doc(_uidUserInfo)
-        .set({"name": gfullname, "searchKey": searchKey, "uid": _uidUserInfo});
+        .set({"name": gfullname, "searchKey": searchKey, "uid": _uidUserInfo, "username" : gusername});
 
     //Code to Enter the device token into the firebase database
     //Code to get the uid of the current user
