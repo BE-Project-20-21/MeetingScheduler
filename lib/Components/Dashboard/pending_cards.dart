@@ -485,7 +485,7 @@ class _PendingCardsState extends State<PendingCards> {
       ..recipients.addAll(emailList)
       ..subject = "Meeting Confirmartion!"
       ..html =
-          "<h1>Hi, This is your Meeting Scheduler App</h1>\n<p>Your Meeting has been approved and scheduled!</p>";
+          "<h1>Hi, This is your Meeting Scheduler App</h1>\n<p>Your Meeting has been approved and scheduled!</p>\n<p>Subject of the meeting is: ${temp["subject" ]}<p>";
 
     try {
       final sendReport = await send(message, smtpServer);
