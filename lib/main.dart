@@ -1,12 +1,10 @@
 import 'dart:async';
-// import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
-// import 'package:connectivity/connectivity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './Components/Authentication/userinfo_google_signin.dart';
 import './Components/Authentication/login.dart';
